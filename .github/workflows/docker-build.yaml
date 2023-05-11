@@ -9,10 +9,6 @@ on:
                 required: true
                 type: string
 
-concurrency:
-    group: ${{ github.head_ref }}
-    cancel-in-progress: true
-
 jobs:
     docker-build:
         name: build docker image
