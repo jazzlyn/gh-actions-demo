@@ -1,5 +1,5 @@
 FROM nginx:alpine
-COPY docker/hello/index-one.html /usr/share/nginx/html/index.html
+COPY docker/hello/index.html /usr/share/nginx/html/index.html
 
 LABEL Name='hello world'
 LABEL Version=0.1
