@@ -1,68 +1,92 @@
-name: Docker
+---
+name: build and push docker image to github
 
 on:
-  push:
-    branches: [ "main" ]
-    # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
-  pull_request:
-    branches: [ "main" ]
-
-env:
-  # Use docker.io for Docker Hub if empty
-  REGISTRY: ghcr.io
-  # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
-
+  workflow_dispatch:
+    inputs:
+      registry:
+        description: "registry url"
+        required: false
+        type: string
+        default: "ghcr.io"
+      image:
+        description: "image name - default to repo name"
+        required: true
+        type: string
+      tags:
+        description: "tags for image - default sha"
+        required: true
+        type: string
+      context:
+        description: "path to Dockerfile - default ."
+        required: false
+        type: string
+        default: .
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
+  docker-build-push-github:
+    runs-on:
+      - ubuntu-latest
     permissions:
       contents: read
-      packages: write
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
       id-token: write
+    env:
+      image-path: ${{ inputs.registry }}/${{ github.repository }}/${{ inputs.image }}
+    outputs:
+      metadata: ${{ steps.meta.outputs.json }}
 
     steps:
-      # Checkout repository
       # https://github.com/marketplace/actions/checkout
-      - name: Checkout repository
-        uses: actions/checkout@v2.4.2
+      - name: checkout repository
+        uses: actions/checkout@v3.5.0
 
-      # Create and boot builder for Docker
-      # https://github.com/marketplace/actions/docker-setup-buildx
-      # Workaround: https://github.com/docker/build-push-action/issues/461
-      - name: Docker Setup Buildx
-        uses: docker/setup-buildx-action@v2.0.0
-
-      # Login against a Docker registry except on PR
-      # https://github.com/marketplace/actions/docker-login
-      - name: Log into registry ${{ env.REGISTRY }}
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2.0.0
+      # https://github.com/marketplace/actions/cosign-installer
+      - name: setup cosign
+        uses: sigstore/cosign-installer@v3.0.2
         with:
-          registry: ${{ env.REGISTRY }}
+          cosign-release: v1.13.1
+
+      # Workaround: https://github.com/docker/build-push-action/issues/461
+      # https://github.com/marketplace/actions/docker-setup-qemu
+      - name: setup QEMU
+        uses: docker/setup-qemu-action@v2.1.0
+
+      # https://github.com/marketplace/actions/docker-setup-buildx
+      - name: setup docker buildx
+        uses: docker/setup-buildx-action@v2.5.0
+        with:
+          driver: docker
+
+      # https://github.com/marketplace/actions/docker-login
+      - name: log into registry
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: ${{ inputs.registry }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Extract metadata (tags, labels) for Docker
       # https://github.com/marketplace/actions/docker-metadata-action
-      - name: Extract metadata for Docker
-        id: metadata
-        uses: docker/metadata-action@v4.0.1
+      - name: extract metadata for docker
+        id: meta
+        uses: docker/metadata-action@v4.3.0
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.image-path }}
+          tags: ${{ inputs.tags }}
 
-      # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/marketplace/actions/build-and-push-docker-images
-      - name: Build and push Docker images
+      - name: build and push docker image
         id: build-and-push
-        uses: docker/build-push-action@v3.1.1
+        uses: docker/build-push-action@v4.0.0
         with:
-          context: .
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.metadata.outputs.tags }}
-          labels: ${{ steps.metadata.outputs.labels }}
+          context: ${{ inputs.context }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      # https://github.com/sigstore/cosign
+      - name: sign the published docker image
+        env:
+          # COSIGN_EXPERIMENTAL is used for keyless signatures
+          # https://docs.sigstore.dev/cosign/keyless/
+          COSIGN_EXPERIMENTAL: "true"
+        run: cosign sign ${{ env.image-path }}@${{ steps.build-and-push.outputs.digest }}
