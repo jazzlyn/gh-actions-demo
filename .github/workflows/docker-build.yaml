@@ -1,0 +1,22 @@
+---
+name: build docker image
+
+on:
+    workflow_dispatch:
+        inputs:
+            context:
+                description: "path to Dockerfile"
+                required: true
+                type: string
+
+concurrency:
+    group: ${{ github.head_ref }}
+    cancel-in-progress: true
+
+jobs:
+    docker-build:
+        name: build docker image
+        uses: "strg-at/github-workflows/.github/workflows/docker-build.yaml@feature/AGENTS-957-docker-build-push-github"
+        with:
+            runner: ubuntu-latest
+            context: ${{ inputs.context }}
