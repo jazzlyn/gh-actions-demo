@@ -14,5 +14,5 @@ jobs:
     name: build docker image
     uses: "strg-at/github-workflows/.github/workflows/docker-build.yaml@feature/AGENTS-957-docker-build-push-github"
     with:
-      runner: '["ubuntu-latest"]'
+      runner: home-infra
       context: ${{ inputs.context }}
