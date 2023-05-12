@@ -17,6 +17,6 @@ jobs:
   docker-build-push:
     uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@feature/AGENTS-957-docker-build-push-github"
     with:
-      runner: home-infra
+      runner: '["self-hosted", "home-infra"]'
       image: ${{ inputs.image }}
       context: ${{ inputs.context }}
