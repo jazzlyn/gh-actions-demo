@@ -4,19 +4,15 @@ name: build and push docker image
 on:
   workflow_dispatch:
     inputs:
-      image:
-        description: "image name"
-        required: true
-        type: string
       context:
-        description: "path to Dockerfile"
+        description: "app folder with Dockerfile"
         required: true
         type: string
 
 jobs:
   docker-build-push:
-    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@feature/AGENTS-957-docker-build-push-github"
+    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.2.0"
     with:
       runner: '["ubuntu-latest"]'
-      image: ${{ inputs.image }}
+      image: ${{ inputs.context }}
       context: ${{ inputs.context }}

@@ -5,14 +5,14 @@ on:
   workflow_dispatch:
     inputs:
       context:
-        description: "path to Dockerfile"
+        description: "app folder with Dockerfile"
         required: true
         type: string
 
 jobs:
   docker-build:
     name: build docker image
-    uses: "strg-at/github-workflows/.github/workflows/docker-build.yaml@feature/AGENTS-957-docker-build-push-github"
+    uses: "strg-at/github-workflows/.github/workflows/docker-build.yaml@v0.2.0"
     with:
       runner: '["ubuntu-latest"]'
       context: ${{ inputs.context }}
