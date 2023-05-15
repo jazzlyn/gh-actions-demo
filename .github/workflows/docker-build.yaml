@@ -11,8 +11,7 @@ on:
 
 jobs:
   docker-build:
-    name: build docker image
-    uses: "strg-at/github-workflows/.github/workflows/docker-build.yaml@v0.2.0"
+    uses: "strg-at/github-workflows/.github/workflows/docker-build.yaml@v0.3.0"
     with:
       runner: '["ubuntu-latest"]'
       context: ${{ inputs.context }}
