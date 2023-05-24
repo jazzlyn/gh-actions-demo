@@ -4,11 +4,8 @@ name: dispatch
 on:
   workflow_dispatch:
   push:
-    branches:
-        - release/**
-        - hotfix/**
     tags:
-        - "*.*.*-*"
+        - "v*.*.*-*"
 
 jobs:
   docker-build-push:
@@ -17,6 +14,7 @@ jobs:
       runner: '["ubuntu-latest"]'
 
   repo-dispatch:
+    if: ${{ startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/hotfix/') }}
     needs: [docker-build-push]
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
     with:
