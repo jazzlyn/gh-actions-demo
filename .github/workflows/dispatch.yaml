@@ -1,0 +1,29 @@
+---
+name: dispatch
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+        - release/**
+        - hotfix/**
+    tags:
+        - "*.*.*-*"
+
+jobs:
+  docker-build-push:
+    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.4.0"
+    with:
+      runner: '["ubuntu-latest"]'
+
+  repo-dispatch:
+    needs: [docker-build-push]
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
+    with:
+      runner: '["ubuntu-latest"]'
+      sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
+      repository: strg-at/gh-actions-demo
+      dispatch-event: test-event
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
