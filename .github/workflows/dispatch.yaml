@@ -9,6 +9,7 @@ on:
 
 jobs:
   docker-build-push:
+    if: ${{ startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/hotfix/') }}
     uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.4.0"
     with:
       runner: '["ubuntu-latest"]'
