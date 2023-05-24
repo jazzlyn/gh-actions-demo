@@ -22,7 +22,7 @@ jobs:
     with:
       runner: '["ubuntu-latest"]'
       sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
-      repository: strg-at/gh-actions-demo
+      repository: jazzlyn/gh-actions-demo
       dispatch-event: test-event
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
