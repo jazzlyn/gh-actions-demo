@@ -1,30 +1,56 @@
 ---
-name: dispatch
+  name: dispatch
 
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
-    tags:
-      - "!**"
+  on:
+    workflow_dispatch:
+    push:
+      branches:
+        - main
+      tags:
+        - "v*.*.*-rc*"
+        - "v*.*.*"
 
-jobs:
-  docker-build-push:
-    if: ${{ startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/hotfix/') }}
-    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.4.0"
-    with:
-      runner: '["ubuntu-latest"]'
+  jobs:
+    docker-build-push:
+      uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.4.0"
+      with:
+        runner: '["ubuntu-latest"]'
 
-  repo-dispatch:
-    if: ${{ startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/hotfix/') }}
-    needs: [docker-build-push]
-    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
-    with:
-      runner: '["ubuntu-latest"]'
-      sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
-      repository: jazzlyn/gh-actions-demo
-      dispatch-event: test-event
-    secrets:
-      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+    integration-dispatch:
+      if: ${{ startsWith(github.ref, 'refs/heads/main') && !contains(github.ref, 'refs/tags/') }}
+      needs: [docker-build-push]
+      uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
+      with:
+        runner: '["ubuntu-latest"]'
+        sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
+        repository: jazzlyn/gh-actions-demo
+        dispatch-event: test-event
+      secrets:
+        github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+        github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
+    staging-dispatch:
+      if: ${{ (startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/hotfix/')) && contains(github.ref, 'refs/tags/v*.*.*-rc*') }}
+      needs: [docker-build-push]
+      uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
+      with:
+        runner: '["ubuntu-latest"]'
+        sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
+        repository: jazzlyn/gh-actions-demo
+        dispatch-event: test-event
+      secrets:
+        github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+        github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
+    production-dispatch:
+      if: ${{ contains(github.ref, 'refs/tags/v*.*.*') }}
+      needs: [docker-build-push]
+      uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
+      with:
+        runner: '["ubuntu-latest"]'
+        sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
+        repository: jazzlyn/gh-actions-demo
+        dispatch-event: test-event
+      secrets:
+        github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+        github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
