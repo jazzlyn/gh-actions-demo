@@ -24,7 +24,6 @@
           run: echo '${{ toJSON(github) }}'
 
     integration-dispatch:
-      name: integration-dispatch
       if: ${{ github.ref == 'refs/heads/main' }}
       needs: [docker-build-push]
       uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
@@ -38,7 +37,6 @@
         github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
     staging-dispatch:
-      name: staging-dispatch
       if: ${{ startsWith(github.ref, 'refs/heads/release/') && contains(github.ref, 'refs/tags/v*.*.*-rc*') }}
       needs: [docker-build-push]
       uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
@@ -52,7 +50,6 @@
         github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
     production-dispatch:
-      name: production-dispatch
       if: ${{ startsWith(github.ref, 'refs/heads/release/') && contains(github.ref, 'refs/tags/v*.*.*') }}
       needs: [docker-build-push]
       uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
