@@ -1,14 +1,57 @@
 ---
-name: tag and dispatch
+name: build and dispatch
 
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
     tags:
+      - "v*.*.*-rc*"
       - "v*.*.*"
 
 jobs:
+  docker-build-push:
+    if: ${{ (github.ref == 'refs/heads/main') || (startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc')) }}
+    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.4.0"
+    with:
+      runner: '["ubuntu-latest"]'
+
+  dump_contexts_to_log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        id: github_context_step
+        run: echo '${{ toJSON(github) }}'
+
+  integration-dispatch:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs: [docker-build-push]
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
+    with:
+      runner: '["ubuntu-latest"]'
+      sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
+      repository: jazzlyn/gh-actions-demo
+      dispatch-event: test-event
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
+  staging-dispatch:
+    if: ${{ startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc') && (startsWith(github.event.base_ref, 'refs/heads/release/')) }}
+    needs: [docker-build-push]
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
+    with:
+      runner: '["ubuntu-latest"]'
+      sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
+      repository: jazzlyn/gh-actions-demo
+      dispatch-event: test-event
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
   tag-image-github:
+    if: ${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-rc') && startsWith(github.event.base_ref, 'refs/heads/release/') }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -37,16 +80,8 @@ jobs:
           target: ${{ github.sha }}
           tags: ${{  github.ref_name }}
 
-
-  dump_contexts_to_log:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Dump GitHub context
-        id: github_context_step
-        run: echo '${{ toJSON(github) }}'
-
   production-dispatch:
-    if: ${{ startsWith(github.event.base_ref, 'refs/heads/release/') }}
+    if: ${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-rc') && startsWith(github.event.base_ref, 'refs/heads/release/') }}
     needs: [tag-image-github]
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
     with:
