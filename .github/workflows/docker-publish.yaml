@@ -3,16 +3,54 @@ name: build and push docker image
 
 on:
   workflow_dispatch:
-    inputs:
-      context:
-        description: "app folder with Dockerfile"
-        required: true
-        type: string
+  push:
+    branches:
+      - main
+    tags:
+      - "v*.*.*-rc*"
+      - "v*.*.*"
 
 jobs:
   docker-build-push:
-    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.3.0"
+    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.4.0"
+    with:
+        runner: '["ubuntu-latest"]'
+
+  integration-dispatch:
+    if: ${{ !contains(github.ref, 'refs/tags/') }}
+    needs: [docker-build-push]
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
     with:
       runner: '["ubuntu-latest"]'
-      image: ${{ inputs.context }}
-      context: ${{ inputs.context }}
+      sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
+      repository: jazzlyn/gh-actions-demo
+      dispatch-event: integration-dispatch
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
+  staging-dispatch:
+    if: ${{ startsWith(github.ref, 'refs/heads/release/') && contains(github.ref, 'refs/tags/v*.*.*-rc*') }}
+    needs: [docker-build-push]
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
+    with:
+      runner: '["ubuntu-latest"]'
+      sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
+      repository: jazzlyn/gh-actions-demo
+      dispatch-event: staging-dispatch
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
+  production-dispatch:
+    if: ${{ startsWith(github.ref, 'refs/heads/release/') && contains(github.ref, 'refs/tags/v*.*.*') }}
+    needs: [docker-build-push]
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
+    with:
+      runner: '["ubuntu-latest"]'
+      sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
+      repository: jazzlyn/gh-actions-demo
+      dispatch-event: production-dispatch
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
