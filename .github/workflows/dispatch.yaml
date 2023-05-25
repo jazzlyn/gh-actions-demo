@@ -24,7 +24,7 @@
           run: echo '${{ toJSON(github) }}'
 
     integration-dispatch:
-      if: ${{ github.ref == 'refs/heads/main' }}
+      if: ${{ !contains(github.ref, 'refs/tags/') }}
       needs: [docker-build-push]
       uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
       with:
