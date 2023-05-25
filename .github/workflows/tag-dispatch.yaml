@@ -1,0 +1,59 @@
+---
+name: tag and dispatch
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  tag-image-github:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+
+    steps:
+      # https://github.com/marketplace/actions/checkout
+      - name: checkout repository
+        uses: actions/checkout@v3.5.0
+
+      # https://github.com/marketplace/actions/docker-login
+      - name: log into registry
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # https://github.com/marketplace/actions/docker-registry-tag
+      - name: tag image
+        uses: shrink/actions-docker-registry-tag@v3.0.0
+        with:
+          registry: ghcr.io
+          repository: ${{ github.repository }}
+          target: ${{ github.sha }}
+          tags: ${{  github.ref_name }}
+
+
+  dump_contexts_to_log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        id: github_context_step
+        run: echo '${{ toJSON(github) }}'
+
+  production-dispatch:
+    if: ${{ startsWith(github.event.base_ref, 'refs/heads/release/') }}
+    needs: [tag-image-github]
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
+    with:
+      runner: '["ubuntu-latest"]'
+      sha: ${{  github.ref_name }}
+      repository: jazzlyn/gh-actions-demo
+      dispatch-event: test-event
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
