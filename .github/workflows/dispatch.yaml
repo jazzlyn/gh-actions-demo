@@ -37,7 +37,7 @@
         github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
     staging-dispatch:
-      if: ${{ startsWith(github.event.base_ref, 'refs/heads/release/') && github.ref == 'refs/tags/v*.*.*-rc*' }}
+      if: ${{ (github.ref == 'refs/tags/v*.*.*-rc*') && (startsWith(github.event.base_ref, 'refs/heads/release/')) }}
       needs: [docker-build-push]
       uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
       with:
