@@ -54,3 +54,16 @@
       secrets:
         github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
         github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
+    finish:
+      if: failure()
+      needs:
+        - integration-dispatch
+        - staging-dispatch
+        - production-dispatch
+      runs-on: ubuntu-latest
+      steps:
+        - name: finish
+          run: |
+            echo "no dispatch done!"
+            exit 1
