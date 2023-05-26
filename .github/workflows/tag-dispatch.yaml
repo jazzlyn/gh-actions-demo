@@ -31,23 +31,17 @@ jobs:
   docker-build-push:
     needs: [environment]
     if: ${{ needs.environment.outputs.target == 'integration' || needs.environment.outputs.target == 'staging' }}
-    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.4.0"
+    name: ""
+    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@feature/GC-1078-setup-multi-environment-ci"
     with:
       runner: '["ubuntu-latest"]'
-      #subpath: ${{ needs.environment.outputs.target }}/test-app
+      subpath: ${{ needs.environment.outputs.target }}/test-app
 
-  dump_contexts_to_log:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Dump GitHub context
-        id: github_context_step
-        run: echo '${{ toJSON(github) }}'
-
-  dispatch:
+  integration-staging-dispatch:
     needs: [environment, docker-build-push]
     if: ${{ needs.environment.outputs.target == 'integration' || needs.environment.outputs.target == 'staging' }}
     name: ${{ needs.environment.outputs.target }}
-    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@feature/GC-1078-setup-multi-environment-ci"
     with:
       runner: '["ubuntu-latest"]'
       sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
@@ -60,39 +54,17 @@ jobs:
   tag-image-github:
     needs: [environment]
     if: ${{ needs.environment.outputs.target == 'production' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-      packages: write
-
-    steps:
-      # https://github.com/marketplace/actions/checkout
-      - name: checkout repository
-        uses: actions/checkout@v3.5.0
-
-      # https://github.com/marketplace/actions/docker-login
-      - name: log into registry
-        uses: docker/login-action@v2.1.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      # https://github.com/marketplace/actions/docker-registry-tag
-      - name: tag image
-        uses: shrink/actions-docker-registry-tag@v3.0.0
-        with:
-          registry: ghcr.io
-          repository: ${{ github.repository }}/${{ github.event.repository.name }}
-          target: ${{ github.sha }}
-          tags: ${{  github.ref_name }}
+    name: "tag image"
+    uses: "strg-at/github-workflows/.github/workflows/tag-image-github.yaml@feature/GC-1078-setup-multi-environment-ci"
+    with:
+      runner: '["ubuntu-latest"]'
+      subpath: ${{ needs.environment.outputs.target }}/test-app
 
   production-dispatch:
     name: production
     if: ${{ needs.environment.outputs.target == 'production' }}
     needs: [environment, tag-image-github]
-    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@feature/GC-1078-setup-multi-environment-ci"
     with:
       runner: '["ubuntu-latest"]'
       sha: ${{  github.ref_name }}
