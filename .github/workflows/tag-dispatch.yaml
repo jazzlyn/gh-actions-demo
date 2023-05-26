@@ -10,12 +10,28 @@ on:
       - "v*.*.*-rc*"
       - "v*.*.*"
 
+env:
+  ENVIRONMENT: "integration"
+
 jobs:
+  environment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: set env to staging
+        if: ${{ startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc') && (startsWith(github.event.base_ref, 'refs/heads/release/')) }}
+        run: |
+          echo "ENVIRONMENT=staging" >> $GITHUB_ENV
+      - name: set env to production
+        if: ${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-rc') && startsWith(github.event.base_ref, 'refs/heads/release/') }}
+        run: |
+          echo "ENVIRONMENT=production" >> $GITHUB_ENV
+
   docker-build-push:
-    if: ${{ (github.ref == 'refs/heads/main') || (startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc')) }}
+    if: ${{ github.env.ENVIRONMENT == 'integration' || github.env.ENVIRONMENT == 'staging' }}
     uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.4.0"
     with:
       runner: '["ubuntu-latest"]'
+      #subpath: ${{ github.env.ENVIRONMENT }}/test-app
 
   dump_contexts_to_log:
     runs-on: ubuntu-latest
@@ -24,34 +40,21 @@ jobs:
         id: github_context_step
         run: echo '${{ toJSON(github) }}'
 
-  integration-dispatch:
-    if: ${{ github.ref == 'refs/heads/main' }}
+  dispatch:
+    if: ${{ github.env.ENVIRONMENT == 'integration' || github.env.ENVIRONMENT == 'staging' }}
     needs: [docker-build-push]
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
     with:
       runner: '["ubuntu-latest"]'
       sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
       repository: jazzlyn/gh-actions-demo
-      dispatch-event: test-event
-    secrets:
-      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
-
-  staging-dispatch:
-    if: ${{ startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc') && (startsWith(github.event.base_ref, 'refs/heads/release/')) }}
-    needs: [docker-build-push]
-    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
-    with:
-      runner: '["ubuntu-latest"]'
-      sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
-      repository: jazzlyn/gh-actions-demo
-      dispatch-event: test-event
+      dispatch-event: ${{ github.env.ENVIRONMENT }}-test-app
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
   tag-image-github:
-    if: ${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-rc') && startsWith(github.event.base_ref, 'refs/heads/release/') }}
+    if: ${{ github.env.ENVIRONMENT == 'production' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -81,14 +84,14 @@ jobs:
           tags: ${{  github.ref_name }}
 
   production-dispatch:
-    if: ${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-rc') && startsWith(github.event.base_ref, 'refs/heads/release/') }}
+    if: ${{ github.env.ENVIRONMENT == 'production' }}
     needs: [tag-image-github]
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
     with:
       runner: '["ubuntu-latest"]'
       sha: ${{  github.ref_name }}
       repository: jazzlyn/gh-actions-demo
-      dispatch-event: test-event
+      dispatch-event: ${{ github.env.ENVIRONMENT }}-test-app
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
