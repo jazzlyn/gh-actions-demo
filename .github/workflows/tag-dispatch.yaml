@@ -40,7 +40,7 @@ jobs:
   integration-staging-dispatch:
     needs: [environment, docker-build-push]
     if: ${{ needs.environment.outputs.target == 'integration' || needs.environment.outputs.target == 'staging' }}
-    name: integration-staging
+    name: ${{ needs.environment.outputs.target }}
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@feature/GC-1078-setup-multi-environment-ci"
     with:
       runner: '["ubuntu-latest"]'
