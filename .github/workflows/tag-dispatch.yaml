@@ -58,8 +58,9 @@ jobs:
     uses: "strg-at/github-workflows/.github/workflows/tag-image-github.yaml@feature/GC-1078-setup-multi-environment-ci"
     with:
       runner: '["ubuntu-latest"]'
-      source-path: ${{ github.repository }}/staging/test-app
-      target-path: ${{ github.repository }}/${{ needs.environment.outputs.target }}/test-app
+      repository: ${{ github.repository }}
+      source-path: staging/test-app
+      target-path: ${{ needs.environment.outputs.target }}/test-app
 
   production-dispatch:
     name: production
