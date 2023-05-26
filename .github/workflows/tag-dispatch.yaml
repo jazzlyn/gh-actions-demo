@@ -16,8 +16,11 @@ env:
 jobs:
   environment:
     runs-on: ubuntu-latest
+    outputs:
+      target: ${{ env.ENVIRONMENT }}
     steps:
       - name: set env to staging
+
         if: ${{ startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc') && (startsWith(github.event.base_ref, 'refs/heads/release/')) }}
         run: |
           echo "ENVIRONMENT=staging" >> $GITHUB_ENV
@@ -28,11 +31,11 @@ jobs:
 
   docker-build-push:
     needs: [environment]
-    if: ${{ github.env.ENVIRONMENT == 'integration' || github.env.ENVIRONMENT == 'staging' }}
+    if: ${{ needs.environment.outputs.target == 'integration' || needs.environment.outputs.target == 'staging' }}
     uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.4.0"
     with:
       runner: '["ubuntu-latest"]'
-      #subpath: ${{ github.env.ENVIRONMENT }}/test-app
+      #subpath: ${{ needs.environment.outputs.target }}/test-app
 
   dump_contexts_to_log:
     runs-on: ubuntu-latest
@@ -42,20 +45,21 @@ jobs:
         run: echo '${{ toJSON(github) }}'
 
   dispatch:
-    if: ${{ github.env.ENVIRONMENT == 'integration' || github.env.ENVIRONMENT == 'staging' }}
-    needs: [docker-build-push]
+    needs: [environment, docker-build-push]
+    if: ${{ needs.environment.outputs.target == 'integration' || needs.environment.outputs.target == 'staging' }}
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
     with:
       runner: '["ubuntu-latest"]'
       sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
       repository: jazzlyn/gh-actions-demo
-      dispatch-event: ${{ github.env.ENVIRONMENT }}-test-app
+      dispatch-event: ${{ needs.environment.outputs.target }}-test-app
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
   tag-image-github:
-    if: ${{ github.env.ENVIRONMENT == 'production' }}
+    needs: [environment]
+    if: ${{ needs.environment.outputs.target == 'production' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -85,14 +89,14 @@ jobs:
           tags: ${{  github.ref_name }}
 
   production-dispatch:
-    if: ${{ github.env.ENVIRONMENT == 'production' }}
-    needs: [tag-image-github]
+    if: ${{ needs.environment.outputs.target == 'production' }}
+    needs: [environment, tag-image-github]
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
     with:
       runner: '["ubuntu-latest"]'
       sha: ${{  github.ref_name }}
       repository: jazzlyn/gh-actions-demo
-      dispatch-event: ${{ github.env.ENVIRONMENT }}-test-app
+      dispatch-event: ${{ needs.environment.outputs.target }}-test-app
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
