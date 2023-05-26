@@ -1,0 +1,76 @@
+---
+name: multi environment deployment
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*.*.*-rc*"
+      - "v*.*.*"
+
+env:
+  ENVIRONMENT: "integration"
+
+jobs:
+  environment:
+    runs-on: ubuntu-latest
+    outputs:
+      target: ${{ env.ENVIRONMENT }}
+    steps:
+      - name: set env to staging
+        if: ${{ startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc') && (startsWith(github.event.base_ref, 'refs/heads/release/')) }}
+        run: |
+          echo "ENVIRONMENT=staging" >> $GITHUB_ENV
+      - name: set env to production
+        if: ${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-rc') && startsWith(github.event.base_ref, 'refs/heads/release/') }}
+        run: |
+          echo "ENVIRONMENT=production" >> $GITHUB_ENV
+
+  docker-build-push:
+    needs: [environment]
+    if: ${{ needs.environment.outputs.target == 'integration' || needs.environment.outputs.target == 'staging' }}
+    name: ""
+    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@feature/GC-1078-setup-multi-environment-ci"
+    with:
+      runner: '["ubuntu-latest"]'
+      subpath: ${{ needs.environment.outputs.target }}/test-app
+
+  integration-staging-dispatch:
+    needs: [environment, docker-build-push]
+    if: ${{ needs.environment.outputs.target == 'integration' || needs.environment.outputs.target == 'staging' }}
+    name: integration-staging
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@feature/GC-1078-setup-multi-environment-ci"
+    with:
+      runner: '["ubuntu-latest"]'
+      sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
+      repository: jazzlyn/gh-actions-demo
+      dispatch-event: ${{ needs.environment.outputs.target }}-test-app
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
+  tag-image-github:
+    needs: [environment]
+    if: ${{ needs.environment.outputs.target == 'production' }}
+    name: "retag image"
+    uses: "strg-at/github-workflows/.github/workflows/tag-image-github.yaml@feature/GC-1078-setup-multi-environment-ci"
+    with:
+      runner: '["ubuntu-latest"]'
+      source-path: ${{ github.repository }}/staging/test-app
+      target-path: ${{ github.repository }}/${{ needs.environment.outputs.target }}/test-app
+
+  production-dispatch:
+    name: production
+    if: ${{ needs.environment.outputs.target == 'production' }}
+    needs: [environment, tag-image-github]
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@feature/GC-1078-setup-multi-environment-ci"
+    with:
+      runner: '["ubuntu-latest"]'
+      sha: ${{  github.ref_name }}
+      repository: jazzlyn/gh-actions-demo
+      dispatch-event: ${{ needs.environment.outputs.target }}-test-app
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
