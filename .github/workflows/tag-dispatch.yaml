@@ -46,6 +46,7 @@ jobs:
   dispatch:
     needs: [environment, docker-build-push]
     if: ${{ needs.environment.outputs.target == 'integration' || needs.environment.outputs.target == 'staging' }}
+    name: ${{ needs.environment.outputs.target }}
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
     with:
       runner: '["ubuntu-latest"]'
@@ -88,7 +89,7 @@ jobs:
           tags: ${{  github.ref_name }}
 
   production-dispatch:
-    name: test
+    name: production
     if: ${{ needs.environment.outputs.target == 'production' }}
     needs: [environment, tag-image-github]
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.4.0"
