@@ -1,5 +1,5 @@
 ---
-name: build and dispatch
+name: multi environment deployment
 
 on:
   workflow_dispatch:
@@ -75,9 +75,7 @@ jobs:
         run: |
           docker pull ghcr.io/${{ github.repository }}/staging/test-app:${{ github.sha }}
           docker tag ghcr.io/${{ github.repository }}/staging/test-app:${{ github.sha }} ghcr.io/${{ needs.environment.outputs.target }}/test-app:${{ github.ref_name }}
-          docker push ghcr.io/${{ needs.environment.outputs.target }}/test-app:${{ github.ref_name }}
-
-        #docker buildx imagetools create ghcr.io/${{ github.repository }}/staging/test-app:${{ github.sha }} --tag ghcr.io/${{ github.repository }}/${{ needs.environment.outputs.target }}/test-app:${{ github.ref_name }}
+          docker push ghcr.io/${{ github.repository }}/${{ needs.environment.outputs.target }}/test-app:${{ github.ref_name }}
 
   production-dispatch:
     name: production
