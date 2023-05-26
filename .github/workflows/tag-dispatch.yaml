@@ -73,7 +73,7 @@ jobs:
 
       - name: retag image
         run: |
-          docker buildx imagetools create ghcr.io/staging/test-app:${{ github.sha }} --tag ghcr.io/${{ needs.environment.outputs.target }}/test-app:${{ github.ref_name }}
+          docker buildx imagetools create ghcr.io/${{ github.repository }}/staging/test-app:${{ github.sha }} --tag ghcr.io/${{ github.repository }}/${{ needs.environment.outputs.target }}/test-app:${{ github.ref_name }}
 
   production-dispatch:
     name: production
