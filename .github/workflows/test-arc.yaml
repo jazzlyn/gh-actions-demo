@@ -1,0 +1,21 @@
+---
+  name: test arc
+
+  on:
+    workflow_dispatch:
+
+  jobs:
+    docker-build:
+      runs-on:
+        - self-hosted
+        - home-infra
+      permissions:
+        contents: read
+      steps:
+        # https://github.com/marketplace/actions/checkout
+        - name: checkout repository
+          uses: actions/checkout@v3.5.0
+
+        - name: testing
+          run: |
+            echo "hello world"
