@@ -1,16 +1,29 @@
 ---
-  name: build and push docker image
+name: build and push docker image
 
-  on:
-    workflow_dispatch:
+on:
+  workflow_dispatch:
 
-  jobs:
-    docker-build-push:
-      uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@feature/GC-1078-setup-multi-environment-ci"
-      with:
-        runner: '["ubuntu-latest"]'
-        subpath: nginx
-        tags: |
-          type=sha
-          type=sha,prefix={{date 'YYMMDD-HHmmss'}}-
-          type=ref,event=tag,suffix=-{{ sha }}
+jobs:
+  docker-build-push:
+    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@feature/GC-1078-setup-multi-environment-ci"
+    with:
+      runner: '["ubuntu-latest"]'
+      subpath: nginx
+      tags: |
+        type=sha
+        type=sha,prefix={{date 'YYMMDD-HHmmss'}}-
+        type=ref,event=tag,suffix=-{{ sha }}
+
+  repo-dispatch:
+    needs: [docker-build-push]
+    name: dispatch
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@feature/GC-1078-setup-multi-environment-ci"
+    with:
+      runner: '["ubuntu-latest"]'
+      sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).tags }}
+      repository: jazzlyn/gh-actions-demo
+      dispatch-event: dispatch-test-app
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
