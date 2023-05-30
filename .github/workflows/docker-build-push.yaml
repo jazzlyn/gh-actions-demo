@@ -20,7 +20,7 @@ jobs:
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@feature/GC-1078-setup-multi-environment-ci"
     with:
       runner: '["ubuntu-latest"]'
-      sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).tags }}
+      sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
       repository: jazzlyn/gh-actions-demo
       dispatch-event: dispatch-test-app
     secrets:
