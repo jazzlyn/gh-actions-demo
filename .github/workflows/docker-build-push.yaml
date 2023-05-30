@@ -3,19 +3,12 @@
 
   on:
     workflow_dispatch:
-      inputs:
-        file:
-          description: "app folder with Dockerfile"
-          required: false
-          type: string
 
   jobs:
     docker-build-push:
       uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@feature/GC-1078-setup-multi-environment-ci"
       with:
         runner: '["ubuntu-latest"]'
-        subpath: ${{ inputs.file }}
-        file: ${{ inputs.file }}
         tags: |
           type=sha
           type=sha,prefix={{date 'YYMMDD-HHmmss'}}-
