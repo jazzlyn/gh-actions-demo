@@ -1,0 +1,25 @@
+---
+name: tag update
+
+on:
+  repository_dispatch:
+    types: [dispatch-test-app]
+
+jobs:
+  dump_contexts_to_log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        id: github_context_step
+        run: echo '${{ toJSON(github) }}'
+  tag-update:
+    name: update
+    uses: "strg-at/github-workflows/.github/workflows/tag-update-helm-image.yaml@feature/GC-1078-setup-multi-environment-ci"
+    with:
+      runner: '["ubuntu-latest"]'
+      tag: ${{ github.event.client_payload.sha }}
+      file-path: test.yaml
+      create-pr: false
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
