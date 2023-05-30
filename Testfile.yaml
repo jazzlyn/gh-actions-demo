@@ -3,3 +3,8 @@ do:
     stuff
       more stuff
         more more stuff
+spec:
+  values:
+    image:
+      repository: testrepo
+      tag: abc

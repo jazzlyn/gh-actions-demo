@@ -13,12 +13,12 @@ jobs:
         id: github_context_step
         run: echo '${{ toJSON(github) }}'
   tag-update:
-    name: update
+    if: ${{ github.event.action == 'dispatch-test-app' }}
     uses: "strg-at/github-workflows/.github/workflows/tag-update-helm-image.yaml@feature/GC-1078-setup-multi-environment-ci"
     with:
       runner: '["ubuntu-latest"]'
       tag: ${{ github.event.client_payload.sha }}
-      file-path: test.yaml
+      file-path: Testfile.yaml
       create-pr: false
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
