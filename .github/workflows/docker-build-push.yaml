@@ -9,6 +9,8 @@
       uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@feature/GC-1078-setup-multi-environment-ci"
       with:
         runner: '["ubuntu-latest"]'
+        subpath: app-one
+        file: app-one/Dockerfile
         tags: |
           type=sha
           type=sha,prefix={{date 'YYMMDD-HHmmss'}}-
