@@ -3,6 +3,9 @@ name: build and push docker image
 
 on:
   workflow_dispatch:
+  push:
+    tags:
+      - v*.*.*
 
 jobs:
   docker-build-push:
@@ -11,6 +14,7 @@ jobs:
       runner: '["ubuntu-latest"]'
       subpath: nginx
       tags: |
+        type=ref,event=tag,priority=300
         type=sha,prefix={{date 'YYMMDD-HHmmss'}}-,priority=200
         ${{ github.sha }}, priority=100
 
@@ -20,7 +24,7 @@ jobs:
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@feature/GC-1078-setup-multi-environment-ci"
     with:
       runner: '["ubuntu-latest"]'
-      sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
+      tag: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
       repository: jazzlyn/gh-actions-demo
       dispatch-event: dispatch-test-app
     secrets:
