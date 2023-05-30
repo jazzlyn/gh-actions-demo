@@ -1,10 +1,6 @@
-do:
-  some
-    stuff
-      more stuff
-        more more stuff
+do: some stuff more stuff more more stuff
 spec:
   values:
     image:
       repository: testrepo
-      tag: abc
+      tag: 230530-200236-75a6c45
