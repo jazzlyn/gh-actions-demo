@@ -11,8 +11,8 @@ jobs:
       runner: '["ubuntu-latest"]'
       subpath: nginx
       tags: |
-        type=sha,prefix={{date 'YYMMDD-HHmmss'}}-
-        ${{ github.sha }}
+        type=sha,prefix={{date 'YYMMDD-HHmmss'}}-,priority=200
+        ${{ github.sha }}, priority=100
 
   repo-dispatch:
     needs: [docker-build-push]
