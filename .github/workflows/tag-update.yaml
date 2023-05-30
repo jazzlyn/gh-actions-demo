@@ -19,7 +19,7 @@ jobs:
       runner: '["ubuntu-latest"]'
       tag: ${{ github.event.client_payload.sha }}
       file-path: Testfile.yaml
-      create-pr: 'false'
+      create-pr: false
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
