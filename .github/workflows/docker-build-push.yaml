@@ -11,7 +11,8 @@ jobs:
       runner: '["ubuntu-latest"]'
       subpath: nginx
       tags: |
-        type=sha
+        ${{ github.sha }}
+        type=sha,format=long
         type=sha,prefix={{date 'YYMMDD-HHmmss'}}-
         type=ref,event=tag,suffix=-{{ sha }}
 
