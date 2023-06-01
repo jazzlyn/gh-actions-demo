@@ -18,6 +18,7 @@ jobs:
           echo "hello world" > hello.txt
 
   docker-build-push:
+    needs: [file]
     uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.6.0"
     with:
       runner: '["ubuntu-latest"]'
@@ -28,6 +29,7 @@ jobs:
         ${{ github.sha }}, priority=100
 
   ls:
+    needs: [file, docker-build-push]
     runs-on: ubuntu-latest
     permissions:
       contents: read
