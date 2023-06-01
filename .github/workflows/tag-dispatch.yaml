@@ -26,7 +26,7 @@ jobs:
     needs: [environment]
     if: ${{ needs.environment.outputs.target == 'integration' || needs.environment.outputs.target == 'staging' }}
     name: ""
-    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@feature/GC-1078-setup-multi-environment-ci"
+    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.6.0"
     with:
       runner: '["ubuntu-latest"]'
       subpath: ${{ needs.environment.outputs.target }}/test-app
@@ -35,10 +35,10 @@ jobs:
     needs: [environment, docker-build-push]
     if: ${{ needs.environment.outputs.target == 'integration' || needs.environment.outputs.target == 'staging' }}
     name: ${{ needs.environment.outputs.target }}
-    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@feature/GC-1078-setup-multi-environment-ci"
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.6.0"
     with:
       runner: '["ubuntu-latest"]'
-      sha: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
+      tag: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
       repository: jazzlyn/gh-actions-demo
       dispatch-event: ${{ needs.environment.outputs.target }}-test-app
     secrets:
@@ -49,7 +49,7 @@ jobs:
     needs: [environment]
     if: ${{ needs.environment.outputs.target == 'production' }}
     name: "retag image"
-    uses: "strg-at/github-workflows/.github/workflows/tag-image-github.yaml@feature/GC-1078-setup-multi-environment-ci"
+    uses: "strg-at/github-workflows/.github/workflows/tag-image-github.yaml@v0.6.0"
     with:
       runner: '["ubuntu-latest"]'
       repository: ${{ github.repository }}
@@ -60,10 +60,10 @@ jobs:
     name: production
     if: ${{ needs.environment.outputs.target == 'production' }}
     needs: [environment, tag-image-github]
-    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@feature/GC-1078-setup-multi-environment-ci"
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.6.0"
     with:
       runner: '["ubuntu-latest"]'
-      sha: ${{  github.ref_name }}
+      tag: ${{  github.ref_name }}
       repository: jazzlyn/gh-actions-demo
       dispatch-event: ${{ needs.environment.outputs.target }}-test-app
     secrets:

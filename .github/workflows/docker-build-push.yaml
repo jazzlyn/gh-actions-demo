@@ -8,8 +8,17 @@ on:
       - v*.*.*
 
 jobs:
+  file:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: create file
+        run: |
+          echo "hello world" > hello.txt
+
   docker-build-push:
-    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@feature/GC-1078-setup-multi-environment-ci"
+    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.6.0"
     with:
       runner: '["ubuntu-latest"]'
       subpath: nginx
@@ -18,15 +27,11 @@ jobs:
         type=sha,prefix={{date 'YYMMDD-HHmmss'}}-,priority=200
         ${{ github.sha }}, priority=100
 
-  repo-dispatch:
-    needs: [docker-build-push]
-    name: dispatch
-    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@feature/GC-1078-setup-multi-environment-ci"
-    with:
-      runner: '["ubuntu-latest"]'
-      tag: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
-      repository: jazzlyn/gh-actions-demo
-      dispatch-event: dispatch-test-app
-    secrets:
-      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+  ls:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: ls
+        run: |
+          ls -la
