@@ -1,28 +1,16 @@
 ---
-  name: test-php
+name: test-php
 
-  on:
-    workflow_dispatch:
+on:
+  workflow_dispatch:
 
-  jobs:
-    test-php:
-      name: php
-      runs-on: ubuntu-latest
-      steps:
-        # https://github.com/marketplace/actions/checkout
-        - name: checkout
-          uses: actions/checkout@v3.5.0
-
-        # https://github.com/marketplace/actions/check-php-syntax-errors
-        - name: php-lint
-          uses: overtrue/phplint@6.0.0
-
-        # https://github.com/marketplace/actions/oskar-php-cs-fixer
-        - name: php-cs-fixer
-          uses: docker://oskarstark/php-cs-fixer-ga:3.17.0
-
-        # https://github.com/marketplace/actions/oskar-phpstan
-        - name: php-stan
-          uses: docker://oskarstark/phpstan-ga:1.8.0
-          with:
-            args: analyse /src
+jobs:
+  test-php:
+    name: test
+    uses: "strg-at/github-workflows/.github/workflows/test-php.yaml@v0.7.0"
+    with:
+      runner: '["ubuntu-latest"]'
+      php-lint: true
+      php-cs-fixer: true
+      php-stan: true
+      php-stan-cmd: analyse src/
