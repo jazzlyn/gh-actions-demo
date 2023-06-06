@@ -1,7 +1,13 @@
 <?php
 
+$finder = PhpCsFixer\Finder::create()
+  ->in(__DIR__)
+  ->exclude('var')
+;
+
 $config = new PhpCsFixer\Config();
-return $config
-    ->setIndent("\t")
-    ->setLineEnding("\r\n")
+
+return $config->setRules([
+])
+  ->setFinder($finder)
 ;
