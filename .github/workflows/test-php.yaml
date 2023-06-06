@@ -1,0 +1,16 @@
+---
+  name: test-php
+
+  on:
+    workflow_dispatch:
+
+  jobs:
+    test-php:
+      name: test and build
+      uses: "strg-at/github-workflows/.github/workflows/test-php.yaml@v0.7.0"
+      with:
+        runner: '["ubuntu-latest"]'
+        php-lint: true
+        php-cs-fixer: true
+        php-stan: true
+        php-stan-cmd: analyse src/
