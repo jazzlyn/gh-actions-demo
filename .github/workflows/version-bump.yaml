@@ -24,6 +24,13 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@v3.5.0
 
+      # https://github.com/marketplace/actions/setup-node-js-environment
+      - name: setup node.js
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
       # https://github.com/marketplace/actions/github-app-token
       - name: generate token
         id: generate-token
