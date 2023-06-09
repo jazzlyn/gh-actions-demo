@@ -45,7 +45,7 @@ jobs:
 
       - name: npm version bump
         env:
-          TOKEN: ${{ steps.generate-token.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           git config user.email "134550475+jazzlyn-bot[bot]@users.noreply.github.com"
           git config user.name "jazzlyn-bot[bot]"
