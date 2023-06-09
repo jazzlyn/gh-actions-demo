@@ -4,14 +4,14 @@ name: build docker image
 on:
   workflow_dispatch:
     inputs:
-      context:
-        description: "app folder with Dockerfile"
-        required: true
+      platforms:
+        description: "multi-platform images"
+        required: false
         type: string
 
 jobs:
   docker-build:
-    uses: "strg-at/github-workflows/.github/workflows/docker-build.yaml@v0.6.0"
+    uses: "strg-at/github-workflows/.github/workflows/docker-build.yaml@feature/INPRO-1618-multi-platform-images"
     with:
       runner: '["ubuntu-latest"]'
-      context: ${{ inputs.context }}
+      platforms: ${{ inputs.platforms }}
