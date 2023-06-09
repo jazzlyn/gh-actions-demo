@@ -24,12 +24,12 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@v3.5.0
 
-      # # https://github.com/marketplace/actions/setup-node-js-environment
-      # - name: setup node.js
-      #   uses: actions/setup-node@v3.6.0
-      #   with:
-      #     node-version-file: .nvmrc
-      #     cache: npm
+      # https://github.com/marketplace/actions/setup-node-js-environment
+      - name: setup node.js
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
 
       # https://github.com/marketplace/actions/github-app-token
       - name: generate token
@@ -44,14 +44,10 @@ jobs:
           private_key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
       - name: npm version bump
-        uses:  'phips28/gh-action-bump-version@master'
         env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-        with:
-          version-type: ${{ inputs.version }}
-          tag-prefix:  'v'
-          commit-message: 'release: {{ version }}'
-          minor-wording:  'minor'
-          major-wording:  'major'
-          patch-wording:  'patch'
-          rc-wording:     'alpha'
+          TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          git config user.email "134550475+jazzlyn-bot[bot]@users.noreply.github.com"
+          git config user.name "jazzlyn-bot[bot]"
+          npm version ${{ inputs.version }} -m 'release: v%s'
+          git push "https://${{ steps.generate-token.outputs.token }}@github.com/${{ github.repository }}" main --follow-tags
