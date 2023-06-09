@@ -1,8 +1,11 @@
 ---
-  name: test arc
+  name: test-arc
 
   on:
     workflow_dispatch:
+    push:
+      tags:
+        - '**'
 
   jobs:
     test-arc:
