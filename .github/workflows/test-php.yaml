@@ -13,4 +13,4 @@ jobs:
       php-lint: true
       php-cs-fixer: true
       php-stan: true
-      php-stan-cmd: analyse src/
+      php-stan-cmd: analyse test-php/

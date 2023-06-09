@@ -14,11 +14,11 @@ jobs:
       target: ${{ env.ENVIRONMENT }}
     steps:
       - name: set env to staging
-        if: ${{ startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc') && (startsWith(github.event.base_ref, 'refs/heads/release/')) }}
+        # if: ${{ startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc') && (startsWith(github.event.base_ref, 'refs/heads/release/')) }}
         run: |
           echo "ENVIRONMENT=staging" >> $GITHUB_ENV
       - name: set env to production
-        if: ${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-rc') && startsWith(github.event.base_ref, 'refs/heads/release/') }}
+        # if: ${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-rc') && startsWith(github.event.base_ref, 'refs/heads/release/') }}
         run: |
           echo "ENVIRONMENT=production" >> $GITHUB_ENV
 
@@ -29,7 +29,7 @@ jobs:
     uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.6.0"
     with:
       runner: '["ubuntu-latest"]'
-      subpath: ${{ needs.environment.outputs.target }}/test-app
+      subpath: test-app
 
   integration-staging-dispatch:
     needs: [environment, docker-build-push]
@@ -53,8 +53,8 @@ jobs:
     with:
       runner: '["ubuntu-latest"]'
       repository: ${{ github.repository }}
-      source-path: staging/test-app
-      target-path: ${{ needs.environment.outputs.target }}/test-app
+      source-path: test-app
+      target-path: test-app
 
   production-dispatch:
     name: production

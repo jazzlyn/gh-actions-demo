@@ -1,5 +1,5 @@
 ---
-name: tag update
+name: tag-update
 
 on:
   repository_dispatch:
@@ -18,7 +18,7 @@ jobs:
     with:
       runner: '["ubuntu-latest"]'
       tag: ${{ github.event.client_payload.tag }}
-      file-path: Testfile.yaml
+      file-path: tag-update/testfile.yaml
       create-pr: false
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
