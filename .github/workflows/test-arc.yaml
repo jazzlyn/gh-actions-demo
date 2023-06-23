@@ -4,10 +4,18 @@
   on:
     workflow_dispatch:
     push:
-      tags:
-        - '**'
+      branches:
+        main
+      # tags:
+      #   - '**'
 
   jobs:
+    dump_contexts_to_log:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Dump GitHub context
+          id: github_context_step
+          run: echo '${{ toJSON(github) }}'
     test-arc:
       runs-on:
         - self-hosted

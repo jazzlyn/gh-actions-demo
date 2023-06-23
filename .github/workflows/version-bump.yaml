@@ -50,4 +50,5 @@ jobs:
           git config user.email "134550475+jazzlyn-bot[bot]@users.noreply.github.com"
           git config user.name "jazzlyn-bot[bot]"
           npm version ${{ inputs.version }} -m 'release: v%s'
-          git push "https://${{ steps.generate-token.outputs.token }}@github.com/${{ github.repository }}" main --follow-tags
+          git push "https://${{ steps.generate-token.outputs.token }}@github.com/${{ github.repository }}" main"
+          git push --tags
