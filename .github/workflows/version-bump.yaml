@@ -59,9 +59,9 @@ jobs:
       # https://github.com/marketplace/actions/multi-file-commit
       - name: multi-file-commit
         uses: tyriis/multi-file-commit@v0.1.10
-        env:
-          TOKEN: ${{ steps.generate-token.outputs.token }}
+        # env:
+        #   TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
           ref: main
           token: ${{ steps.generate-token.outputs.token }}
-          message: 'release: ${{ steps.package-version.outputs.version }}'
+          message: 'release: v${{ steps.package-version.outputs.version }}'
