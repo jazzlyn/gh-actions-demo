@@ -63,20 +63,9 @@ jobs:
       # https://github.com/marketplace/actions/multi-file-commit
       - name: multi-file-commit
         id: multi-file-commit
-        uses: tyriis/multi-file-commit@v0.2.0
-        # env:
-        #   TOKEN: ${{ steps.generate-token.outputs.token }}
+        uses: tyriis/multi-file-commit@v0.3.11
         with:
-          ref: main
           token: ${{ steps.generate-token.outputs.token }}
+          ref: main
+          tag: v${{ steps.package-version.outputs.version }}
           message: 'release: v${{ steps.package-version.outputs.version }}'
-
-      - name: git tag
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-        run: |
-          gh api --method POST /repos/${{ github.repository }}/git/tags \
-            --field tag="v${{ steps.package-version.outputs.version }}" \
-            --field message="v${{ steps.package-version.outputs.version }}" \
-            --field object="${{ steps.multi-file-commit.outputs.sha }}" \
-            --field type="commit"
