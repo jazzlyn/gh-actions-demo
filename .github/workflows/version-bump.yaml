@@ -24,28 +24,12 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@v3.5.0
 
-      # https://github.com/marketplace/actions/install-gh-cli
-      - name: install github cli
-        uses: dev-hanz-ops/install-gh-cli-action@v0.1.0
-
       # https://github.com/marketplace/actions/setup-node-js-environment
       - name: setup node.js
         uses: actions/setup-node@v3.6.0
         with:
           node-version-file: .nvmrc
           cache: npm
-
-      # https://github.com/marketplace/actions/github-app-token
-      - name: generate token
-        id: generate-token
-        uses: tibdex/github-app-token@v1.8.0
-        env:
-          # https://github.com/tibdex/github-app-token/issues/54
-          # https://stackoverflow.com/questions/72104449/node-js-crypto-fails-to-sign-pem-key-string-from-file-with-error25066067dso-su
-          OPENSSL_CONF: /dev/null
-        with:
-          app_id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-          private_key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
       - name: npm version bump
         run: |
@@ -59,6 +43,25 @@ jobs:
           cmd: |
             echo "version=$(cat package.json | yq '.version' | tr -d '"')" >> $GITHUB_OUTPUT
 
+      # https://github.com/marketplace/actions/create-branch
+      - name: create branch
+        if: ${{ !startsWith(steps.package-version.outputs.version, '0.') }}
+        id: create-branch
+        uses: peterjgrainger/action-create-branch@v2.0.1
+        with:
+          branch: refs/heads/release/${{ steps.package-version.outputs.version }}
+
+      # https://github.com/marketplace/actions/github-app-token
+      - name: generate token
+        id: generate-token
+        uses: tibdex/github-app-token@v1.8.0
+        env:
+          # https://github.com/tibdex/github-app-token/issues/54
+          # https://stackoverflow.com/questions/72104449/node-js-crypto-fails-to-sign-pem-key-string-from-file-with-error25066067dso-su
+          OPENSSL_CONF: /dev/null
+        with:
+          app_id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+          private_key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
       # https://github.com/marketplace/actions/multi-file-commit
       - name: multi-file-commit
@@ -66,6 +69,6 @@ jobs:
         uses: tyriis/multi-file-commit@v0.3.11
         with:
           token: ${{ steps.generate-token.outputs.token }}
-          ref: main
-          tag: v${{ steps.package-version.outputs.version }}
-          message: 'release: v${{ steps.package-version.outputs.version }}'
+          ref: "${{ startsWith(steps.package-version.outputs.version, '0.') && 'main' || 'release/${{ steps.package-version.outputs.version }}' }}"
+          tag: ${{ steps.package-version.outputs.version }}
+          message: 'release: ${{ steps.package-version.outputs.version }}'

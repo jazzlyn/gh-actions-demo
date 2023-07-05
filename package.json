@@ -1,6 +1,6 @@
 {
   "name": "gh-actions-demo",
-  "version": "0.1.9",
+  "version": "2023.7.0",
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
