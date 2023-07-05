@@ -1,5 +1,5 @@
 ---
-name: version-bump
+name: npm version bump
 
 on:
   workflow_dispatch:
@@ -7,87 +7,19 @@ on:
       version:
         description: 'semantic version bump type (major minor patch)'
         required: true
-      release-branch:
-        description: 'commit branch'
-        required: false
-        default: main
-      branch-conditions:
-        description: 'conditions for branch'
-        required: false
 
-concurrency: # prevent concurrent releases
-  group: version-bump
+concurrency:
+  group: npm-version-bump
   cancel-in-progress: true
 
-env:
-  RELEASE_BRANCH: ${{ inputs.release-branch }}
-
 jobs:
-  version-bump:
-    runs-on:
-      - self-hosted
-      - home-infra
-    permissions:
-      contents: write
-    steps:
-      # https://github.com/marketplace/actions/checkout
-      - name: checkout repository
-        uses: actions/checkout@v3.5.0
-
-      # https://github.com/marketplace/actions/setup-node-js-environment
-      - name: setup node.js
-        uses: actions/setup-node@v3.6.0
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-
-      - name: npm version bump
-        run: |
-          npm version ${{ inputs.version }} --git-tag-version false
-
-      # https://github.com/marketplace/actions/setup-yq
-      - name: get package-version
-        id: package-version
-        uses: mikefarah/yq@v4.33.2
-        with:
-          cmd: |
-            echo "version=$(cat package.json | yq '.version' | tr -d '"')" >> ${GITHUB_OUTPUT}
-
-      - name: set branch
-        id: set-branch
-        if: ${{ inputs.branch-conditions }}
-        run:
-          echo "RELEASE_BRANCH=release/${{ steps.package-version.outputs.version }}" >> ${GITHUB_ENV}
-
-      # https://github.com/marketplace/actions/github-app-token
-      - name: generate token
-        id: generate-token
-        uses: tibdex/github-app-token@v1.8.0
-        env:
-          # https://github.com/tibdex/github-app-token/issues/54
-          # https://stackoverflow.com/questions/72104449/node-js-crypto-fails-to-sign-pem-key-string-from-file-with-error25066067dso-su
-          OPENSSL_CONF: /dev/null
-        with:
-          app_id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-          private_key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
-
-      # https://github.com/marketplace/actions/create-branch
-      - name: create branch
-        if: steps.set-branch.outcome == 'success'
-        id: create-branch
-        uses: peterjgrainger/action-create-branch@v2.3.0
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-        with:
-          branch: refs/heads/${{ env.RELEASE_BRANCH}}
-          sha: ${{ github.sha }}
-
-      # https://github.com/marketplace/actions/multi-file-commit
-      - name: multi-file-commit
-        id: multi-file-commit
-        uses: tyriis/multi-file-commit@v0.3.11
-        with:
-          token: ${{ steps.generate-token.outputs.token }}
-          ref: ${{ env.RELEASE_BRANCH }}
-          tag: ${{ steps.package-version.outputs.version }}
-          message: 'release: ${{ steps.package-version.outputs.version }}'
+  npm-version-bump:
+    name: "bump npm version"
+    uses: "strg-at/github-workflows/.github/workflows/npm-version-bump.yaml@feature/MM-227-setup-npm-version-bump"
+    with:
+      runner: '["ubuntu-latest"]'
+      version: ${{ inputs.version }}
+      branch-creation-condition: ${{ !contains(github.ref, 'v0.') }}
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
