@@ -68,11 +68,12 @@ jobs:
       - name: create branch
         if: ${{ !startsWith(steps.package-version.outputs.version, '0.') }}
         id: create-branch
-        uses: peterjgrainger/action-create-branch@v2.0.1
+        uses: peterjgrainger/action-create-branch@v2.3.0
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
           branch: refs/heads/release/${{ steps.package-version.outputs.version }}
+          sha: ${{ github.sha }}
 
       # https://github.com/marketplace/actions/multi-file-commit
       - name: multi-file-commit
