@@ -7,13 +7,20 @@ on:
       version:
         description: 'semantic version bump type (major minor patch)'
         required: true
+      release-branch:
+        description: 'commit branch'
+        required: false
+        default: main
+      branch-conditions:
+        description: 'conditions for branch'
+        required: false
 
 concurrency: # prevent concurrent releases
   group: version-bump
   cancel-in-progress: true
 
 env:
-  RELEASE_BRANCH: main
+  RELEASE_BRANCH: ${{ inputs.release-branch }}
 
 jobs:
   version-bump:
@@ -48,7 +55,7 @@ jobs:
 
       - name: set branch
         id: set-branch
-        if: ${{ !startsWith(steps.package-version.outputs.version, '0.') }}
+        if: ${{ inputs.branch-conditions }}
         run:
           echo "RELEASE_BRANCH=release/${{ steps.package-version.outputs.version }}" >> ${GITHUB_ENV}
 
@@ -66,13 +73,13 @@ jobs:
 
       # https://github.com/marketplace/actions/create-branch
       - name: create branch
-        if: ${{ !startsWith(steps.package-version.outputs.version, '0.') }}
+        if: steps.set-branch.outcome == 'success'
         id: create-branch
         uses: peterjgrainger/action-create-branch@v2.3.0
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
-          branch: refs/heads/release/${{ steps.package-version.outputs.version }}
+          branch: refs/heads/${{ env.RELEASE_BRANCH}}
           sha: ${{ github.sha }}
 
       # https://github.com/marketplace/actions/multi-file-commit
