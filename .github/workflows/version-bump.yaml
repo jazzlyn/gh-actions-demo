@@ -12,6 +12,9 @@ concurrency: # prevent concurrent releases
   group: version-bump
   cancel-in-progress: true
 
+env:
+  RELEASE_BRANCH: main
+
 jobs:
   version-bump:
     runs-on:
@@ -41,7 +44,13 @@ jobs:
         uses: mikefarah/yq@v4.33.2
         with:
           cmd: |
-            echo "version=$(cat package.json | yq '.version' | tr -d '"')" >> $GITHUB_OUTPUT
+            echo "version=$(cat package.json | yq '.version' | tr -d '"')" >> ${GITHUB_OUTPUT}
+
+      - name: set branch
+        id: set-branch
+        if: ${{ !startsWith(steps.package-version.outputs.version, '0.') }}
+        run:
+          echo "RELEASE_BRANCH=$(release/${{ steps.package-version.outputs.version }})" >> ${GITHUB_ENV}
 
       # https://github.com/marketplace/actions/github-app-token
       - name: generate token
@@ -71,6 +80,6 @@ jobs:
         uses: tyriis/multi-file-commit@v0.3.11
         with:
           token: ${{ steps.generate-token.outputs.token }}
-          ref: "${{ startsWith(steps.package-version.outputs.version, '0.') && 'main' || 'release/${{ steps.package-version.outputs.version }}' }}"
+          ref: ${{ env.RELEASE_BRANCH }}
           tag: ${{ steps.package-version.outputs.version }}
           message: 'release: ${{ steps.package-version.outputs.version }}'
