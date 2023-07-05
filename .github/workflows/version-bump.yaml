@@ -43,14 +43,6 @@ jobs:
           cmd: |
             echo "version=$(cat package.json | yq '.version' | tr -d '"')" >> $GITHUB_OUTPUT
 
-      # https://github.com/marketplace/actions/create-branch
-      - name: create branch
-        if: ${{ !startsWith(steps.package-version.outputs.version, '0.') }}
-        id: create-branch
-        uses: peterjgrainger/action-create-branch@v2.0.1
-        with:
-          branch: refs/heads/release/${{ steps.package-version.outputs.version }}
-
       # https://github.com/marketplace/actions/github-app-token
       - name: generate token
         id: generate-token
@@ -62,6 +54,16 @@ jobs:
         with:
           app_id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
           private_key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
+      # https://github.com/marketplace/actions/create-branch
+      - name: create branch
+        if: ${{ !startsWith(steps.package-version.outputs.version, '0.') }}
+        id: create-branch
+        uses: peterjgrainger/action-create-branch@v2.0.1
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+        with:
+          branch: refs/heads/release/${{ steps.package-version.outputs.version }}
 
       # https://github.com/marketplace/actions/multi-file-commit
       - name: multi-file-commit
