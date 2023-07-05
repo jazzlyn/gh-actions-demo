@@ -5,8 +5,13 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'semantic version bump type (major minor patch)'
+        description: 'semantic version bump type'
         required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          # - major
 
 concurrency:
   group: npm-version-bump
