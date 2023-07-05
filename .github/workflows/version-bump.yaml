@@ -50,7 +50,7 @@ jobs:
         id: set-branch
         if: ${{ !startsWith(steps.package-version.outputs.version, '0.') }}
         run:
-          echo "RELEASE_BRANCH=$(release/${{ steps.package-version.outputs.version }})" >> ${GITHUB_ENV}
+          echo "RELEASE_BRANCH=release/${{ steps.package-version.outputs.version }}" >> ${GITHUB_ENV}
 
       # https://github.com/marketplace/actions/github-app-token
       - name: generate token
