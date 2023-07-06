@@ -20,7 +20,7 @@ concurrency:
 jobs:
   npm-version-bump:
     name: ""
-    uses: "strg-at/github-workflows/.github/workflows/npm-version-bump.yaml@feature/MM-227-setup-npm-version-bump"
+    uses: "strg-at/github-workflows/.github/workflows/npm-version-bump.yaml@main"
     with:
       runner: '["ubuntu-latest"]'
       version: ${{ inputs.version }}
