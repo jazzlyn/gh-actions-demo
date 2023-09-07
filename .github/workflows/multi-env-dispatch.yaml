@@ -32,8 +32,10 @@
             echo "ENVIRONMENT=production" >> $GITHUB_ENV
 
     check-image-exists:
+      needs: [environment]
       name: check-image-exists
       continue-on-error: true
+      if: ${{ needs.environment.outputs.target == 'release-candidate' || needs.environment.outputs.target == 'production' }}
       runs-on: '["ubuntu-latest"]'
       permissions:
         contents: read
