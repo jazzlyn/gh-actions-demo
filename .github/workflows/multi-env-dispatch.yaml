@@ -1,107 +1,107 @@
 ---
-  name: build and push docker image
+name: multi-env-dispatch
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*.*.*"
 
-  on:
-    workflow_dispatch:
-    push:
-      branches:
-        - main
-      tags:
-        - "v*.*.*"
+env:
+  ENVIRONMENT: null
 
-  env:
-    ENVIRONMENT: null
+jobs:
+  environment:
+    runs-on: '["ubuntu-latest"]'
+    outputs:
+      target: ${{ env.ENVIRONMENT }}
+    steps:
+      - name: set env to integration
+        if: ${{ startsWith(github.ref, 'refs/heads/main') }}
+        run: |
+          echo "ENVIRONMENT=integration" >> $GITHUB_ENV
+      - name: set env to release-candidate
+        if: ${{ startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc') }}
+        run: |
+          echo "ENVIRONMENT=release-candidate" >> $GITHUB_ENV
+      - name: set env to production
+        if: ${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-rc') }}
+        run: |
+          echo "ENVIRONMENT=production" >> $GITHUB_ENV
 
-  jobs:
-    environment:
-      runs-on: '["ubuntu-latest"]'
-      outputs:
-        target: ${{ env.ENVIRONMENT }}
-      steps:
-        - name: set env to integration
-          if: ${{ startsWith(github.ref, 'refs/heads/main') }}
-          run: |
-            echo "ENVIRONMENT=integration" >> $GITHUB_ENV
-        - name: set env to release-candidate
-          if: ${{ startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc') }}
-          run: |
-            echo "ENVIRONMENT=release-candidate" >> $GITHUB_ENV
-        - name: set env to production
-          if: ${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-rc') }}
-          run: |
-            echo "ENVIRONMENT=production" >> $GITHUB_ENV
+  check-image-exists:
+    needs: [environment]
+    name: check-image-exists
+    continue-on-error: true
+    if: ${{ needs.environment.outputs.target == 'release-candidate' || needs.environment.outputs.target == 'production' }}
+    runs-on: '["ubuntu-latest"]'
+    permissions:
+      contents: read
+      packages: read
 
-    check-image-exists:
-      needs: [environment]
-      name: check-image-exists
-      continue-on-error: true
-      if: ${{ needs.environment.outputs.target == 'release-candidate' || needs.environment.outputs.target == 'production' }}
-      runs-on: '["ubuntu-latest"]'
-      permissions:
-        contents: read
-        id-token: write
-        packages: write
+    steps:
+      # https://github.com/marketplace/actions/docker-login
+      - name: log into registry
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      steps:
-        # https://github.com/marketplace/actions/docker-login
-        - name: log into registry
-          uses: docker/login-action@v2.1.0
-          with:
-            registry: ghcr.io
-            username: ${{ github.actor }}
-            password: ${{ secrets.GITHUB_TOKEN }}
+      - name: inspect
+        run: |
+          docker manifest inspect ghcr.io/jazzlyn/gh-actions-demo/nginx:${{ github.sha }}
 
-        - name: inspect
-          run: |
-            docker manifest inspect ghcr.io/jazzlyn/gh-actions-demo/nginx:${{ github.sha }}
+  docker-build-push:
+    permissions:
+      id-token: write
+    needs: [environment, check-image-exists]
+    if: ${{ needs.environment.outputs.target == 'integration' || needs.environment.outputs.target == 'release-candidate' && needs.check-image-exists.result == 'failure' }}
+    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.8.0"
+    with:
+      runner: '["ubuntu-latest"]'
+      subpath: nginx
+      tags: |
+        type=ref,event=tag,priority=300
+        type=sha,prefix={{date 'YYMMDD-HHmmss'}}-,priority=200
+        ${{ github.sha }}, priority=100
 
-    docker-build-push:
-      needs: [environment, check-image-exists]
-      if: ${{ needs.environment.outputs.target == 'integration' || needs.environment.outputs.target == 'release-candidate' && needs.check-image-exists.result == 'failure' }}
-      uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.8.0"
-      with:
-        runner: '["ubuntu-latest"]'
-        subpath: nginx
-        tags: |
-          type=ref,event=tag,priority=300
-          type=sha,prefix={{date 'YYMMDD-HHmmss'}}-,priority=200
-          ${{ github.sha }}, priority=100
+  integration-dispatch:
+    needs: [environment, docker-build-push]
+    if: ${{ needs.environment.outputs.target == 'integration' }}
+    name: ${{ needs.environment.outputs.target }}
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.8.0"
+    with:
+      runner: '["ubuntu-latest"]'
+      tag: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
+      repository: jazzlyn/gh-actions-demo
+      dispatch-event: ${{ needs.environment.outputs.target }}-nginx
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
-    integration-dispatch:
-      needs: [environment, docker-build-push]
-      if: ${{ needs.environment.outputs.target == 'integration' }}
-      name: ${{ needs.environment.outputs.target }}
-      uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.8.0"
-      with:
-        runner: '["ubuntu-latest"]'
-        tag: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
-        repository: jazzlyn/gh-actions-demo
-        dispatch-event: ${{ needs.environment.outputs.target }}-nginx
-      secrets:
-        github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-        github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+  tag-image-github:
+    needs: [environment, check-image-exists]
+    if: ${{ needs.environment.outputs.target == 'release-candidate' && needs.check-image-exists.result == 'success' || needs.environment.outputs.target == 'production' }}
+    name: "retag image"
+    uses: "strg-at/github-workflows/.github/workflows/tag-image-github.yaml@v0.8.0"
+    with:
+      runner: '["ubuntu-latest"]'
+      repository: jazzlyn/gh-actions-demo
+      source-path: nginx
+      target-path: nginx
 
-    tag-image-github:
-      needs: [environment, check-image-exists]
-      if: ${{ needs.environment.outputs.target == 'release-candidate' && needs.check-image-exists.result == 'success' || needs.environment.outputs.target == 'production' }}
-      name: "retag image"
-      uses: "strg-at/github-workflows/.github/workflows/tag-image-github.yaml@v0.8.0"
-      with:
-        runner: '["ubuntu-latest"]'
-        repository: jazzlyn/gh-actions-demo
-        source-path: nginx
-        target-path: nginx
-
-    production-dispatch:
-      if: ${{ needs.environment.outputs.target == 'production' }}
-      name: ${{ needs.environment.outputs.target }}
-      needs: [environment, tag-image-github]
-      uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.8.0"
-      with:
-        runner: '["ubuntu-latest"]'
-        tag: ${{  github.ref_name }}
-        repository: jazzlyn/gh-actions-demo
-        dispatch-event: ${{ needs.environment.outputs.target }}-nginx
-      secrets:
-        github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-        github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+  production-dispatch:
+    if: ${{ needs.environment.outputs.target == 'production' }}
+    name: ${{ needs.environment.outputs.target }}
+    needs: [environment, tag-image-github]
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.8.0"
+    with:
+      runner: '["ubuntu-latest"]'
+      tag: ${{  github.ref_name }}
+      repository: jazzlyn/gh-actions-demo
+      dispatch-event: ${{ needs.environment.outputs.target }}-nginx
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
