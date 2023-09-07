@@ -31,10 +31,8 @@ jobs:
           echo "ENVIRONMENT=production" >> $GITHUB_ENV
 
   check-image-exists:
-    needs: [environment]
     name: check-image-exists
     continue-on-error: true
-    if: ${{ needs.environment.outputs.target == 'release-candidate' || needs.environment.outputs.target == 'production' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -58,8 +56,8 @@ jobs:
       contents: read
       id-token: write
       packages: write
-    needs: [environment, check-image-exists]
-    if: ${{ needs.environment.outputs.target == 'integration' || (needs.environment.outputs.target == 'release-candidate' && needs.check-image-exists.result == 'failure') }}
+    needs: [check-image-exists]
+    if: ${{ needs.check-image-exists.result == 'failure' }}
     uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.8.0"
     with:
       runner: '["ubuntu-latest"]'
@@ -69,8 +67,23 @@ jobs:
         type=sha,prefix={{date 'YYMMDD-HHmmss'}}-,priority=200
         ${{ github.sha }}, priority=100
 
+  tag-image-github:
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    needs: [environment, check-image-exists]
+    if: ${{ needs.check-image-exists.result == 'success' }}
+    name: "retag image"
+    uses: "strg-at/github-workflows/.github/workflows/tag-image-github.yaml@v0.8.0"
+    with:
+      runner: '["ubuntu-latest"]'
+      repository: jazzlyn/gh-actions-demo
+      source-path: nginx
+      target-path: nginx
+
   integration-dispatch:
-    needs: [environment, docker-build-push]
+    needs: [environment, docker-build-push, tag-image-github]
     if: ${{ needs.environment.outputs.target == 'integration' }}
     name: ${{ needs.environment.outputs.target }}
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.8.0"
@@ -83,25 +96,10 @@ jobs:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
-  tag-image-github:
-    permissions:
-      contents: read
-      id-token: write
-      packages: write
-    needs: [environment, check-image-exists]
-    if: ${{ (needs.environment.outputs.target == 'release-candidate' && needs.check-image-exists.result == 'success') || needs.environment.outputs.target == 'production' }}
-    name: "retag image"
-    uses: "strg-at/github-workflows/.github/workflows/tag-image-github.yaml@v0.8.0"
-    with:
-      runner: '["ubuntu-latest"]'
-      repository: jazzlyn/gh-actions-demo
-      source-path: nginx
-      target-path: nginx
-
   production-dispatch:
     if: ${{ needs.environment.outputs.target == 'production' }}
     name: ${{ needs.environment.outputs.target }}
-    needs: [environment, tag-image-github]
+    needs: [environment, docker-build-push, tag-image-github]
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.8.0"
     with:
       runner: '["ubuntu-latest"]'
