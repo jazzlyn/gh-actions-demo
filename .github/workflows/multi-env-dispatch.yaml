@@ -31,11 +31,12 @@ jobs:
           echo "ENVIRONMENT=production" >> $GITHUB_ENV
 
   check-image-exists:
-    name: check-image-exists
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: read
+    outputs:
+      tag: ${{ steps.image-exists.outputs.tag }}
 
     steps:
       # https://github.com/marketplace/actions/docker-login
@@ -46,9 +47,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: inspect
-        run: |
-          docker manifest inspect ghcr.io/jazzlyn/gh-actions-demo/nginx:${{ github.sha }}
+      - name: image exists
+        id: image-exists
+        uses: tyriis/docker-image-tag-exists@v0.1.2
+        with:
+          image: ghcr.io/jazzlyn/gh-actions-demo/nginx
+          tag: ${{ github.sha }}
 
   docker-build-push:
     permissions:
@@ -56,7 +60,7 @@ jobs:
       id-token: write
       packages: write
     needs: [check-image-exists]
-    if: ${{ always() && needs.check-image-exists.result == 'failure' }}
+    if: ${{ needs.check-image-exists.outputs.tag == 'not found' }}
     uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.8.0"
     with:
       runner: '["ubuntu-latest"]'
@@ -72,7 +76,7 @@ jobs:
       id-token: write
       packages: write
     needs: [check-image-exists]
-    if: ${{ always() && needs.check-image-exists.result == 'success' }}
+    if: ${{ needs.check-image-exists.outputs.tag == 'found' }}
     name: "retag image"
     uses: "strg-at/github-workflows/.github/workflows/tag-image-github.yaml@v0.8.0"
     with:
