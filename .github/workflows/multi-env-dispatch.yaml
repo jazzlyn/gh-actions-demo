@@ -84,6 +84,10 @@ jobs:
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
   tag-image-github:
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
     needs: [environment, check-image-exists]
     if: ${{ needs.environment.outputs.target == 'release-candidate' && needs.check-image-exists.result == 'success' || needs.environment.outputs.target == 'production' }}
     name: "retag image"
