@@ -55,7 +55,9 @@ jobs:
 
   docker-build-push:
     permissions:
+      contents: read
       id-token: write
+      packages: write
     needs: [environment, check-image-exists]
     if: ${{ needs.environment.outputs.target == 'integration' || needs.environment.outputs.target == 'release-candidate' && needs.check-image-exists.result == 'failure' }}
     uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.8.0"
