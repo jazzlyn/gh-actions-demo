@@ -49,7 +49,7 @@ jobs:
 
       - name: image exists
         id: image-exists
-        uses: tyriis/docker-image-tag-exists@v0.1.2
+        uses: tyriis/docker-image-tag-exists@v0.1.3
         with:
           image: ghcr.io/jazzlyn/gh-actions-demo/nginx
           tag: ${{ github.sha }}
@@ -87,7 +87,7 @@ jobs:
 
   integration-dispatch:
     needs: [environment, docker-build-push, tag-image-github]
-    if: ${{ always() && needs.environment.outputs.target == 'integration' }}
+    if: ${{ needs.environment.outputs.target == 'integration' }}
     name: ${{ needs.environment.outputs.target }}
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.8.0"
     with:
@@ -100,9 +100,9 @@ jobs:
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
   production-dispatch:
-    if: ${{ always() && needs.environment.outputs.target == 'production' }}
-    name: ${{ needs.environment.outputs.target }}
     needs: [environment, docker-build-push, tag-image-github]
+    if: ${{ needs.environment.outputs.target == 'production' }}
+    name: ${{ needs.environment.outputs.target }}
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.8.0"
     with:
       runner: '["ubuntu-latest"]'
