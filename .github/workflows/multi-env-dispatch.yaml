@@ -91,7 +91,7 @@ jobs:
 
   integration-dispatch:
     needs: [environment, docker-build-push, tag-image-github]
-    if: ${{ needs.environment.outputs.target == 'integration' }}
+    if: ${{ always() && needs.environment.outputs.target == 'integration' }}
     name: ${{ needs.environment.outputs.target }}
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.8.0"
     with:
@@ -104,7 +104,7 @@ jobs:
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
   production-dispatch:
-    if: ${{ needs.environment.outputs.target == 'production' }}
+    if: ${{ always() && needs.environment.outputs.target == 'production' }}
     name: ${{ needs.environment.outputs.target }}
     needs: [environment, docker-build-push, tag-image-github]
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.8.0"
