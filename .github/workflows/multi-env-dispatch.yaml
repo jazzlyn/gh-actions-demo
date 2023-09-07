@@ -51,6 +51,10 @@ jobs:
         run: |
           docker manifest inspect ghcr.io/jazzlyn/gh-actions-demo/nginx:${{ github.sha }}
 
+      - name: Dump GitHub context
+        id: github_context_step
+        run: echo '${{ toJSON(github) }}'
+
   docker-build-push:
     permissions:
       contents: read
@@ -67,12 +71,19 @@ jobs:
         type=sha,prefix={{date 'YYMMDD-HHmmss'}}-,priority=200
         ${{ github.sha }}, priority=100
 
+  dump_contexts_to_log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        id: github_context_step
+        run: echo '${{ toJSON(github) }}'
+
   tag-image-github:
     permissions:
       contents: read
       id-token: write
       packages: write
-    needs: [environment, check-image-exists]
+    needs: [check-image-exists]
     if: ${{ needs.check-image-exists.result == 'success' }}
     name: "retag image"
     uses: "strg-at/github-workflows/.github/workflows/tag-image-github.yaml@v0.8.0"
