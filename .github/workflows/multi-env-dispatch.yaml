@@ -13,7 +13,7 @@ env:
 
 jobs:
   environment:
-    runs-on: '["ubuntu-latest"]'
+    runs-on: ubuntu-latest
     outputs:
       target: ${{ env.ENVIRONMENT }}
     steps:
@@ -35,7 +35,7 @@ jobs:
     name: check-image-exists
     continue-on-error: true
     if: ${{ needs.environment.outputs.target == 'release-candidate' || needs.environment.outputs.target == 'production' }}
-    runs-on: '["ubuntu-latest"]'
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: read
