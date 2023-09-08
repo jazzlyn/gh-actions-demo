@@ -31,28 +31,13 @@ jobs:
           echo "ENVIRONMENT=production" >> $GITHUB_ENV
 
   check-image-exists:
-    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: read
-    outputs:
-      tag: ${{ steps.image-exists.outputs.tag }}
-
-    steps:
-      # https://github.com/marketplace/actions/docker-login
-      - name: log into registry
-        uses: docker/login-action@v2.1.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: image exists
-        id: image-exists
-        uses: tyriis/docker-image-tag-exists@v0.1.3
-        with:
-          image: ghcr.io/jazzlyn/gh-actions-demo/nginx
-          tag: ${{ github.sha }}
+    uses: "strg-at/github-workflows/.github/workflows/docker-image-exists-github.yaml@6a0748b5f326b93f31147db891b7afc7861d2278"
+    with:
+      runner: '["ubuntu-latest"]'
+      subpath: nginx
 
   docker-build-push:
     permissions:
