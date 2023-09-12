@@ -35,7 +35,7 @@ jobs:
     permissions:
       contents: read
       packages: read
-    uses: "strg-at/github-workflows/.github/workflows/docker-image-exists-github.yaml@82c147a499f3470c14f0145de4821b3fd2f290ed"
+    uses: "strg-at/github-workflows/.github/workflows/docker-image-exists-github.yaml@v0.11.0"
     with:
       runner: '["ubuntu-latest"]'
       subpath: nginx
@@ -47,7 +47,7 @@ jobs:
       packages: write
     needs: [check-image-exists]
     if: ${{ needs.check-image-exists.outputs.tag == 'not found' }}
-    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.10.0"
+    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@d0b83dc8394a3ec557b374e942bd3610a3ad13b6"
     with:
       runner: '["ubuntu-latest"]'
       subpath: nginx
