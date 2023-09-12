@@ -35,7 +35,7 @@ jobs:
     permissions:
       contents: read
       packages: read
-    uses: "strg-at/github-workflows/.github/workflows/docker-image-exists-github.yaml@v0.10.0"
+    uses: "strg-at/github-workflows/.github/workflows/docker-image-exists-github.yaml@d886211f29253324a5de2b665f254d96538048ea"
     with:
       runner: '["ubuntu-latest"]'
       subpath: nginx
