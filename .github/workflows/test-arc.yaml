@@ -13,8 +13,7 @@
           run: echo '${{ toJSON(github) }}'
     test-arc:
       runs-on:
-        - self-hosted
-        - home-infra
+        - arc-runner-set-gh-actions-demo
       permissions:
         contents: read
       steps:
