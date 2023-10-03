@@ -17,42 +17,13 @@ jobs:
           echo '${{ github.actor }}'
 
   tag-update:
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    steps:
-      # https://github.com/marketplace/actions/checkout
-      - name: checkout repository
-        uses: actions/checkout@v3.5.0
-
-      # https://github.com/marketplace/actions/setup-yq
-      - name: update image tag of helm-release
-        uses: mikefarah/yq@v4.33.2
-        with:
-          cmd: yq -i '.spec.values.image.tag = "${{ github.event.client_payload.tag }}"' tag-update/testfile.yaml
-
-      # https://github.com/marketplace/actions/github-app-token
-      - name: generate token
-        id: generate-token
-        uses: tibdex/github-app-token@v1.8.0
-        env:
-          # https://github.com/tibdex/github-app-token/issues/54
-          # https://stackoverflow.com/questions/72104449/node-js-crypto-fails-to-sign-pem-key-string-from-file-with-error25066067dso-su
-          OPENSSL_CONF: /dev/null
-        with:
-          app_id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-          private_key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
-
-      # https://github.com/marketplace/actions/create-pull-request
-      - name: create pr
-        uses: peter-evans/create-pull-request@v5.0.0
-        with:
-          token: ${{ steps.generate-token.outputs.token }}
-          add-paths: tag-update/testfile.yaml
-          title: "release: ${{ github.event.client_payload.tag }}"
-          body: ""
-          commit-message: "release: update to"
-          # committer: ${{ inputs.committer }}
-          # author: ${{ inputs.committer }}
-          branch: release/${{ github.event.client_payload.tag }}
-          base: main
+    if: ${{ github.event.action == 'integration-nginx' }}
+    uses: "strg-at/github-workflows/.github/workflows/tag-update-helm-image.yaml@dc9cb9b29147fe4d0e4a26736f956850a5683a59"
+    with:
+      runner: '["ubuntu-latest"]'
+      tag: ${{ github.event.client_payload.tag }}
+      file-path: tag-update/testfile.yaml
+      create-pr: true
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
