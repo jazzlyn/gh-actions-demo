@@ -3,4 +3,4 @@ spec:
   values:
     image:
       repository: testrepo
-      tag: "231003-094157-e8eddf2"
+      tag: "231003-094318-974ef65"
