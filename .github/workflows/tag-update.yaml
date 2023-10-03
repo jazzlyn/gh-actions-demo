@@ -18,12 +18,15 @@ jobs:
 
   tag-update:
     if: ${{ github.event.action == 'integration-nginx' }}
-    uses: "strg-at/github-workflows/.github/workflows/tag-update-helm-image.yaml@dc9cb9b29147fe4d0e4a26736f956850a5683a59"
+    uses: "strg-at/github-workflows/.github/workflows/tag-update-helm-image.yaml@6eac25d4da7412dd7f5d1c6a7669d6fdc6975"
     with:
       runner: '["ubuntu-latest"]'
       tag: ${{ github.event.client_payload.tag }}
       file-path: tag-update/testfile.yaml
       create-pr: true
+      pr-title: "release: ${{ github.event.client_payload.tag }}"
+      commit-message: "release: ${{ github.event.client_payload.tag }}"
+      branch-name: "release/${{ github.event.client_payload.tag }}"
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
