@@ -3,7 +3,7 @@ name: tag-update
 
 on:
   repository_dispatch:
-    types: [dispatch-test-app]
+    types: [integration-nginx]
 
 jobs:
   dump_contexts_to_log:
@@ -13,7 +13,7 @@ jobs:
         id: github_context_step
         run: echo '${{ toJSON(github) }}'
   tag-update:
-    if: ${{ github.event.action == 'dispatch-test-app' }}
+    if: ${{ github.event.action == 'integration-nginx' }}
     uses: "strg-at/github-workflows/.github/workflows/tag-update-helm-image.yaml@v0.6.0"
     with:
       runner: '["ubuntu-latest"]'
