@@ -11,10 +11,13 @@ jobs:
     steps:
       - name: Dump GitHub context
         id: github_context_step
-        run: echo '${{ toJSON(github) }}'
+        run: |
+          echo '${{ toJSON(github) }}'
+          echo '${{ github.triggering_actor }}'
+          echo '${{ github.actor }}'
   tag-update:
     if: ${{ github.event.action == 'integration-nginx' }}
-    uses: "strg-at/github-workflows/.github/workflows/tag-update-helm-image.yaml@v0.6.0"
+    uses: "strg-at/github-workflows/.github/workflows/tag-update-helm-image.yaml@d3bf14987cb76d8b94fa7e7a1f146029f243e23f"
     with:
       runner: '["ubuntu-latest"]'
       tag: ${{ github.event.client_payload.tag }}
