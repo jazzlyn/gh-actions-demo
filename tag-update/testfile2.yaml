@@ -1,4 +1,4 @@
-do: testfile
+do: testfile2
 spec:
   values:
     image:
