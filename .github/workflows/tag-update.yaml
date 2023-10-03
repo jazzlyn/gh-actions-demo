@@ -18,7 +18,7 @@ jobs:
 
   tag-update:
     if: ${{ github.event.action == 'integration-nginx' }}
-    uses: "strg-at/github-workflows/.github/workflows/tag-update-helm-image.yaml@6eac25d4da7412dd7f5d1c6a7669d6fdc6975"
+    uses: "strg-at/github-workflows/.github/workflows/tag-update-helm-image.yaml@6eac25d4da7412dd7f5d1c6a7669d6fdc6975ee5"
     with:
       runner: '["ubuntu-latest"]'
       tag: ${{ github.event.client_payload.tag }}
