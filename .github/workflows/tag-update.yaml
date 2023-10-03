@@ -49,6 +49,8 @@ jobs:
         with:
           token: ${{ steps.generate-token.outputs.token }}
           add-paths: tag-update/testfile.yaml
+          title: "release: ${{ github.event.client_payload.tag }}"
+          body: ""
           commit-message: "release: update to"
           # committer: ${{ inputs.committer }}
           # author: ${{ inputs.committer }}
