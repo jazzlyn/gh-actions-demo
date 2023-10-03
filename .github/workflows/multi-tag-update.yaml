@@ -93,6 +93,7 @@ jobs:
 
       # https://github.com/marketplace/actions/multi-file-commit
       - name: multi-file-commit
+        if: ${{ always() }}
         id: multi-file-commit
         uses: tyriis/multi-file-commit@v0.3.11
         with:
