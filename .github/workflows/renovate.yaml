@@ -31,7 +31,7 @@ jobs:
       runner: '["ubuntu-latest"]'
       configuration-file: .github/renovate.json5
       dry-run: ${{ inputs.dry-run || 'false' }}
-      log-level: ${{ inputs.log-level || 'info' }}
+      log-level: ${{ inputs.log-level || 'debug' }}
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
