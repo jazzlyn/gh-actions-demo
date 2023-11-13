@@ -45,12 +45,19 @@
   gitAuthor: "jazzlyn-bot <134550475+jazzlyn-bot[bot]@users.noreply.github.com>",
   repositories: ["jazzlyn/gh-actions-demo"],
   flux: {
-    fileMatch: ["^(kubernetes|oci)/.+\\.ya?ml$"],
+    fileMatch: ["^oci/.+\\.ya?ml$"],
   },
   "helm-values": {
-    fileMatch: ["^(kubernetes|oci)/.+\\.ya?ml$"],
+    fileMatch: ["^oci/.+\\.ya?ml$"],
   },
   kubernetes: {
-    fileMatch: ["^(kubernetes|oci)/.+\\.ya?ml$"],
+    fileMatch: ["^oci/.+\\.ya?ml$"],
   },
+  packageRules: [
+    {
+      matchManagers: ["kubernetes"],
+      matchDatasources: ["kubernetes-api"],
+      enabled: false,
+    },
+  ],
 }
