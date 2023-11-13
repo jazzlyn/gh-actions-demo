@@ -1,10 +1,45 @@
 {
   extends: [
-    "github>strg-at/renovate-config:base.json5",
+    // https://docs.renovatebot.com/presets-config/#configrecommended
+    ":ignoreModulesAndTests", // Ignore node_modules, bower_components, vendor and various test/tests directories.
+    "replacements:all",
+    "workarounds:all",
+
+    // https://docs.renovatebot.com/presets-default/
+    ":automergeRequireAllStatusChecks", // Require all status checks to pass before any automerging.
+    ":enableVulnerabilityAlertsWithLabel(security)", // Raise PR when vulnerability alerts are detected with label security.
+    ":pinAllExceptPeerDependencies", // Pin all dependency versions except peerDependencies.
+    ":prConcurrentLimitNone", // Remove limit for open PRs at any time.
+    ":prHourlyLimitNone", // Removes rate limit for PR creation per hour.
+    ":rebaseStalePrs", // Rebase existing PRs any time the base branch has been updated.
+    ":renovatePrefix", // Prefix renovate/ to all branch names.
+    ":separateMultipleMajorReleases", // Separate each major version of dependencies into individual branches/PRs.
+    ":separatePatchReleases", // Separate patch and minor releases of dependencies into separate PRs.
+
+    "github>strg-at/renovate-config//commit-message/default.json5",
+    "github>strg-at/renovate-config//dashboard/default.json5",
+    //"github>strg-at/renovate-config//docker/default.json5",
+    "github>strg-at/renovate-config//flux/default.json5",
+    "github>strg-at/renovate-config//github-actions/default.json5",
+    //"github>strg-at/renovate-config//helm/default.json5",
+    "github>strg-at/renovate-config//labels/default.json5",
+    "github>strg-at/renovate-config//pre-commit/default.json5",
+    "github>strg-at/renovate-config//terraform/default.json5",
     "github>strg-at/renovate-config//github-actions/silent-automerge.json5",
     "github>strg-at/renovate-config//pre-commit/silent-automerge.json5",
     "github>strg-at/renovate-config//terraform/silent-automerge.json5",
+
   ],
+  // https://docs.renovatebot.com/self-hosted-configuration/
+  onboarding: false, // Require a Configuration PR first.
+  requireConfig: "optional", // If a config file exists, Renovate will use it when it runs.
+
+  // https://docs.renovatebot.com/configuration-options/
+  platformCommit: true, // Use platform API to perform commits instead of using Git directly, needed for Github App.
+  printConfig: true, // If enabled, Renovate logs the fully resolved config for each repository, plus the fully resolved presets.
+  stopUpdatingLabel: "stop-updating", // Label to make Renovate stop updating a PR.
+  suppressNotifications: ["prIgnoreNotification"],
+  timezone: "Europe/Vienna",
   platform: "github",
   username: "jazzlyn-bot[bot]",
   gitAuthor: "jazzlyn-bot <134550475+jazzlyn-bot[bot]@users.noreply.github.com>",
