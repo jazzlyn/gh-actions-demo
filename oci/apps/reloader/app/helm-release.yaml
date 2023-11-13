@@ -25,6 +25,8 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    image:
-      name: ghcr.io/stakater/reloader
-      tag: v1.0.49
+    reloader:
+      deployment:
+        image:
+          name: ghcr.io/stakater/reloader
+          tag: v1.0.49
