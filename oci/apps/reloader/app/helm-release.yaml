@@ -28,5 +28,5 @@ spec:
     reloader:
       deployment:
         image:
-          name: ghcr.io/stakater/reloader
+          repository: ghcr.io/stakater/reloader
           tag: v1.0.49
