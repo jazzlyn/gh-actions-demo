@@ -25,13 +25,44 @@
         - .github/workflows/renovate.yaml
 
   jobs:
+    # renovate:
+    #   uses: strg-at/github-workflows/.github/workflows/run-renovate.yaml@v0.13.0
+    #   with:
+    #     runner: '["ubuntu-latest"]'
+    #     configuration-file: .github/renovate.json5
+    #     dry-run: ${{ inputs.dry-run || 'false' }}
+    #     log-level: ${{ inputs.log-level || 'info' }}
+    #   secrets:
+    #     github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+    #     github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
     renovate:
-      uses: strg-at/github-workflows/.github/workflows/run-renovate.yaml@v0.13.0
-      with:
-        runner: '["ubuntu-latest"]'
-        configuration-file: .github/renovate.json5
-        dry-run: ${{ inputs.dry-run || 'false' }}
-        log-level: ${{ inputs.log-level || 'info' }}
-      secrets:
-        github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-        github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+      runs-on: ubuntu-latest
+      steps:
+        # https://github.com/marketplace/actions/github-app-token
+        - name: generate token
+          id: generate-token
+          uses: tibdex/github-app-token@v1.8.0
+          env:
+            # https://github.com/tibdex/github-app-token/issues/54
+            # https://stackoverflow.com/questions/72104449/node-js-crypto-fails-to-sign-pem-key-string-from-file-with-error25066067dso-su
+            OPENSSL_CONF: /dev/null
+          with:
+            app_id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+            private_key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
+        # https://github.com/marketplace/actions/checkout
+        - name: checkout repository
+          uses: actions/checkout@v3.5.0
+          with:
+            token: ${{ steps.generate-token.outputs.token }}
+
+        # https://github.com/marketplace/actions/renovate-bot-github-action
+        - name: renovate bot
+          uses: renovatebot/github-action@v39.1.1
+          env:
+            DRY_RUN: ${{ inputs.dry-run }}
+            LOG_LEVEL: ${{ inputs.log-level }}
+          with:
+            token: ${{ steps.generate-token.outputs.token }}
+            configurationFile: .github/renovate.json5
