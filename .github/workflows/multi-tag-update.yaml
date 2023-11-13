@@ -1,5 +1,5 @@
 ---
-name: update image tag of helm-release
+name: multi-tag-update
 
 on:
   workflow_dispatch:

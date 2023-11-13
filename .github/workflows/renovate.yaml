@@ -1,0 +1,37 @@
+---
+  name: renovate
+
+  on:
+    workflow_dispatch:
+      inputs:
+        dry-run:
+          description: dry-run
+          required: false
+          type: string
+          default: "false"
+        log-level:
+          description: log-level
+          required: false
+          type: string
+          default: info
+    # schedule:
+    #   - cron: "0 * * * *"
+    push:
+      branches:
+        - main
+      paths:
+        - .github/renovate.json5
+        - .github/renovate/**.json5
+        - .github/workflows/renovate.yaml
+
+  jobs:
+    renovate:
+      uses: strg-at/github-workflows/.github/workflows/run-renovate.yaml@v0.13.0
+      with:
+        runner: '["ubuntu-latest"]'
+        configuration-file: .github/renovate.json5
+        dry-run: ${{ inputs.dry-run || 'false' }}
+        log-level: ${{ inputs.log-level || 'info' }}
+      secrets:
+        github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+        github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
