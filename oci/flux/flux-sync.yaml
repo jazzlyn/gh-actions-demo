@@ -10,5 +10,5 @@ spec:
   path: ./flux
   prune: true
   sourceRef:
-    kind: OCIRepository
+    kind: GitRepository
     name: dummy

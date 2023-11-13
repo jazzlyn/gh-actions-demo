@@ -1,13 +1,11 @@
 ---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: OCIRepository
+kind: GitRepository
 metadata:
   name: dummy
   namespace: flux-system
 spec:
-  insecure: true
   interval: 1m
-  url: oci://dummy-registry:5000/dummy2
-  provider: generic
+  url: https://github.com/jazzlyn/gh-actions-demo
   ref:
-    tag: local
+    branch: main

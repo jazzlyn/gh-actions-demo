@@ -13,5 +13,5 @@ spec:
   path: ./apps
   prune: true
   sourceRef:
-    kind: OCIRepository
+    kind: GitRepository
     name: dummy
