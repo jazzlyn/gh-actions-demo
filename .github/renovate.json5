@@ -51,13 +51,13 @@
   gitAuthor: "jazzlyn-bot <134550475+jazzlyn-bot[bot]@users.noreply.github.com>",
   repositories: ["jazzlyn/gh-actions-demo"],
   flux: {
-    fileMatch: ["oci/.+\\.ya?ml$"],
+    fileMatch: ["^oci/.+\\.ya?ml$"],
   },
   "helm-values": {
-    fileMatch: ["oci/.+\\.ya?ml$"],
+    fileMatch: ["^oci/.+/helm-?release\\.ya?ml$"]
   },
   kubernetes: {
-    fileMatch: ["oci/.+\\.ya?ml$"],
+    fileMatch: ["^oci/.+\\.ya?ml$"],
   },
   packageRules: [
     {
