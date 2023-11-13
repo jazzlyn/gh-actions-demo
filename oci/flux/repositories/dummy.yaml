@@ -2,12 +2,12 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: OCIRepository
 metadata:
-  name: test
+  name: dummy
   namespace: flux-system
 spec:
   insecure: true
   interval: 1m
-  url: oci://test-registry:5000/test
+  url: oci://dummy-registry:5000/dummy
   provider: generic
   ref:
     tag: local

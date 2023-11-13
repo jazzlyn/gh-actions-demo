@@ -5,8 +5,30 @@
     "github>strg-at/renovate-config//pre-commit/silent-automerge.json5",
     "github>strg-at/renovate-config//terraform/silent-automerge.json5",
   ],
+
   platform: "github",
   username: "jazzlyn-bot[bot]",
   gitAuthor: "jazzlyn-bot <134550475+jazzlyn-bot[bot]@users.noreply.github.com>",
   repositories: ["jazzlyn/gh-actions-demo"],
+
+  // overwrite with test config
+  flux: {
+    fileMatch: ["^(kubernetes/oci)/.+\\.ya?ml$"],
+  },
+  "helm-values": {
+    fileMatch: ["^(kubernetes/oci)/.+\\.ya?ml$"],
+  },
+  kubernetes: {
+    fileMatch: ["^(kubernetes/oci)/.+\\.ya?ml$"],
+  },
+  "npm": {
+    "enabled": false
+  },
+  // packageRules: [
+  //   {
+  //     matchManagers: ["kubernetes"],
+  //     matchDatasources: ["kubernetes-api"],
+  //     enabled: false,
+  //   },
+  // ],
 }
