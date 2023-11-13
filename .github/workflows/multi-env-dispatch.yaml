@@ -35,7 +35,7 @@ jobs:
     permissions:
       contents: read
       packages: read
-    uses: "strg-at/github-workflows/.github/workflows/docker-image-exists-github.yaml@v0.11.0"
+    uses: "strg-at/github-workflows/.github/workflows/docker-image-exists-github.yaml@v0.13.0"
     with:
       runner: '["ubuntu-latest"]'
       subpath: nginx
@@ -64,7 +64,7 @@ jobs:
     needs: [check-image-exists]
     if: ${{ needs.check-image-exists.outputs.tag == 'found' }}
     name: "retag image"
-    uses: "strg-at/github-workflows/.github/workflows/tag-image-github.yaml@v0.10.0"
+    uses: "strg-at/github-workflows/.github/workflows/tag-image-github.yaml@v0.13.0"
     with:
       runner: '["ubuntu-latest"]'
       repository: jazzlyn/gh-actions-demo
@@ -75,7 +75,7 @@ jobs:
     needs: [environment, docker-build-push, tag-image-github]
     if: ${{ always() && needs.environment.outputs.target == 'integration' }}
     name: ${{ needs.environment.outputs.target }}
-    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.10.0"
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.13.0"
     with:
       runner: '["ubuntu-latest"]'
       tag: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
@@ -89,7 +89,7 @@ jobs:
     needs: [environment, docker-build-push, tag-image-github]
     if: ${{ always() && needs.environment.outputs.target == 'production' }}
     name: ${{ needs.environment.outputs.target }}
-    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.10.0"
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v0.13.0"
     with:
       runner: '["ubuntu-latest"]'
       tag: ${{  github.ref_name }}
