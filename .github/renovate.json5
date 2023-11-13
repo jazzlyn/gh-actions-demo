@@ -30,6 +30,9 @@
     "github>strg-at/renovate-config//terraform/silent-automerge.json5",
 
   ],
+  "npm": {
+    "enabled": false
+  },
   // https://docs.renovatebot.com/self-hosted-configuration/
   onboarding: false, // Require a Configuration PR first.
   requireConfig: "optional", // If a config file exists, Renovate will use it when it runs.
