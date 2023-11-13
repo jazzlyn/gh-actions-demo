@@ -1,0 +1,20 @@
+---
+name: flux-diff
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - oci/**.yaml
+
+jobs:
+  flux-diff:
+    uses: strg-at/github-workflows/.github/workflows/flux-diff.yaml@95c9aa14d3d09c074b0f569492daee068eb972e8
+    with:
+      runner: '["ubuntu-latest"]'
+      path: '["oci"]'
+      source: test
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
