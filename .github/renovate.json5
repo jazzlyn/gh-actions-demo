@@ -1,28 +1,18 @@
 {
   extends: [
-    // "github>strg-at/renovate-config:base.json5",
-    // "github>strg-at/renovate-config//github-actions/silent-automerge.json5",
-    // "github>strg-at/renovate-config//pre-commit/silent-automerge.json5",
-    // "github>strg-at/renovate-config//terraform/silent-automerge.json5",
-    "github>tyriis/renovate-config//dashboard/default.json5",
-    "github>tyriis/renovate-config//flux-infra.json5",
+    "github>strg-at/renovate-config:base.json5",
+    "github>strg-at/renovate-config//github-actions/silent-automerge.json5",
+    "github>strg-at/renovate-config//pre-commit/silent-automerge.json5",
+    "github>strg-at/renovate-config//terraform/silent-automerge.json5",
   ],
-  enabled: true,
   platform: "github",
   username: "jazzlyn-bot[bot]",
   gitAuthor: "jazzlyn-bot <134550475+jazzlyn-bot[bot]@users.noreply.github.com>",
   repositories: ["jazzlyn/gh-actions-demo"],
-  semanticCommits: "enabled",
-  suppressNotifications: ["prIgnoreNotification"],
-  rebaseWhen: "conflicted",
-  regexManagers: [],
-  packageRules: [],
   "helm-values": {
-    // flux pattern
-    fileMatch: ["kubernetes/.+/helm.+\\.yaml$", "oci/.+/helm.+\\.yaml$"],
+    fileMatch: ["(kubernetes|oci)/.+/helm.+\\.yaml$"]
   },
   flux: {
-    fileMatch: ["kubernetes/.+\\.ya?ml$", "oci/.+\\.ya?ml$"],
+    fileMatch: ["(kubernetes|oci)/.+\\.ya?ml$"],
   },
-
 }
