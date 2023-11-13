@@ -1,5 +1,10 @@
 {
-  extends: ["github>strg-at/renovate-config:base.json5"],
+  extends: [
+    "github>strg-at/renovate-config:base.json5",
+    "github>strg-at/renovate-config//github-actions/silent-automerge.json5",
+    "github>strg-at/renovate-config//pre-commit/silent-automerge.json5",
+    "github>strg-at/renovate-config//terraform/silent-automerge.json5",
+  ],
   platform: "github",
   username: "jazzlyn-bot[bot]",
   gitAuthor: "jazzlyn-bot <134550475+jazzlyn-bot[bot]@users.noreply.github.com>",
