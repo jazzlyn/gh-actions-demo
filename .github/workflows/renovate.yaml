@@ -61,8 +61,8 @@
         - name: renovate bot
           uses: renovatebot/github-action@v39.1.1
           env:
-            DRY_RUN: ${{ inputs.dry-run }}
-            LOG_LEVEL: ${{ inputs.log-level }}
+            DRY_RUN: 'false'
+            LOG_LEVEL: 'debug'
           with:
             token: ${{ steps.generate-token.outputs.token }}
             configurationFile: .github/renovate.json5
