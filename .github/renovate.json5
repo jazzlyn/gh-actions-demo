@@ -33,6 +33,9 @@
   "npm": {
     "enabled": false
   },
+  "nvm": {
+    "enabled": false
+  },
   "helm": {
     "enabled": true
   },
