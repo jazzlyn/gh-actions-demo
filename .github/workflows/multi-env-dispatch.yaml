@@ -47,7 +47,7 @@ jobs:
       packages: write
     needs: [check-image-exists]
     if: ${{ needs.check-image-exists.outputs.tag == 'not found' }}
-    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@d0b83dc8394a3ec557b374e942bd3610a3ad13b6"
+    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@95c9aa14d3d09c074b0f569492daee068eb972e8"
     with:
       runner: '["ubuntu-latest"]'
       subpath: nginx
