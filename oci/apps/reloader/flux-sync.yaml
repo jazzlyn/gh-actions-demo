@@ -9,6 +9,6 @@ spec:
   path: ./apps/reloader/app
   prune: true
   sourceRef:
-    kind: OCIRepository
+    kind: GitRepository
     name: dummy
   wait: true
