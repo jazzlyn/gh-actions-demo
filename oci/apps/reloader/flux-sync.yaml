@@ -6,9 +6,9 @@ metadata:
   namespace: flux-system
 spec:
   interval: 15m
-  path: ./apps/reloader/app
+  path: ./oci/apps/reloader/app
   prune: true
   sourceRef:
-    kind: OCIRepository
+    kind: GitRepository
     name: dummy
   wait: true
