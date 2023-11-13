@@ -33,12 +33,6 @@
   "npm": {
     "enabled": false
   },
-  "nvm": {
-    "enabled": false
-  },
-  "helm": {
-    "enabled": true
-  },
   // https://docs.renovatebot.com/self-hosted-configuration/
   onboarding: false, // Require a Configuration PR first.
   requireConfig: "optional", // If a config file exists, Renovate will use it when it runs.
