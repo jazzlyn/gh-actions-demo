@@ -11,7 +11,7 @@ on:
 
 jobs:
   docker-build-push:
-    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@95c9aa14d3d09c074b0f569492daee068eb972e8"
+    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@8154d53d25773fc9aba1ffb5cbbfea6ad4302c91"
     with:
       runner: '["ubuntu-latest"]'
       subpath: nginx
