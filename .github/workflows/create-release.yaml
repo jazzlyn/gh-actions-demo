@@ -9,6 +9,8 @@ jobs:
   docker-build-push:
     permissions:
       id-token: write
+      contents: read
+      packages: write
     uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.13.0"
     with:
       runner: '["ubuntu-latest"]'
