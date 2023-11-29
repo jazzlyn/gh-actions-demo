@@ -1,0 +1,19 @@
+name: create release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  create-release:
+    uses: "strg-at/github-workflows/.github/workflows/github-create-release.yaml@feature/INPRO-1993-create-reusable-workflow-release"
+    with:
+      runner: '["ubuntu-latest"]'
+      files: |
+        .gitignore
+        .nvmrc
+        Dockerfile
+        package.json
+        package-lock.json
+        app-one/**
