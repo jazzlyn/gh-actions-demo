@@ -49,7 +49,7 @@ jobs:
         uses: docker/metadata-action@v4.3.0
         with:
           images: ${{ env.image-path }}
-          tags: ${{ github.ref }}
+          tags: ${{ github.ref_name }}
 
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: build and push docker image
@@ -58,7 +58,7 @@ jobs:
         with:
           push: true
           outputs: |
-            type=tar,dest=test-build-assets-${{ github.ref }}.tar
+            type=local,dest=build-assets
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
@@ -66,8 +66,9 @@ jobs:
       - name: sign the published docker image
         run: cosign sign --yes ${{ env.image-path }}@${{ steps.build-and-push.outputs.digest }}
 
+      # https://github.com/marketplace/actions/upload-a-build-artifact
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: test-build-assets-${{ github.ref }}
-          path: test-build-assets-${{ github.ref }}.tar
+          name: test-build-assets-${{ github.ref_name }}
+          path: build-assets/app/**
