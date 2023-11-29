@@ -17,3 +17,6 @@ jobs:
         package.json
         package-lock.json
         app-one/**
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
