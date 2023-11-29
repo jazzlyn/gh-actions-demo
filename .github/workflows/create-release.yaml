@@ -1,9 +1,7 @@
 name: create release
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
+  workflow_dispatch:
 
 jobs:
   docker-build-push:
