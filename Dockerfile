@@ -1,9 +1,21 @@
-FROM nginx:alpine
-COPY index.html /usr/share/nginx/html/index.html
+FROM node:20.10.0-alpine AS build
 
-LABEL Name='hello world'
-LABEL Version=0.1
+WORKDIR /app
 
-EXPOSE 80
+COPY . .
 
-CMD ["nginx", "-g", "daemon off;"]
+RUN npm ci
+RUN npm run build
+
+FROM node:20.10.0-alpine
+
+COPY --from=build /app/dist /app/dist
+
+WORKDIR /app
+
+ADD package*.json ./
+
+RUN npm ci --omit=dev
+
+USER node
+CMD [ "npm", "run", "service"]
