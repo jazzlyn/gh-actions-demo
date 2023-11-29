@@ -17,6 +17,7 @@ jobs:
       subpath: hello-world
 
   create-release:
+    needs: [docker-build-push]
     uses: "strg-at/github-workflows/.github/workflows/github-create-release.yaml@feature/INPRO-1993-create-reusable-workflow-release"
     with:
       runner: '["ubuntu-latest"]'
