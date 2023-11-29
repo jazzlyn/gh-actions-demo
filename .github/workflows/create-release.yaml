@@ -6,6 +6,12 @@ on:
       - "v*.*.*"
 
 jobs:
+  docker-build-push:
+    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v0.13.0"
+    with:
+      runner: '["ubuntu-latest"]'
+      subpath: hello-world
+
   create-release:
     uses: "strg-at/github-workflows/.github/workflows/github-create-release.yaml@feature/INPRO-1993-create-reusable-workflow-release"
     with:
