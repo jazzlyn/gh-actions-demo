@@ -10,13 +10,6 @@ jobs:
     uses: "strg-at/github-workflows/.github/workflows/github-create-release.yaml@feature/INPRO-1993-create-reusable-workflow-release"
     with:
       runner: '["ubuntu-latest"]'
-      files: |
-        .gitignore
-        .nvmrc
-        Dockerfile
-        package.json
-        package-lock.json
-        app-one/**
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
