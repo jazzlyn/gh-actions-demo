@@ -1,0 +1,43 @@
+---
+name: upload to storage
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build-assets:
+    name: build-assets
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      image-path: ghcr.io/${{ github.repository }}/test
+
+    steps:
+      # https://github.com/marketplace/actions/checkout
+      - name: checkout repository
+        uses: actions/checkout@v4.1.1
+
+      # https://github.com/marketplace/actions/docker-login
+      - name: log into registry
+        uses: docker/login-action@v3.0.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: extract build assets
+        run: |
+          docker pull ${{ env.image-path }}:${{ github.ref_name }}
+          CONTAINER_ID=$(docker create ${{ env.image-path }}:${{ github.ref_name }})
+          docker cp ${CONTAINER_ID}:/app .
+
+      # https://github.com/marketplace/actions/upload-a-build-artifact
+      - name: upload artifact
+        uses: actions/upload-artifact@v3.1.3
+        with:
+          name: test-build-assets-${{ github.ref_name }}
+          path: ./app/**
