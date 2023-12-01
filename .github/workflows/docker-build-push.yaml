@@ -70,8 +70,8 @@ jobs:
         run: |
           docker pull ${{ env.image-path }}:${{ github.ref_name }}
           CONTAINER_ID=$(docker create ${{ env.image-path }}:${{ github.ref_name }})
-          docker cp ${CONTAINER_ID}:${{ env.container-path }} ${{ env.container-path }}
-          tar -czvf ${{ env.subpath }}-${{ github.ref_name }}.tar.gz ${{ env.container-path }}
+          docker cp ${CONTAINER_ID}:${{ env.container-path }} .
+          tar -czvf ${{ env.subpath }}-${{ github.ref_name }}.tar.gz .${{ env.container-path }}
 
       # https://github.com/marketplace/actions/upload-a-build-artifact
       - name: upload artifact
