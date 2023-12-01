@@ -15,6 +15,8 @@ jobs:
       id-token: write
       packages: write
     env:
+      subpath: test
+      container-path: /app
       image-path: ghcr.io/${{ github.repository }}/test
 
     steps:
@@ -68,11 +70,12 @@ jobs:
         run: |
           docker pull ${{ env.image-path }}:${{ github.ref_name }}
           CONTAINER_ID=$(docker create ${{ env.image-path }}:${{ github.ref_name }})
-          docker cp ${CONTAINER_ID}:/app .
+          docker cp ${CONTAINER_ID}:${{ env.container-path }} ${{ env.container-path }}
+          tar -czvf ${{ env.subpath }}-${{ github.ref_name }}.tar.gz ${{ env.container-path }}
 
       # https://github.com/marketplace/actions/upload-a-build-artifact
       - name: upload artifact
         uses: actions/upload-artifact@v3.1.3
         with:
-          name: test-build-assets-${{ github.ref_name }}
-          path: ./app/**
+          name: ${{ env.subpath }}-${{ github.ref_name }}.tar.gz
+          path: ${{ env.container-path }}/${{ env.subpath }}-${{ github.ref_name }}.tar.gz
