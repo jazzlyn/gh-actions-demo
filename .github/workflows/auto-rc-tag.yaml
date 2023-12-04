@@ -1,0 +1,54 @@
+# create a github workflow to auto tag with the branch name version suffix -rc{count}
+# where count is a counter increasing on each new tag created by this workflow
+# on release/* branch
+# use github api to create the tag and push it to the repo
+
+on:
+  push:
+    branches:
+      - release/*
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        # determine the tag name by checking last tag in this branch matching the branch pattern
+        # f.e. release/1.0.0 -> 1.0.0-rc1 if no tag found, 1.0.0-rc2 if 1.0.0-rc1 found, etc.
+      - name: Determine tag name
+        id: tag
+        run: |
+          # get the last tag matching the branch name pattern
+          tag=$(git describe --tags --match "release/*" --abbrev=0)
+          # if no tag found, use the branch name as tag name
+          if [ -z "$tag" ]; then
+            tag=$(echo "${GITHUB_REF#refs/heads/}" | tr / -)
+          fi
+          # if tag found, increment the rc counter
+          if [[ $tag =~ -rc[0-9]+$ ]]; then
+            rc=$(echo $tag | sed -e 's/.*-rc\([0-9]\+\)$/\1/')
+            tag=$(echo $tag | sed -e 's/-rc[0-9]\+$//')
+            rc=$((rc+1))
+            tag="$tag-rc$rc"
+          else
+            tag="$tag-rc1"
+          fi
+          echo "::set-output name=tag::$tag"
+      - name: Create tag
+        id: create_tag
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const tag = '${{ steps.tag.outputs.tag }}'
+            const ref = `refs/tags/${tag}`
+            const sha = context.sha
+            const octokit = github.getOctokit('${{ secrets.GITHUB_TOKEN }}')
+            octokit.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: ref,
+              sha: sha
+            })
+            return tag
