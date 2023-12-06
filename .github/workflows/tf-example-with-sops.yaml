@@ -1,4 +1,6 @@
 ---
+# to use with sops secrets you need to add an encrypted sops file with the variables included that are then referenced below.
+
 name: "sops"
 
 on:
