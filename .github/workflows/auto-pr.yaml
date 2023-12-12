@@ -1,0 +1,20 @@
+# This workflow creates a pr from release/** -> main
+---
+  name: auto pr
+  on:
+    push:
+      branches:
+        - release/**
+
+  jobs:
+    create-pr:
+      name: ""
+      permissions:
+        contents: write
+        pull-requests: write
+      uses: strg-at/github-workflows/.github/workflows/auto-pr.yaml@feature/NOENT-3772-create-auto-pr-workflow
+      with:
+        runner: '["ubuntu-latest"]'
+        branch: main
+        update: "true"
+        pr-title: "auto-pr: release to main"

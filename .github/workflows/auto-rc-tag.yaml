@@ -4,9 +4,10 @@
 # use github api to create the tag and push it to the repo
 
 on:
-  push:
-    branches:
-      - release/*
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - release/*
 
 jobs:
   tag:
