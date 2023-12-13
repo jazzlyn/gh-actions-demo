@@ -56,8 +56,8 @@ jobs:
       runner: '["ubuntu-latest"]'
       subpath: nginx
       tags: |
-        type=ref,event=tag,priority=300
-        type=ref,event=branch,suffix={{sha}}-priority=200
+        type=ref, event=tag, priority=300
+        type=ref, event=branch,suffix=-{{sha}}, priority=200
         ${{ github.sha }}, priority=100
 
   tag-image-github:
