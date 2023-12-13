@@ -57,8 +57,8 @@ jobs:
       subpath: nginx
       tags: |
         type=ref,event=tag,priority=300
-        type=ref,event=push,refs/heads/release/*,priority=200
-        type=ref,event=push,refs/heads/hotfix/*,priority=200
+        type=ref,event=push,refs/heads/release,priority=200
+        type=ref,event=push,refs/heads/hotfix,priority=200
         ${{ github.sha }}, priority=100
 
   tag-image-github:
