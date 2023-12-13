@@ -13,7 +13,7 @@
       permissions:
         contents: write
         pull-requests: write
-      uses: strg-at/github-workflows/.github/workflows/auto-pr.yaml@feature/NOENT-3772-create-auto-pr-workflow
+      uses: strg-at/github-workflows/.github/workflows/auto-pr.yaml@v1.0.0
       with:
         runner: '["ubuntu-latest"]'
         branch: main
