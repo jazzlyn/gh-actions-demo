@@ -94,7 +94,7 @@ jobs:
 
   staging-dispatch:
     needs: [environment, docker-build-push, tag-image-github]
-    if: ${{ always() && (needs.docker-build-push.result == 'success' || needs.tag-image-github.result == 'success') && needs.environment.outputs.target == 'staging' }}
+    if: ${{ always() && needs.environment.outputs.target == 'staging' }}
     name: ${{ needs.environment.outputs.target }}
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v1.0.0"
     with:
