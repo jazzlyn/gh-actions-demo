@@ -19,3 +19,4 @@ RUN npm ci --omit=dev
 
 USER node
 CMD [ "npm", "run", "service"]
+c
