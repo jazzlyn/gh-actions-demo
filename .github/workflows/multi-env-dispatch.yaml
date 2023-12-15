@@ -106,10 +106,9 @@ jobs:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
-
   production-dispatch:
-    needs: [environment, tag-image-github]
-    if: ${{ needs.tag-image-github.result == 'success' && needs.environment.outputs.target == 'production' }}
+    needs: [environment, docker-build-push, tag-image-github]
+    if: ${{ always() && (needs.docker-build-push.result == 'success' || needs.tag-image-github.result == 'success') && needs.environment.outputs.target == 'production' }}
     name: ${{ needs.environment.outputs.target }}
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v1.0.0"
     with:
