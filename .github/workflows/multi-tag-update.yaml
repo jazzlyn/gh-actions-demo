@@ -87,8 +87,7 @@ jobs:
 
       # https://github.com/marketplace/actions/create-branch
       - name: create branch
-        id: create-branch
-        if: ${{ inputs.create-pr }} && steps.branch-does-not-exist.outcome == 'success'
+        if: ${{ inputs.create-pr && steps.branch-does-not-exist.outcome == 'success' }}
         uses: peterjgrainger/action-create-branch@v2.4.0
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
