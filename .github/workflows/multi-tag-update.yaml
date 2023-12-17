@@ -101,7 +101,7 @@ jobs:
         uses: tyriis/multi-file-commit@v0.3.11
         with:
           token: ${{ steps.generate-token.outputs.token }}
-          ref: ${{ inputs.source-branch || github.ref_name }}
+          ref: ${{ github.ref_name }}
           message: ${{ inputs.commit-message }}
 
       # https://github.com/marketplace/actions/pull-request-action
