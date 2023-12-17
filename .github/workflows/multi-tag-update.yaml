@@ -22,13 +22,12 @@ on:
         required: false
         type: boolean
         default: true
-      branch-name:
-        description: "branch-name, f.e. release/update-image"
+      source-branch:
+        description: "head ref or source-branch for pr,  f.e. release/update-image"
         required: false
         type: string
-        default: "release/update-image"
-      destination-branch:
-        description: "destination-branch, f.e. main"
+      target-branch:
+        description: "target-branch for pr, f.e. main"
         required: false
         type: string
         default: main
@@ -85,7 +84,7 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ steps.generate-token.outputs.token }}"\
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/${{ github.repository }}/branches/${{ inputs.branch-name }} | grep "HTTP/2 404"
+            https://api.github.com/repos/${{ github.repository }}/branches/${{ inputs.source-branch }} | grep "HTTP/2 404"
 
       # https://github.com/marketplace/actions/create-branch
       - name: create branch
@@ -95,7 +94,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
-          branch: refs/heads/${{ inputs.branch-name }}
+          branch: refs/heads/${{ inputs.source-branch }}
           sha: ${{ github.sha }}
 
       # https://github.com/marketplace/actions/multi-file-commit
@@ -104,7 +103,7 @@ jobs:
         uses: tyriis/multi-file-commit@v0.3.11
         with:
           token: ${{ steps.generate-token.outputs.token }}
-          ref: ${{ inputs.branch-name || github.ref_name }}
+          ref: ${{ inputs.source-branch || github.ref_name }}
           message: ${{ inputs.commit-message }}
 
       # https://github.com/marketplace/actions/pull-request-action
@@ -113,8 +112,8 @@ jobs:
         uses: vsoch/pull-request-action@1.1.0
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-          PULL_REQUEST_BRANCH: ${{ inputs.destination-branch }}
-          PULL_REQUEST_FROM_BRANCH: ${{ inputs.branch-name }}
+          PULL_REQUEST_BRANCH: ${{ inputs.target-branch }}
+          PULL_REQUEST_FROM_BRANCH: ${{ inputs.source-branch }}
           PULL_REQUEST_TITLE: ${{ inputs.pr-title }}
           PULL_REQUEST_BODY: ${{ inputs.pr-body }}
           PULL_REQUEST_UPDATE: "true"
