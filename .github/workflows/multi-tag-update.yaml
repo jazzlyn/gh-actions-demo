@@ -8,15 +8,25 @@ on:
         description: "f.e. github.sha"
         required: true
         type: string
+      tag-path:
+        description: "path to image tag in yaml"
+        required: false
+        type: string
+        default: ".spec.values.image.tag"
       file-path:
         description: "tag-update/testfile.yaml"
         required: true
         type: string
+      create-pr:
+        description: "true | false"
+        required: false
+        type: boolean
+        default: true
       branch-name:
         description: "release/tag"
         required: false
         type: string
-        default: "release/update-helm-image"
+        default: "release/update-image"
       destination-branch:
         description: "main"
         required: false
@@ -26,7 +36,12 @@ on:
         description: "release: tag"
         required: false
         type: string
-        default: "automated pr for updating helm image"
+        default: "automated pr for updating image tag"
+      pr-body:
+        description: "pr body, default empty"
+        required: false
+        type: string
+        default: ""
       commit-message:
         description: "release: tag"
         required: false
@@ -34,8 +49,8 @@ on:
         default: "chore: update"
 
 jobs:
-  tag-update-helm:
-    name: helm
+  tag-update:
+    name: tag-update
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -44,15 +59,11 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@v4.1.1
 
-      # https://github.com/marketplace/actions/install-gh-cli
-      - name: install github cli
-        uses: dev-hanz-ops/install-gh-cli-action@v0.1.0
-
       # https://github.com/marketplace/actions/setup-yq
-      - name: update image tag of helm-release
+      - name: update image tag of release
         uses: mikefarah/yq@v4.35.2
         with:
-          cmd: yq -i '.spec.values.image.tag = "${{ inputs.tag }}"' ${{ inputs.file-path }}
+          cmd: yq -i '${{ inputs.tag-path }} = "${{ inputs.tag }}"' ${{ inputs.file-path }}
 
       # https://github.com/marketplace/actions/github-app-token
       - name: generate token
@@ -66,8 +77,20 @@ jobs:
           app_id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
           private_key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
+      - name: ensure branch does not exist
+        if: ${{ inputs.create-pr }}
+        id: branch-does-not-exist
+        run: |
+          curl -I \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ steps.generate-token.outputs.token }}"\
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/${{ github.repository }}/branches/${{ inputs.branch-name }} | grep "HTTP/2 404"
+
       # https://github.com/marketplace/actions/create-branch
       - name: create branch
+        id: create-branch
+        if: ${{ inputs.create-pr }} && steps.branch-does-not-exist.outcome == 'success'
         uses: peterjgrainger/action-create-branch@v2.4.0
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
@@ -81,14 +104,17 @@ jobs:
         uses: tyriis/multi-file-commit@v0.3.11
         with:
           token: ${{ steps.generate-token.outputs.token }}
-          ref: ${{ inputs.branch-name }}
+          ref: ${{ inputs.branch-name || github.ref_name }}
           message: ${{ inputs.commit-message }}
 
+      # https://github.com/marketplace/actions/pull-request-action
       - name: create pr
-        uses: vsoch/pull-request-action@1.0.24
+        if: ${{ inputs.create-pr }}
+        uses: vsoch/pull-request-action@1.1.0
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-          PULL_REQUEST_BRANCH: main
+          PULL_REQUEST_BRANCH: ${{ inputs.destination-branch }}
           PULL_REQUEST_FROM_BRANCH: ${{ inputs.branch-name }}
           PULL_REQUEST_TITLE: ${{ inputs.pr-title }}
+          PULL_REQUEST_BODY: ${{ inputs.pr-body }}
           PULL_REQUEST_UPDATE: "true"
