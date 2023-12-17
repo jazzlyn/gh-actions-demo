@@ -3,13 +3,13 @@ name: multi-env-dispatch
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - release/**
-      - hotfix/**
-    tags:
-      - "v*.*.*"
+  # push:
+  #   branches:
+  #     - main
+  #     - release/**
+  #     - hotfix/**
+  #   tags:
+  #     - "v*.*.*"
 
 env:
   ENVIRONMENT: null
