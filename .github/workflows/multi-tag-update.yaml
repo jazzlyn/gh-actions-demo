@@ -23,14 +23,13 @@ on:
         type: boolean
         default: true
       source-branch:
-        description: "head ref or source-branch for pr,  f.e. release/update-image"
+        description: "source-branch for pr,  f.e. release/2010.01.01"
         required: false
         type: string
       target-branch:
         description: "target-branch for pr, f.e. main"
         required: false
         type: string
-        default: main
       pr-title:
         description: "pr-title, f.e. release: tag"
         required: false
