@@ -5,45 +5,45 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "f.e. github.sha"
+        description: "tag, f.e. github.sha"
         required: true
         type: string
       tag-path:
-        description: "path to image tag in yaml"
+        description: "tag-path in yaml, f.e. .spec.values.image.tag"
         required: false
         type: string
         default: ".spec.values.image.tag"
       file-path:
-        description: "tag-update/testfile.yaml"
+        description: "file-path, f.e. tag-update/testfile.yaml"
         required: true
         type: string
       create-pr:
-        description: "true | false"
+        description: "create pr, boolean"
         required: false
         type: boolean
         default: true
       branch-name:
-        description: "release/tag"
+        description: "branch-name, f.e. release/update-image"
         required: false
         type: string
         default: "release/update-image"
       destination-branch:
-        description: "main"
+        description: "destination-branch, f.e. main"
         required: false
         type: string
         default: main
       pr-title:
-        description: "release: tag"
+        description: "pr-title, f.e. release: tag"
         required: false
         type: string
         default: "automated pr for updating image tag"
       pr-body:
-        description: "pr body, default empty"
+        description: "pr-body, default empty"
         required: false
         type: string
         default: ""
       commit-message:
-        description: "release: tag"
+        description: "commit-message, f.e. release: tag"
         required: false
         type: string
         default: "chore: update"
