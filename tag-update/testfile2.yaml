@@ -3,4 +3,4 @@ spec:
   values:
     image:
       repository: testrepo
-      tag: "test-4"
+      tag: "test-5"
