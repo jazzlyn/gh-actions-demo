@@ -22,12 +22,13 @@ on:
         required: false
         type: boolean
         default: true
-      source-branch:
-        description: "source-branch for pr,  f.e. release/2010.01.01"
+      commit-branch:
+        description: "branch where commit will be pushed to,  f.e. release/2010.01.01 or main"
         required: false
         type: string
+        default: "main"
       target-branch:
-        description: "target-branch for pr, f.e. main"
+        description: "target-branch if pr, f.e. main"
         required: false
         type: string
       pr-title:
@@ -79,10 +80,10 @@ jobs:
         if: ${{ inputs.create-pr }}
         id: branch-exists
         run: |
-          if [[ -n $(git ls-remote --heads origin ${{ inputs.source-branch }}) ]]; then
-            echo "::set-output name=branch_exists::true"
+          if [[ -n $(git ls-remote --heads origin ${{ inputs.commit-branch }}) ]]; then
+            echo "branch_exists=true" >> "$GITHUB_OUTPUT"
           else
-            echo "::set-output name=branch_exists::false"
+            echo "branch_exists=false" >> "$GITHUB_OUTPUT"
           fi
 
       # https://github.com/marketplace/actions/create-branch
@@ -92,7 +93,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
-          branch: refs/heads/${{ inputs.source-branch }}
+          branch: refs/heads/${{ inputs.commit-branch }}
           sha: ${{ github.sha }}
 
       # https://github.com/marketplace/actions/multi-file-commit
@@ -111,7 +112,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           PULL_REQUEST_BRANCH: ${{ inputs.target-branch }}
-          PULL_REQUEST_FROM_BRANCH: ${{ inputs.source-branch }}
+          PULL_REQUEST_FROM_BRANCH: ${{ inputs.commit-branch }}
           PULL_REQUEST_TITLE: ${{ inputs.pr-title }}
           PULL_REQUEST_BODY: ${{ inputs.pr-body }}
           PULL_REQUEST_UPDATE: "true"
