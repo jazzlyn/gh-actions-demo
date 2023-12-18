@@ -11,6 +11,9 @@ on:
   #   tags:
   #     - "v*.*.*"
 
+concurrency:
+  group: ${{ github.repository }}-${{ github.sha }}
+
 env:
   ENVIRONMENT: null
 
@@ -57,7 +60,7 @@ jobs:
       subpath: nginx
       tags: |
         type=ref, event=tag, priority=300
-        type=ref, event=branch,suffix=-{{sha}}, priority=200
+        type=ref, event=branch,suffix=-{{sha}}-{{date 'YYMMDD-HHmmss'}}, priority=200
         ${{ github.sha }}, priority=100
 
   tag-image-github:
@@ -77,7 +80,7 @@ jobs:
 
   integration-dispatch:
     needs: [environment, docker-build-push, tag-image-github]
-    if: ${{ always() && needs.environment.outputs.target == 'integration' }}
+    if: ${{ always() && (needs.docker-build-push.result == 'success' || needs.tag-image-github.result == 'success') && needs.environment.outputs.target == 'integration' }}
     name: ${{ needs.environment.outputs.target }}
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v1.0.0"
     with:
@@ -91,7 +94,7 @@ jobs:
 
   staging-dispatch:
     needs: [environment, docker-build-push, tag-image-github]
-    if: ${{ always() && needs.environment.outputs.target == 'staging' }}
+    if: ${{ always() && (needs.docker-build-push.result == 'success' || needs.tag-image-github.result == 'success') && needs.environment.outputs.target == 'staging' }}
     name: ${{ needs.environment.outputs.target }}
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v1.0.0"
     with:
@@ -103,10 +106,9 @@ jobs:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
-
   production-dispatch:
     needs: [environment, docker-build-push, tag-image-github]
-    if: ${{ always() && needs.environment.outputs.target == 'production' }}
+    if: ${{ always() && (needs.docker-build-push.result == 'success' || needs.tag-image-github.result == 'success') && needs.environment.outputs.target == 'production' }}
     name: ${{ needs.environment.outputs.target }}
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v1.0.0"
     with:
