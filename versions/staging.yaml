@@ -1,7 +1,7 @@
 app:
   chart: 1.0.0-rc
   backend:
-    code: tag-here-rc
+    code: v2010.1.5-rc2
     memcached: 1-alpine
   frontend:
     code: 0.0.1-rc
