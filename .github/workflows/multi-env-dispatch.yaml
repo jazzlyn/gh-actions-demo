@@ -61,7 +61,7 @@ jobs:
       subpath: nginx
       tags: |
         type=ref, event=tag, priority=300
-        ${{ startsWith(github.ref, 'refs/heads/release') || startsWith(github.ref, 'refs/heads/hotfix') }}type=ref, event=branch,suffix=-{{sha}}-{{date 'YYMMDD-HHmmss'}}, priority=200
+        ${{ startsWith(github.ref, 'refs/heads/release') || startsWith(github.ref, 'refs/heads/hotfix') && 'type=ref, event=branch,suffix=-{{sha}}-{{date "YYMMDD-HHmmss"}}' }}, priority=200
         ${{ github.sha }}, priority=100
 
   tag-image-github:
