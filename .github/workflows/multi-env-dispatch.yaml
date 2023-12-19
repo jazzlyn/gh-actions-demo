@@ -28,14 +28,14 @@ jobs:
           echo "ENVIRONMENT=integration" >> $GITHUB_ENV
 
       - name: set env to staging
-        if: ${{ startsWith(github.ref, 'refs/tags/') && (contains(github.ref, '-RC') || contains(github.ref, 'v0.')) }}
+        if: ${{ startsWith(github.ref, 'refs/tags/') && (contains(github.ref, '-rc') || contains(github.ref, 'v0.')) }}
         run: |
           echo "ENVIRONMENT=staging" >> $GITHUB_ENV
 
-      # - name: set env to production
-      #   if: ${{ startsWith(github.ref, 'refs/tags/') && !contains(github.ref, '-RC') && !contains(github.ref, 'v0.') }}
-      #   run: |
-      #     echo "ENVIRONMENT=production" >> $GITHUB_ENV
+      - name: set env to production
+        if: ${{ startsWith(github.ref, 'refs/tags/') && !contains(github.ref, '-RC') && !contains(github.ref, 'v0.') }}
+        run: |
+          echo "ENVIRONMENT=production" >> $GITHUB_ENV
 
   check-image-exists:
     permissions:
@@ -68,7 +68,7 @@ jobs:
       id-token: write
       packages: write
     needs: [check-image-exists]
-    if: ${{ needs.check-image-exists.outputs.tag == 'found' && startsWith(github.ref, 'refs/tags/') }}
+    if: ${{ needs.check-image-exists.outputs.tag == 'found' }}
     name: "retag image"
     uses: "strg-at/github-workflows/.github/workflows/tag-image-github.yaml@v1.0.0"
     with:
@@ -98,7 +98,7 @@ jobs:
     uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@v1.0.0"
     with:
       runner: '["ubuntu-latest"]'
-      tag: ${{ fromJSON(needs.docker-build-push.outputs.metadata).labels['org.opencontainers.image.version'] }}
+      tag: ${{  github.ref_name }}
       repository: jazzlyn/gh-actions-demo
       dispatch-event: ${{ needs.environment.outputs.target }}-nginx
     secrets:

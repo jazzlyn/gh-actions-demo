@@ -3,31 +3,38 @@ name: tag-update
 
 on:
   workflow_dispatch:
-  # repository_dispatch:
-  #   types: [integration-nginx]
+  repository_dispatch:
+    types:
+      - integration-nginx
+      - staging-nginx
 
 jobs:
-  dump_contexts_to_log:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Dump GitHub context
-        id: github_context_step
-        run: |
-          echo '${{ toJSON(github) }}'
-          echo '${{ github.triggering_actor }}'
-          echo '${{ github.actor }}'
-
-  tag-update:
+  integration-tag-update:
     if: ${{ github.event.action == 'integration-nginx' }}
-    uses: "strg-at/github-workflows/.github/workflows/tag-update-helm-image.yaml@8154d53d25773fc9aba1ffb5cbbfea6ad4302c91"
+    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@feature/NOENT-3682-setup-value-updater-yaml"
     with:
       runner: '["ubuntu-latest"]'
-      tag: ${{ github.event.client_payload.tag }}
-      file-path: tag-update/testfile.yaml
-      create-pr: true
-      pr-title: "release: ${{ github.event.client_payload.tag }}"
-      commit-message: "release: ${{ github.event.client_payload.tag }}"
-      branch-name: "release/${{ github.event.client_payload.tag }}"
+      value: ${{ github.event.client_payload.tag }}
+      value-path: .app.backend.code
+      file-path: versions/integration.yaml
+      create-pr: false
+      commit-branch: main
+      commit-message: "release(backend): update integration to ${{ github.event.client_payload.tag }}"
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
+  staging-tag-update:
+    if: ${{ github.event.action == 'staging-nginx' }}
+    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@feature/NOENT-3682-setup-value-updater-yaml"
+    with:
+      runner: '["ubuntu-latest"]'
+      value: ${{ github.event.client_payload.tag }}
+      value-path: .app.backend.code
+      file-path: versions/test.yaml
+      create-pr: false
+      commit-branch: main
+      commit-message: "release(backend): update staging to ${{ github.event.client_payload.tag }}"
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}

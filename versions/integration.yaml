@@ -1,0 +1,8 @@
+app:
+  chart: 1.0.0
+  backend:
+    code: tag-here
+    memcached: 1-alpine
+  frontend:
+    code: 0.0.1
+    memcached: 1-alpine
