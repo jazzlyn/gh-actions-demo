@@ -1,7 +1,7 @@
 app:
   chart: 1.0.0
   backend:
-    code: d8edbf7b8fa4029d98e0b927634d82fc0ae5c16d
+    code: 963787dad54f8567ee48bc98431cbb031af98190
     memcached: 1-alpine
   frontend:
     code: 0.0.1
