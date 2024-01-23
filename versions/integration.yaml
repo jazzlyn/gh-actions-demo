@@ -4,8 +4,8 @@ app:
     code: 81ce861bc14636e9e6bb0154fa2a62ce43da4f1d
     memcached: 1-alpine
   frontend:
-    code: d911beca07da7fe1df197acb4680b134e3b702f0
+    code: defd1e7a8046ac0d18c152aaf736704debda5b93
     memcached: 1-alpine
   api:
-    code: 0.0.1
+    code: 63095ed777d24e66f21fcf6940e2d8befd0b6a31
     memcached: 1-alpine
