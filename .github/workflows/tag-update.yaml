@@ -6,35 +6,50 @@ on:
   repository_dispatch:
     types:
       - integration-nginx
-      - staging-nginx
+      # - staging-nginx
 
 jobs:
-  integration-tag-update:
+  integration-tag-update-backend:
     if: ${{ github.event.action == 'integration-nginx' }}
-    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@feature/NOENT-3682-setup-value-updater-yaml"
+    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@v1.3.1"
     with:
       runner: '["ubuntu-latest"]'
       value: ${{ github.event.client_payload.tag }}
       value-path: .app.backend.code
       file-path: versions/integration.yaml
       create-pr: false
-      commit-branch: ${{ github.ref_name}}
+      commit-branch: main
       commit-message: "release(backend): update integration to ${{ github.event.client_payload.tag }}"
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
-  staging-tag-update:
-    if: ${{ github.event.action == 'staging-nginx' }}
-    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@feature/NOENT-3682-setup-value-updater-yaml"
+  integration-tag-update-frontend:
+    if: ${{ github.event.action == 'integration-nginx' }}
+    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@v1.3.1"
     with:
       runner: '["ubuntu-latest"]'
       value: ${{ github.event.client_payload.tag }}
-      value-path: .app.backend.code
-      file-path: versions/staging.yaml
+      value-path: .app.frontend.code
+      file-path: versions/integration.yaml
       create-pr: false
-      commit-branch: ${{ github.ref_name}}
-      commit-message: "release(backend): update staging to ${{ github.event.client_payload.tag }}"
+      commit-branch: main
+      commit-message: "release(frontend): update integration to ${{ github.event.client_payload.tag }}"
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
+  integration-tag-update-api:
+    if: ${{ github.event.action == 'integration-nginx' }}
+    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@v1.3.1"
+    with:
+      runner: '["ubuntu-latest"]'
+      value: ${{ github.event.client_payload.tag }}
+      value-path: .app.api.code
+      file-path: versions/integration.yaml
+      create-pr: false
+      commit-branch: main
+      commit-message: "release(api): update integration to ${{ github.event.client_payload.tag }}"
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}

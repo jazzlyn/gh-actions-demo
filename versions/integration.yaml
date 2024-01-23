@@ -6,3 +6,6 @@ app:
   frontend:
     code: 0.0.1
     memcached: 1-alpine
+  api:
+    code: 0.0.1
+    memcached: 1-alpine
