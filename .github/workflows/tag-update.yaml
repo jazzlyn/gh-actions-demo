@@ -3,10 +3,6 @@ name: tag-update
 
 on:
   workflow_dispatch:
-  repository_dispatch:
-    types: []
-      # - integration-nginx
-      # - staging-nginx
 
 jobs:
   integration-tag-update-backend:
