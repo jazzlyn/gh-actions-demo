@@ -1,10 +1,10 @@
 app:
   chart: 1.0.0
   backend:
-    code: 963787dad54f8567ee48bc98431cbb031af98190
+    code: 81ce861bc14636e9e6bb0154fa2a62ce43da4f1d
     memcached: 1-alpine
   frontend:
-    code: 81ce861bc14636e9e6bb0154fa2a62ce43da4f1d
+    code: d911beca07da7fe1df197acb4680b134e3b702f0
     memcached: 1-alpine
   api:
     code: 0.0.1
