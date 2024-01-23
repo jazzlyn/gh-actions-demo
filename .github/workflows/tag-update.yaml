@@ -11,7 +11,7 @@ on:
 jobs:
   integration-tag-update-backend:
     if: ${{ github.event.action == 'integration-nginx' }}
-    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@main"
+    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@bugfix/INPRO-2056-tag-update-parallel-race-condition"
     with:
       runner: '["ubuntu-latest"]'
       value: ${{ github.event.client_payload.tag }}
@@ -26,7 +26,7 @@ jobs:
 
   integration-tag-update-frontend:
     if: ${{ github.event.action == 'integration-nginx' }}
-    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@main"
+    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@bugfix/INPRO-2056-tag-update-parallel-race-condition"
     with:
       runner: '["ubuntu-latest"]'
       value: ${{ github.event.client_payload.tag }}
@@ -41,7 +41,7 @@ jobs:
 
   integration-tag-update-api:
     if: ${{ github.event.action == 'integration-nginx' }}
-    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@main"
+    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@bugfix/INPRO-2056-tag-update-parallel-race-condition"
     with:
       runner: '["ubuntu-latest"]'
       value: ${{ github.event.client_payload.tag }}
