@@ -7,5 +7,5 @@ app:
     code: defd1e7a8046ac0d18c152aaf736704debda5b93
     memcached: 1-alpine
   api:
-    code: 0.0.1
+    code: 63095ed777d24e66f21fcf6940e2d8befd0b6a31
     memcached: 1-alpine
