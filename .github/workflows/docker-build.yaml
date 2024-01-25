@@ -2,16 +2,15 @@
 name: docker-build
 
 on:
-  workflow_dispatch:
-    inputs:
-      platforms:
-        description: "multi-platform images"
-        required: false
-        type: string
+  pull_request:
+    types:
+      - opened
+      - synchronize
+    paths-ignore:
+      - .github/**
 
 jobs:
   docker-build:
-    uses: "strg-at/github-workflows/.github/workflows/docker-build.yaml@v0.13.0"
+    uses: "strg-at/github-workflows/.github/workflows/docker-build.yaml@v1.3.2"
     with:
       runner: '["ubuntu-latest"]'
-      platforms: ${{ inputs.platforms }}
