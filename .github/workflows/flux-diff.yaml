@@ -10,7 +10,7 @@ on:
 
 jobs:
   flux-diff:
-    uses: strg-at/github-workflows/.github/workflows/flux-diff.yaml@8154d53d25773fc9aba1ffb5cbbfea6ad4302c91
+    uses: strg-at/github-workflows/.github/workflows/flux-diff.yaml@495f55328e4384bbe19d9e06b92589401bd9c5b5
     with:
       runner: '["ubuntu-latest"]'
       path: '["oci"]'
