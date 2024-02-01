@@ -5,5 +5,4 @@
     "github>strg-at/renovate-config//pre-commit/silent-automerge.json5",
     "github>strg-at/renovate-config//terraform/silent-automerge.json5",
   ],
-  platform: "github",
 }
