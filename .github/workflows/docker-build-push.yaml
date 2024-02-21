@@ -55,6 +55,8 @@ jobs:
         with:
           images: ${{ env.image-path }}
           tags: ${{ github.sha }}
+          flavor: |
+            latest=true
 
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: build and push docker image
