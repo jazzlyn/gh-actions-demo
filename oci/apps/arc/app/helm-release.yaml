@@ -30,11 +30,11 @@ spec:
       spec:
         containers:
           - name: runner
-            image: ghcr.io/strg-at/containers/actions-runner:759e136f7d2731c72e55fa2b0a1d909f83ba3b51
+            image: ghcr.io/jazzlyn/gh-actions-demo/app-one:dd5d3e4b27a51e11a5b310c3073050d7dbe35734
             command: ["/home/runner/run.sh"]
           - name: runner
-            image: ghcr.io/strg-at/containers/actions-runner@sha256:e9ab1c8203ed4e93cd4f8c879560a64ce32aafa5b20ac95b00227f50867b5e50
+            image: ghcr.io/jazzlyn/gh-actions-demo/app-one@sha256:192a47c696a17ce389484d272fe97d192876995bcbd18e217114d1228de09848
             command: ["/home/runner/run.sh"]
           - name: runner
-            image: ghcr.io/strg-at/containers/actions-runner:latest@sha256:e9ab1c8203ed4e93cd4f8c879560a64ce32aafa5b20ac95b00227f50867b5e50
+            image: ghcr.io/jazzlyn/gh-actions-demo/app-one:latest@sha256:192a47c696a17ce389484d272fe97d192876995bcbd18e217114d1228de09848
             command: ["/home/runner/run.sh"]
