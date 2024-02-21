@@ -54,9 +54,9 @@ jobs:
         uses: docker/metadata-action@v4.6.0
         with:
           images: ${{ env.image-path }}
-          tags: ${{ github.sha }}
-          flavor: |
-            latest=true
+          tags: |
+            ${{ github.sha }}
+            type=raw, value=rolling
 
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: build and push docker image
