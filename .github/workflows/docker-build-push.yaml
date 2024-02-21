@@ -3,9 +3,11 @@ name: docker-build-push
 
 on:
   workflow_dispatch:
-  # push:
-  #   tags:
-  #     - "v*.*.*"
+    inputs:
+      subpath:
+        description: "path to directory containing the Dockerfile file, f.e. postgres-db-init"
+        required: true
+        type: string
 
 jobs:
   docker-build-push-github:
@@ -16,9 +18,9 @@ jobs:
       id-token: write
       packages: write
     env:
-      subpath: test
-      container-path: /app
-      image-path: ghcr.io/${{ github.repository }}/test
+      image-path: ghcr.io/${{ github.repository }}/${{ inputs.subpath }}
+    outputs:
+      metadata: ${{ steps.meta.outputs.json }}
 
     steps:
       # https://github.com/marketplace/actions/checkout
@@ -52,7 +54,7 @@ jobs:
         uses: docker/metadata-action@v4.6.0
         with:
           images: ${{ env.image-path }}
-          tags: ${{ github.ref_name }}
+          tags: ${{ github.sha }}
 
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: build and push docker image
@@ -60,23 +62,11 @@ jobs:
         uses: docker/build-push-action@v4.2.1
         with:
           push: true
+          file: ${{ inputs.subpath }}/Dockerfile
+          context: ${{ inputs.subpath }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
       # https://github.com/sigstore/cosign
       - name: sign the published docker image
         run: cosign sign --yes ${{ env.image-path }}@${{ steps.build-and-push.outputs.digest }}
-
-      - name: extract build assets
-        run: |
-          docker pull ${{ env.image-path }}:${{ github.ref_name }}
-          CONTAINER_ID=$(docker create ${{ env.image-path }}:${{ github.ref_name }})
-          docker cp ${CONTAINER_ID}:${{ env.container-path }} .
-          tar -czvf ${{ env.subpath }}-${{ github.ref_name }}.tar.gz .${{ env.container-path }}
-
-      # https://github.com/marketplace/actions/upload-a-build-artifact
-      - name: upload artifact
-        uses: actions/upload-artifact@v3.1.3
-        with:
-          name: ${{ env.subpath }}-${{ github.ref_name }}.tar.gz
-          path: ${{ env.subpath }}-${{ github.ref_name }}.tar.gz
