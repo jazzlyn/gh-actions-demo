@@ -5,8 +5,10 @@ namespace: default
 resources:
   # https://github.com/keycloak/keycloak-k8s-resources
   # renovate: depName=keycloak/keycloak-k8s-resources datasource=github-tags extractVersion=^.*\/(?<version>\d+\.\d+\.\d+)\/.*$
-  - https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/23.0.6/kubernetes/keycloaks.k8s.keycloak.org-v1.yml
+  - https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/23.0.5/kubernetes/keycloaks.k8s.keycloak.org-v1.yml
   # renovate: depName=keycloak/keycloak-k8s-resources datasource=github-tags extractVersion=^.*\/(?<version>\d+\.\d+\.\d+)\/.*$
-  - https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/23.0.6/kubernetes/keycloakrealmimports.k8s.keycloak.org-v1.yml
+  - https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/23.0.5/kubernetes/keycloakrealmimports.k8s.keycloak.org-v1.yml
   # renovate: depName=keycloak/keycloak-k8s-resources datasource=github-tags extractVersion=^.*\/(?<version>\d+\.\d+\.\d+)\/.*$
-  - https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/23.0.6/kubernetes/kubernetes.yml
+  - https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/23.0.5/kubernetes/kubernetes.yml
+
+  # renovate: depName=tyriis/bedrock-tags datasource=github-releases versioning=loose extractVersion=^(?<version>.*)$
