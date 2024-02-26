@@ -60,7 +60,7 @@ jobs:
 
       # https://github.com/marketplace/actions/setup-yq
       - name: update image tag of release
-        uses: mikefarah/yq@v4.41.1
+        uses: mikefarah/yq@v4.42.1
         with:
           cmd: yq -i '${{ inputs.tag-path }} = "${{ inputs.tag }}"' ${{ inputs.file-path }}
 
