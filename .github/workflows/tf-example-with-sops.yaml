@@ -42,7 +42,7 @@ jobs:
 
       # https://github.com/marketplace/actions/hashicorp-setup-terraform
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2.0.3
+        uses: hashicorp/setup-terraform@v3.0.0
 
       # --------------------------------------------------------------------------------
       # AUTHENTICATE KMS SA AND ADD SECRETS TO ENV
