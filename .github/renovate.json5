@@ -16,13 +16,13 @@
   //     depNameTemplate: "keycloak/keycloak-k8s-resources",
   //   },
   // ],
-  packageRules: [
-    // {
-    //   matchPackageNames: ["keycloak/keycloak-k8s-resources"],
-    //   matchDatasources: ["github-tags"],
-    //   automerge: true,
-    //   matchUpdateTypes: ["minor", "patch"],
-    //   automergeType: "pr",
-    // },
-  ],
+  // packageRules: [
+  //   {
+  //     matchPackageNames: ["keycloak/keycloak-k8s-resources"],
+  //     matchDatasources: ["github-tags"],
+  //     automerge: true,
+  //     matchUpdateTypes: ["minor", "patch"],
+  //     automergeType: "pr",
+  //   },
+  // ],
 }
