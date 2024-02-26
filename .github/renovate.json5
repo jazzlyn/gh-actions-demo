@@ -4,25 +4,25 @@
     "github>strg-at/renovate-config//github-actions/silent-automerge.json5",
     "github>strg-at/renovate-config//pre-commit/silent-automerge.json5",
     "github>strg-at/renovate-config//terraform/silent-automerge.json5",
-    //"github>tyriis/renovate-config//generic-regex-manager.json5",
   ],
-  regexManagers: [
+  customManagers: [
     {
+      customType: "regex",
       fileMatch: ["^oci/.*/kustomization\\.yaml$"],
       matchStrings: [
         "https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/(?<currentValue>\\d+.\\d+.\\d+)/.+"
       ],
-      datasourceTemplate: "github-tags",
       depNameTemplate: "keycloak/keycloak-k8s-resources",
+      datasourceTemplate: "github-tags",
     },
   ],
-  // packageRules: [
-  //   {
-  //     matchPackageNames: ["keycloak/keycloak-k8s-resources"],
-  //     matchDatasources: ["github-tags"],
-  //     automerge: false,
-  //     matchUpdateTypes: ["minor", "patch"],
-  //     automergeType: "pr",
-  //   },
-  // ],
+  packageRules: [
+    {
+      matchPackageNames: ["keycloak/keycloak-k8s-resources"],
+      matchDatasources: ["github-tags"],
+      automerge: true,
+      matchUpdateTypes: ["minor", "patch"],
+      automergeType: "pr",
+    },
+  ],
 }
