@@ -13,7 +13,6 @@
       ],
       datasourceTemplate: "github-tags",
       depNameTemplate: "keycloak/keycloak-k8s-resources",
-      versioningTemplate: "auto"
     }
   ]
 }
