@@ -7,7 +7,7 @@
   ],
   regexManagers: [
     {
-      fileMatch: ["^kubernetes/.*/kustomization\\.yaml$"],
+      fileMatch: ["^oci/.*/kustomization\\.yaml$"],
       matchStrings: [
         "https://raw\\.githubusercontent\\.com/keycloak/keycloak-k8s-resources/(?<currentValue>.+)/"
       ],
