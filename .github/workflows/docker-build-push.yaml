@@ -51,7 +51,7 @@ jobs:
       # https://github.com/marketplace/actions/docker-metadata-action
       - name: extract metadata for docker
         id: meta
-        uses: docker/metadata-action@v4.6.0
+        uses: docker/metadata-action@v5.5.1
         with:
           images: ${{ env.image-path }}
           tags: |
