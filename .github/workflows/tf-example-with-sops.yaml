@@ -21,7 +21,7 @@ jobs:
     steps:
       # https://github.com/marketplace/actions/checkout
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # --------------------------------------------------------------------------------
       # SETUP STUFF
@@ -36,13 +36,13 @@ jobs:
       # for terraform fmt
       # https://github.com/marketplace/actions/setup-node-js-environment
       - name: Setup Node.js
-        uses: actions/setup-node@v3.8.2
+        uses: actions/setup-node@v4.0.2
         with:
           node-version: 18
 
       # https://github.com/marketplace/actions/hashicorp-setup-terraform
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2.0.3
+        uses: hashicorp/setup-terraform@v3.0.0
 
       # --------------------------------------------------------------------------------
       # AUTHENTICATE KMS SA AND ADD SECRETS TO ENV
@@ -51,7 +51,7 @@ jobs:
       # https://github.com/marketplace/actions/authenticate-to-google-cloud
       - name: Authenticate to Google Cloud
         id: auth-kms
-        uses: "google-github-actions/auth@v1.3.0"
+        uses: "google-github-actions/auth@v2.1.2"
         with:
           workload_identity_provider: "${{ secrets.GH_WORKLOAD_IDENTITY_PATH }}"
           service_account: "${{ secrets.GH_ACTION_KMS_SA }}"
@@ -104,7 +104,7 @@ jobs:
       # https://github.com/marketplace/actions/authenticate-to-google-cloud
       - name: Authenticate to Google Cloud for infra
         id: auth-infra
-        uses: "google-github-actions/auth@v1.3.0"
+        uses: "google-github-actions/auth@v2.1.2"
         with:
           workload_identity_provider: "${{ secrets.GH_WORKLOAD_IDENTITY_PATH }}"
           service_account: "${{ secrets.GH_ACTION_GCLOUD_INFRA_SA }}"

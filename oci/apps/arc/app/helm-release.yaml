@@ -30,5 +30,5 @@ spec:
       spec:
         containers:
           - name: runner
-            image: ghcr.io/jazzlyn/gh-actions-demo/app-one:rolling@sha256:197532122bb145fc4fdce07b7ef5c7e6731034e684fdb84efee795fb8c75fe04
+            image: ghcr.io/jazzlyn/gh-actions-demo/app-one:rolling@sha256:57006f36027a3ed8850d0e244279e195ed1c99cc8d4e7e11d0640e81922ab36a
             command: ["/home/runner/run.sh"]

@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: generate Token
-        uses: tibdex/github-app-token@v1.8.0
+        uses: tibdex/github-app-token@v2.1.0
         id: generate-token
         with:
           app_id:  ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
@@ -37,7 +37,7 @@ jobs:
 
       # https://github.com/marketplace/actions/checkout
       - name: Checkout
-        uses: actions/checkout@v3.5.0
+        uses: actions/checkout@v4.1.1
         with:
           token: "${{ steps.generate-token.outputs.token }}"
 
