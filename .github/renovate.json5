@@ -5,4 +5,15 @@
     "github>strg-at/renovate-config//pre-commit/silent-automerge.json5",
     "github>strg-at/renovate-config//terraform/silent-automerge.json5",
   ],
+  regexManagers: [
+    {
+      fileMatch: ["^kubernetes/.*/kustomization\\.yaml$"],
+      matchStrings: [
+        "https://raw\\.githubusercontent\\.com/keycloak/keycloak-k8s-resources/(?<currentValue>.+)/"
+      ],
+      datasourceTemplate: "github-tags",
+      depNameTemplate: "keycloak/keycloak-k8s-resources",
+      versioningTemplate: "auto"
+    }
+  ]
 }
