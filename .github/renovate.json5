@@ -9,7 +9,7 @@
     {
       fileMatch: ["^oci/.*/kustomization\\.yaml$"],
       matchStrings: [
-        "https://raw\\.githubusercontent\\.com/keycloak/keycloak-k8s-resources/(?<currentValue>.+)/"
+        "https://raw\\.githubusercontent\\.com/keycloak/keycloak-k8s-resources/(?<currentValue>.+)/.+"
       ],
       datasourceTemplate: "github-tags",
       depNameTemplate: "keycloak/keycloak-k8s-resources",
