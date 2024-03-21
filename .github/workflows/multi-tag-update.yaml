@@ -56,18 +56,18 @@ jobs:
     steps:
       # https://github.com/marketplace/actions/checkout
       - name: checkout repository
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       # https://github.com/marketplace/actions/setup-yq
       - name: update image tag of release
-        uses: mikefarah/yq@v4.42.1
+        uses: mikefarah/yq@9adde1ac14bb283b8955d2b0d567bcaf3c69e639 # v4.42.1
         with:
           cmd: yq -i '${{ inputs.tag-path }} = "${{ inputs.tag }}"' ${{ inputs.file-path }}
 
       # https://github.com/marketplace/actions/github-app-token
       - name: generate token
         id: generate-token
-        uses: tibdex/github-app-token@v2.1.0
+        uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
         env:
           # https://github.com/tibdex/github-app-token/issues/54
           # https://stackoverflow.com/questions/72104449/node-js-crypto-fails-to-sign-pem-key-string-from-file-with-error25066067dso-su
@@ -89,7 +89,7 @@ jobs:
       # https://github.com/marketplace/actions/create-branch
       - name: create branch
         if: ${{ inputs.create-pr && steps.branch-exists.outputs.branch_exists == 'false' }}
-        uses: peterjgrainger/action-create-branch@v2.4.0
+        uses: peterjgrainger/action-create-branch@08259812c8ebdbf1973747f9297e332fa078d3c1 # v2.4.0
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
@@ -99,7 +99,7 @@ jobs:
       # https://github.com/marketplace/actions/multi-file-commit
       - name: multi-file-commit
         id: multi-file-commit
-        uses: tyriis/multi-file-commit@v0.3.14
+        uses: tyriis/multi-file-commit@923a5965f42ba24546ff393c12aa3203b8b3855b # v0.3.14
         with:
           token: ${{ steps.generate-token.outputs.token }}
           ref: ${{ inputs.commit-branch }}
@@ -108,7 +108,7 @@ jobs:
       # https://github.com/marketplace/actions/pull-request-action
       - name: create pr
         if: ${{ inputs.create-pr }}
-        uses: vsoch/pull-request-action@1.1.0
+        uses: vsoch/pull-request-action@0969c26295afdeffaab628fee287a98b27eca529 # 1.1.0
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           PULL_REQUEST_BRANCH: ${{ inputs.target-branch }}

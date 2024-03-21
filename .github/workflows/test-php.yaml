@@ -7,7 +7,7 @@ on:
 jobs:
   test-php:
     name: test
-    uses: "strg-at/github-workflows/.github/workflows/test-php.yaml@v1.3.2"
+    uses: "strg-at/github-workflows/.github/workflows/test-php.yaml@495f55328e4384bbe19d9e06b92589401bd9c5b5" # v1.3.2
     with:
       runner: '["ubuntu-latest"]'
       php-lint: true

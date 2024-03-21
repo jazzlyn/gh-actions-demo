@@ -21,7 +21,7 @@ jobs:
     steps:
       # https://github.com/marketplace/actions/checkout
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
       # --------------------------------------------------------------------------------
       # SETUP STUFF
@@ -29,20 +29,20 @@ jobs:
 
       # https://github.com/marketplace/actions/sops-binary-installer
       - name: Setup SOPS
-        uses: mdgreenwald/mozilla-sops-action@v1.5.0
+        uses: mdgreenwald/mozilla-sops-action@48251811cf715ea596c6295cad00974aaf944e6f # v1.5.0
         with:
           version: latest
 
       # for terraform fmt
       # https://github.com/marketplace/actions/setup-node-js-environment
       - name: Setup Node.js
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
           node-version: 18
 
       # https://github.com/marketplace/actions/hashicorp-setup-terraform
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3.0.0
+        uses: hashicorp/setup-terraform@a1502cd9e758c50496cc9ac5308c4843bcd56d36 # v3.0.0
 
       # --------------------------------------------------------------------------------
       # AUTHENTICATE KMS SA AND ADD SECRETS TO ENV
@@ -51,7 +51,7 @@ jobs:
       # https://github.com/marketplace/actions/authenticate-to-google-cloud
       - name: Authenticate to Google Cloud
         id: auth-kms
-        uses: "google-github-actions/auth@v2.1.2"
+        uses: "google-github-actions/auth@55bd3a7c6e2ae7cf1877fd1ccb9d54c0503c457c" # v2.1.2
         with:
           workload_identity_provider: "${{ secrets.GH_WORKLOAD_IDENTITY_PATH }}"
           service_account: "${{ secrets.GH_ACTION_KMS_SA }}"
@@ -104,7 +104,7 @@ jobs:
       # https://github.com/marketplace/actions/authenticate-to-google-cloud
       - name: Authenticate to Google Cloud for infra
         id: auth-infra
-        uses: "google-github-actions/auth@v2.1.2"
+        uses: "google-github-actions/auth@55bd3a7c6e2ae7cf1877fd1ccb9d54c0503c457c" # v2.1.2
         with:
           workload_identity_provider: "${{ secrets.GH_WORKLOAD_IDENTITY_PATH }}"
           service_account: "${{ secrets.GH_ACTION_GCLOUD_INFRA_SA }}"
@@ -121,7 +121,7 @@ jobs:
 
       # https://github.com/marketplace/actions/terrascan-iac-scanner
       - name: Run Terrascan
-        uses: tenable/terrascan-action@v1.5.0
+        uses: tenable/terrascan-action@dd7e921056c6f25b25bff3cf791e063ed7fc3a78 # v1.5.0
         with:
           iac_type: "terraform"
           iac_version: "v14"
@@ -143,7 +143,7 @@ jobs:
       # https://github.com/marketplace/actions/terraform-pr-commenter
       - name: Post fmt outcome
         if: always() && github.ref != 'refs/heads/main' && (steps.fmt.outcome == 'success' || steps.fmt.outcome == 'failure')
-        uses: robburger/terraform-pr-commenter@v1.5.0
+        uses: robburger/terraform-pr-commenter@72c6e45eced6641488a6cf3ff104b7b9bda9c66c # v1.5.0
         with:
           commenter_type: fmt
           commenter_input: ${{ format('{0}{1}', steps.fmt.outputs.stdout, steps.fmt.outputs.stderr) }}
@@ -162,7 +162,7 @@ jobs:
       # https://github.com/marketplace/actions/terraform-pr-commenter
       - name: Post init outcome
         if: always() && github.ref != 'refs/heads/main' && (steps.init.outcome == 'success' || steps.init.outcome == 'failure')
-        uses: robburger/terraform-pr-commenter@v1.5.0
+        uses: robburger/terraform-pr-commenter@72c6e45eced6641488a6cf3ff104b7b9bda9c66c # v1.5.0
         with:
           commenter_type: init
           commenter_input: ${{ format('{0}{1}', steps.init.outputs.stdout, steps.init.outputs.stderr) }}
@@ -181,7 +181,7 @@ jobs:
       # https://github.com/marketplace/actions/terraform-pr-commenter
       - name: Post validate outcome
         if: always() && github.ref != 'refs/heads/main' && (steps.validate.outcome == 'success' || steps.validate.outcome == 'failure')
-        uses: robburger/terraform-pr-commenter@v1.5.0
+        uses: robburger/terraform-pr-commenter@72c6e45eced6641488a6cf3ff104b7b9bda9c66c # v1.5.0
         with:
           commenter_type: validate
           commenter_input: ${{ format('{0}{1}', steps.validate.outputs.stdout, steps.validate.outputs.stderr) }}
@@ -200,7 +200,7 @@ jobs:
       # https://github.com/marketplace/actions/terraform-pr-commenter
       - name: Post plan outcome
         if: always() && github.ref != 'refs/heads/main' && (steps.plan.outcome == 'success' || steps.plan.outcome == 'failure')
-        uses: robburger/terraform-pr-commenter@v1.5.0
+        uses: robburger/terraform-pr-commenter@72c6e45eced6641488a6cf3ff104b7b9bda9c66c # v1.5.0
         with:
           commenter_type: plan
           commenter_input: ${{ format('{0}{1}', steps.plan.outputs.stdout, steps.plan.outputs.stderr) }}

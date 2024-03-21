@@ -9,14 +9,14 @@ jobs:
       id-token: write
       contents: read
       packages: write
-    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@v1.3.2"
+    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@495f55328e4384bbe19d9e06b92589401bd9c5b5" # v1.3.2
     with:
       runner: '["ubuntu-latest"]'
       subpath: hello-world
 
   create-release:
     needs: [docker-build-push]
-    uses: "strg-at/github-workflows/.github/workflows/github-create-release.yaml@v1.3.2"
+    uses: "strg-at/github-workflows/.github/workflows/github-create-release.yaml@495f55328e4384bbe19d9e06b92589401bd9c5b5" # v1.3.2
     with:
       runner: '["ubuntu-latest"]'
     secrets:
