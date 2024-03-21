@@ -31,6 +31,8 @@ concurrency:
 jobs:
   renovate:
     uses: strg-at/github-workflows/.github/workflows/run-renovate.yaml@feature/INPRO-2044-setup-artifact-auth-renovate
+    permissions:
+      id-token: write
     with:
       runner: '["arc-runner-set-gh-actions-demo"]'
       configuration-file: .github/renovate-bot.json5
