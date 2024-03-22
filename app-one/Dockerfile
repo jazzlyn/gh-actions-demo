@@ -1,7 +1,7 @@
 FROM nginx:alpine
 COPY index.html /usr/share/nginx/html/index.html
 
-LABEL Name='hello world'
+LABEL Name='hello world2'
 LABEL Version=0.1
 
 EXPOSE 80
