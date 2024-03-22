@@ -11,6 +11,6 @@ on:
 
 jobs:
   docker-build:
-    uses: "strg-at/github-workflows/.github/workflows/docker-build.yaml@v1.3.2"
+    uses: "strg-at/github-workflows/.github/workflows/docker-build.yaml@feature/NOENT-3999-update-actions"
     with:
       runner: '["ubuntu-latest"]'
