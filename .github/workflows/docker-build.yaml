@@ -2,15 +2,16 @@
 name: docker-build
 
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-    paths-ignore:
-      - .github/**
+  workflow_dispatch:
+  # pull_request:
+  #   types:
+  #     - opened
+  #     - synchronize
+  #   paths-ignore:
+  #     - .github/**
 
 jobs:
   docker-build:
-    uses: "strg-at/github-workflows/.github/workflows/docker-build.yaml@feature/NOENT-3999-update-actions"
+    uses: "strg-at/github-workflows/.github/workflows/docker-build.yaml@v1.5.1"
     with:
       runner: '["ubuntu-latest"]'
