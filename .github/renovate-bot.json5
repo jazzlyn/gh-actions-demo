@@ -4,4 +4,5 @@
   gitAuthor: "jazzlyn-bot <134550475+jazzlyn-bot[bot]@users.noreply.github.com>",
   repositories: ["jazzlyn/gh-actions-demo"],
   platform: "github",
+  detectHostRulesFromEnv: true,
 }

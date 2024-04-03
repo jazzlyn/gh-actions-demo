@@ -28,41 +28,49 @@ concurrency:
   group: renovate
   cancel-in-progress: true
 
+# jobs:
+  # renovate:
+  #   uses: strg-at/github-workflows/.github/workflows/run-renovate.yaml@v1.5.1
+  #   permissions:
+  #     contents: read
+  #     id-token: write
+  #   with:
+  #     runner: '["ubuntu-latest"]'
+  #     configuration-file: .github/renovate-bot.json5
+  #     dry-run: ${{ inputs.dry-run || 'false' }}
+  #     log-level: ${{ inputs.log-level || 'info' }}
+  #   secrets:
+  #     github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+  #     github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
 jobs:
   renovate:
-    uses: strg-at/github-workflows/.github/workflows/run-renovate.yaml@feature/INPRO-2044-setup-artifact-auth-renovate
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
-    with:
-      runner: '["ubuntu-latest"]'
-      configuration-file: .github/renovate-bot.json5
-      dry-run: ${{ inputs.dry-run || 'false' }}
-      log-level: ${{ inputs.log-level || 'info' }}
-    secrets:
-      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+    steps:
+      # https://github.com/marketplace/actions/github-app-token
+      - name: generate token
+        id: generate-token
+        uses: tibdex/github-app-token@v2.1.0
+        with:
+          app_id:  ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+          private_key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
-# jobs:
-#   renovate:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: generate Token
-#         uses: tibdex/github-app-token@v2.1.0
-#         id: generate-token
-#         with:
-#           app_id:  ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-#           private_key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+      # https://github.com/marketplace/actions/checkout
+      - name: checkout repository
+        uses: actions/checkout@v4.1.2
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
 
-#       # https://github.com/marketplace/actions/checkout
-#       - name: Checkout
-#         uses: actions/checkout@v4.1.1
-#         with:
-#           token: "${{ steps.generate-token.outputs.token }}"
-
-#       # https://github.com/marketplace/actions/renovate-bot-github-action
-#       - name: Renovate
-#         uses: renovatebot/github-action@v40.1.2
-#         with:
-#           configurationFile: .github/renovate-bot.json5
-#           token: "${{ steps.generate-token.outputs.token }}"
+      # https://github.com/marketplace/actions/renovate-bot-github-action
+      - name: renovate bot
+        uses: renovatebot/github-action@v40.1.5
+        env:
+          DRY_RUN: ${{ inputs.dry-run || 'false' }}
+          LOG_LEVEL: ${{ inputs.log-level || 'info' }}
+          DOCKER_EUROPE__WEST3__DOCKER_PKG_DEV_TOKEN: ${{ steps.auth.outputs.access_token }}
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          configurationFile: .github/renovate-bot.json5
