@@ -11,6 +11,10 @@ on:
 
 jobs:
   docker-build-push:
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
     name: "docker build and push"
     uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@bugfix/INPRO-2174-fix-arm"
     with:
