@@ -12,7 +12,7 @@ on:
 jobs:
   docker-build-push:
     name: "docker build and push"
-    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@feature/NOENT-3999-update-actions"
+    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@bugfix/INPRO-2174-fix-arm"
     with:
       runner: '["ubuntu-latest"]'
       subpath: ${{ inputs.path }}
@@ -20,6 +20,8 @@ jobs:
       context: ${{ inputs.path }}
       tags: |
         ${{ github.sha }}
+        type=raw, value=rolling
+
 
 # jobs:
 #   docker-build-push-github:
