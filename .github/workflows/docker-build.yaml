@@ -12,6 +12,6 @@ on:
 
 jobs:
   docker-build:
-    uses: "strg-at/github-workflows/.github/workflows/docker-build.yaml@v1.5.1"
+    uses: "strg-at/github-workflows/.github/workflows/docker-build.yaml@ff86b2cf06e38a4cbc0afaaf0427a9c2549e4a62" # v1.5.2
     with:
       runner: '["ubuntu-latest"]'
