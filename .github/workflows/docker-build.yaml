@@ -56,4 +56,3 @@ jobs:
           context: ${{ matrix.paths }}
           tags: |
             ${{ github.sha }}
-            type=raw, value=rolling
