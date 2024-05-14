@@ -70,7 +70,7 @@ jobs:
         env:
           DRY_RUN: ${{ inputs.dry-run || 'false' }}
           LOG_LEVEL: ${{ inputs.log-level || 'info' }}
-          DOCKER_EUROPE__WEST3__DOCKER_PKG_DEV_TOKEN: ${{ steps.auth.outputs.access_token }}
+          # DOCKER_EUROPE__WEST3__DOCKER_PKG_DEV_TOKEN: ${{ steps.auth.outputs.access_token }}
         with:
           token: ${{ steps.generate-token.outputs.token }}
           configurationFile: .github/renovate-bot.json5
