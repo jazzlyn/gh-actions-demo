@@ -24,6 +24,7 @@ jobs:
           files: |
             **/Dockerfile
           matrix: true
+          dir_names: true
 
       - name: list all changed dockerfiles
         if: steps.changed-dockerfiles.outputs.any_changed == 'true'
