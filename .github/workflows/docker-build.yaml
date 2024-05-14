@@ -35,7 +35,7 @@ jobs:
       contents: read
     strategy:
       matrix:
-        paths: ${{ needs.get-changed-files.outputs.paths }}
+        paths: ${{fromJSON(needs.get-changed-files.outputs.paths)}}
       fail-fast: false
       max-parallel: 4
     steps:

@@ -1,12 +1,13 @@
 name: get changed files
 
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-    paths-ignore:
-      - .github/**
+  workflow_dispatch:
+  # pull_request:
+  #   types:
+  #     - opened
+  #     - synchronize
+  #   paths-ignore:
+  #     - .github/**
 
 jobs:
   get-changed-files:
