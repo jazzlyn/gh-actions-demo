@@ -13,7 +13,7 @@
       permissions:
         contents: write
         pull-requests: write
-      uses: strg-at/github-workflows/.github/workflows/auto-pr.yaml@d9e34d0592a67b766a2d105af8cc1fc5e825861e # v1.6.0
+      uses: strg-at/github-workflows/.github/workflows/auto-pr.yaml@ff86b2cf06e38a4cbc0afaaf0427a9c2549e4a62 # v1.5.2
       with:
         runner: '["ubuntu-latest"]'
         branch: main
