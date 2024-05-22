@@ -32,7 +32,7 @@ jobs:
   docker-build:
     needs: get-changed-files
     runs-on: ubuntu-latest
-    if: ${{ needs.get-changed-files.outputs.paths != ''}}
+    if: ${{ needs.get-changed-files.outputs.paths != '[]'}}
     permissions:
       contents: read
     strategy:
