@@ -1,4 +1,4 @@
-import { logger } from '@strg/logging-winston'
+import { logger } from "@strg/logging-winston"
 
-let message: string = 'Hello World';
-logger.info(message);
+let message: string = "Hello World"
+logger.info(message)

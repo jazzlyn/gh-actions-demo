@@ -1,21 +1,21 @@
 # This workflow creates a pr from release/** -> main
 ---
-  name: auto pr
-  on:
-    workflow_dispatch:
-    # push:
-    #   branches:
-    #     - release/**
+name: auto pr
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - release/**
 
-  jobs:
-    create-pr:
-      name: ""
-      permissions:
-        contents: write
-        pull-requests: write
-      uses: strg-at/github-workflows/.github/workflows/auto-pr.yaml@d9e34d0592a67b766a2d105af8cc1fc5e825861e # v1.6.0
-      with:
-        runner: '["ubuntu-latest"]'
-        branch: main
-        update: "true"
-        pr-title: "auto-pr: release to main"
+jobs:
+  create-pr:
+    name: ""
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: strg-at/github-workflows/.github/workflows/auto-pr.yaml@d9e34d0592a67b766a2d105af8cc1fc5e825861e # v1.6.0
+    with:
+      runner: '["ubuntu-latest"]'
+      branch: main
+      update: "true"
+      pr-title: "auto-pr: release to main"

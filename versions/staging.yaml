@@ -1,3 +1,4 @@
+---
 app:
   chart: 1.0.0-rc
   backend:

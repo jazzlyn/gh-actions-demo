@@ -1,26 +1,26 @@
 ---
-  name: test-arc
+name: test-arc
 
-  on:
-    workflow_dispatch:
+on:
+  workflow_dispatch:
 
-  jobs:
-    dump_contexts_to_log:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Dump GitHub context
-          id: github_context_step
-          run: echo '${{ toJSON(github) }}'
-    test-arc:
-      runs-on:
-        - arc-runner-set-gh-actions-demo
-      permissions:
-        contents: read
-      steps:
-        # https://github.com/marketplace/actions/checkout
-        - name: checkout repository
-          uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+jobs:
+  dump_contexts_to_log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        id: github_context_step
+        run: echo '${{ toJSON(github) }}'
+  test-arc:
+    runs-on:
+      - arc-runner-set-gh-actions-demo
+    permissions:
+      contents: read
+    steps:
+      # https://github.com/marketplace/actions/checkout
+      - name: checkout repository
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
 
-        - name: testing
-          run: |
-            echo "hello world"
+      - name: testing
+        run: |
+          echo "hello world"

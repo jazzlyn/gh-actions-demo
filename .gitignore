@@ -8,6 +8,7 @@ Thumbs.db
 
 # vscode-sops
 .decrypted~*.yaml
+*.agekey
 
 # Env files
 *.envrc

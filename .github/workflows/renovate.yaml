@@ -29,19 +29,19 @@ concurrency:
   cancel-in-progress: true
 
 # jobs:
-  # renovate:
-  #   uses: strg-at/github-workflows/.github/workflows/run-renovate.yaml@v1.5.1
-  #   permissions:
-  #     contents: read
-  #     id-token: write
-  #   with:
-  #     runner: '["ubuntu-latest"]'
-  #     configuration-file: .github/renovate-bot.json5
-  #     dry-run: ${{ inputs.dry-run || 'false' }}
-  #     log-level: ${{ inputs.log-level || 'info' }}
-  #   secrets:
-  #     github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-  #     github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+#   renovate:
+#     uses: strg-at/github-workflows/.github/workflows/run-renovate.yaml@v1.5.1
+#     permissions:
+#       contents: read
+#       id-token: write
+#     with:
+#       runner: '["ubuntu-latest"]'
+#       configuration-file: .github/renovate-bot.json5
+#       dry-run: ${{ inputs.dry-run || 'false' }}
+#       log-level: ${{ inputs.log-level || 'info' }}
+#     secrets:
+#       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+#       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
 jobs:
   renovate:
@@ -55,7 +55,7 @@ jobs:
         id: generate-token
         uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
         with:
-          app_id:  ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+          app_id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
           private_key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
       # https://github.com/marketplace/actions/checkout

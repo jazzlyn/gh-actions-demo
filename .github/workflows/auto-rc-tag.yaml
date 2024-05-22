@@ -1,7 +1,9 @@
+---
 # create a github workflow to auto tag with the branch name version suffix -rc{count}
 # where count is a counter increasing on each new tag created by this workflow
 # on release/* branch
 # use github api to create the tag and push it to the repo
+name: auto-rc-tag
 
 on:
   workflow_dispatch:
