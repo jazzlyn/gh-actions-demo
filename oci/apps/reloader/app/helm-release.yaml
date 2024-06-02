@@ -30,4 +30,4 @@ spec:
       deployment:
         image:
           repository: ghcr.io/stakater/reloader
-          tag: v1.0.97@sha256:2072227e52cfae51ce24776abfac867bffbe9da75e6c69b8c85208645d4a7327
+          tag: v1.0.101@sha256:6909752e7d58638b64991df538fc846776c65e8ab89a4378dc6163f1a55f7e41
