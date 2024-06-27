@@ -27,27 +27,22 @@ jobs:
           matrix: true
           dir_names: true
 
-      - name: list all changed files
-        env:
-          ALL_CHANGED_FILES: ${{ steps.changed-dockerfiles.outputs.all_changed_files }}
+      - name: list paths for all changed dockerfiles
         run: |
-          for file in ${ALL_CHANGED_FILES}; do
-            echo "$file was changed" >> $GITHUB_STEP_SUMMARY
-          done
-          echo ${{ steps.changed-dockerfiles.outputs.all_changed_files }}
+          echo "${{ steps.changed-dockerfiles.outputs.all_changed_files }}" >> $GITHUB_STEP_SUMMARY
 
     outputs:
-      files: ${{ steps.changed-dockerfiles.outputs.all_changed_files }}
+      paths: ${{ steps.changed-dockerfiles.outputs.all_changed_files }}
 
   docker-build:
     needs: get-changed-files
     runs-on: ubuntu-latest
-    if: ${{ needs.get-changed-files.outputs.files != '[]'}}
+    if: ${{ needs.get-changed-files.outputs.paths != '[]'}}
     permissions:
       contents: read
     strategy:
       matrix:
-        paths: ${{fromJSON(needs.get-changed-files.outputs.files)}}
+        paths: ${{fromJSON(needs.get-changed-files.outputs.paths)}}
       fail-fast: false
       max-parallel: 4
     steps:
