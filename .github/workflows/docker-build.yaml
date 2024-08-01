@@ -13,6 +13,7 @@ jobs:
   docker-build:
     permissions:
       contents: read
+      packages: read
     uses: strg-at/github-workflows/.github/workflows/docker-build.yaml@feature/INPRO-2378-adapt-docker-for-private-npm-packages
     with:
       runner: '["ubuntu-latest"]'
