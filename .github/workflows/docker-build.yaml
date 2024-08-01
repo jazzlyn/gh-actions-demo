@@ -14,6 +14,6 @@ jobs:
     permissions:
       contents: read
       packages: read
-    uses: strg-at/github-workflows/.github/workflows/docker-build.yaml@v1.7.1
+    uses: strg-at/github-workflows/.github/workflows/docker-build.yaml@24d79a482f0d30cef0cfc87f97183ec42559d29b # v1.7.1
     with:
       runner: '["ubuntu-latest"]'
