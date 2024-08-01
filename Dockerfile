@@ -4,8 +4,8 @@ WORKDIR /app
 
 COPY . .
 
-RUN --mount=type=secret,id=action-token \
-  echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/action-token)"  > .npmrc
+# RUN --mount=type=secret,id=action-token \
+#   echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/action-token)"  > .npmrc
 
 RUN npm ci
 RUN npm run build
