@@ -10,28 +10,9 @@ on:
       - .github/**
 
 jobs:
-  get-changed-files:
-    permissions:
-      contents: read
-    uses: strg-at/github-workflows/.github/workflows/get-changed-files.yaml@feature/INPRO-2249-setup-changed-files
-    with:
-      runner: '["ubuntu-latest"]'
-      files: |
-        **/Dockerfile
-      matrix: true
-      dir_names: true
-
   docker-build:
-    needs: get-changed-files
-    if: ${{ needs.get-changed-files.outputs.files != '[]'}}
     permissions:
       contents: read
-    strategy:
-      matrix:
-        paths: ${{fromJSON(needs.get-changed-files.outputs.files)}}
-      fail-fast: false
-    uses: strg-at/github-workflows/.github/workflows/docker-build.yaml@feature/INPRO-2249-setup-changed-files
+    uses: strg-at/github-workflows/.github/workflows/docker-build.yaml@feature/INPRO-2378-adapt-docker-for-private-npm-packages
     with:
       runner: '["ubuntu-latest"]'
-      file: ${{ matrix.paths }}/Dockerfile
-      context: ${{ matrix.paths }}
