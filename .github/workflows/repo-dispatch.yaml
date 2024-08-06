@@ -44,7 +44,7 @@ jobs:
         with:
           app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
           private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
-          # owner: ${{ github.repository_owner }}
+          owner: ${{ github.repository_owner }}
 
       # send event to remote repo to update helm-release image tag
       # https://github.com/marketplace/actions/repository-dispatch
