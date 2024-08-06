@@ -1,0 +1,60 @@
+---
+name: repo-dispatch
+
+on:
+  # workflow_call:
+  #   inputs:
+  #     runner:
+  #       description: '["some-runners"]'
+  #       required: true
+  #       type: string
+  #     tag:
+  #       description: "version tag from docker metadata"
+  #       required: false
+  #       type: string
+  #       default: null
+  #     repository:
+  #       description: "target repository"
+  #       required: true
+  #       type: string
+  #     dispatch-event:
+  #       description: "event name that is configured in target repo"
+  #       required: true
+  #       type: string
+  #   secrets:
+  #     github-app-id:
+  #       description: "github app id"
+  #       required: true
+  #     github-app-key:
+  #       description: "github app private key"
+  #       required: true
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  repo-dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      # https://github.com/marketplace/actions/create-github-app-token
+      - name: generate token
+        id: generate-token
+        uses: actions/create-github-app-token@v1.10.3
+        with:
+          app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+          private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+          # owner: ${{ github.repository_owner }}
+
+      # send event to remote repo to update helm-release image tag
+      # https://github.com/marketplace/actions/repository-dispatch
+      - name: repository dispatch
+        uses: peter-evans/repository-dispatch@v2.1.1
+        env:
+          token: ${{ steps.generate-token.outputs.token }}
+          tag: ${{ github.sha }}
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          repository: jazzlyn/kind-flux-demo
+          event-type: test-dispatch
+          client-payload: '{"ref": "${{ github.ref }}", "tag": "${{ github.sha }}"}'
