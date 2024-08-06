@@ -35,11 +35,12 @@ on:
 
 jobs:
   test-dispatch:
-    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@bugfix/INPRO-2388-fix-repo-dispatch"
+    uses: strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@bugfix/INPRO-2388-fix-repo-dispatch
     with:
       runner: '["ubuntu-latest"]'
       tag: ${{ github.sha }}
       repository: jazzlyn/kind-flux-demo
+      repository-owner: jazzlyn
       dispatch-event: test-dispatch
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
