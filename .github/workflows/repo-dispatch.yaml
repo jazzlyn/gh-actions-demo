@@ -39,8 +39,8 @@ jobs:
     with:
       runner: '["ubuntu-latest"]'
       tag: ${{ github.sha }}
-      repository: jazzlyn/kind-flux-demo
-      repository-owner: jazzlyn
+      repository: tyriis/home-ops
+      repository-owner: tyriis
       dispatch-event: test-dispatch
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
