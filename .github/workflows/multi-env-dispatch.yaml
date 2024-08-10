@@ -43,7 +43,7 @@ jobs:
     permissions:
       contents: read
       packages: read
-    uses: "strg-at/github-workflows/.github/workflows/docker-image-exists-github.yaml@8ec249ae473c8b59ed2ca8a3836468ac3b446c5f" # v1.8.1
+    uses: "strg-at/github-workflows/.github/workflows/docker-image-exists-github.yaml@d42227396c7a3608450837821e2ad3b01d0b2301" # v1.8.2
     with:
       runner: '["ubuntu-latest"]'
       subpath: nginx
@@ -55,7 +55,7 @@ jobs:
       packages: write
     needs: [check-image-exists]
     if: ${{ needs.check-image-exists.outputs.tag == 'not found' }}
-    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@8ec249ae473c8b59ed2ca8a3836468ac3b446c5f" # v1.8.1
+    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@d42227396c7a3608450837821e2ad3b01d0b2301" # v1.8.2
     with:
       runner: '["ubuntu-latest"]'
       subpath: nginx
@@ -72,7 +72,7 @@ jobs:
     needs: [check-image-exists]
     if: ${{ needs.check-image-exists.outputs.tag == 'found' }}
     name: "retag image"
-    uses: "strg-at/github-workflows/.github/workflows/tag-image-github.yaml@8ec249ae473c8b59ed2ca8a3836468ac3b446c5f" # v1.8.1
+    uses: "strg-at/github-workflows/.github/workflows/tag-image-github.yaml@d42227396c7a3608450837821e2ad3b01d0b2301" # v1.8.2
     with:
       runner: '["ubuntu-latest"]'
       repository: jazzlyn/gh-actions-demo
@@ -83,7 +83,7 @@ jobs:
     needs: [environment, docker-build-push, tag-image-github]
     if: ${{ always() && (needs.docker-build-push.result == 'success' || needs.tag-image-github.result == 'success') && needs.environment.outputs.target == 'integration' }}
     name: ${{ needs.environment.outputs.target }}
-    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@8ec249ae473c8b59ed2ca8a3836468ac3b446c5f" # v1.8.1
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@d42227396c7a3608450837821e2ad3b01d0b2301" # v1.8.2
     with:
       runner: '["ubuntu-latest"]'
       tag: ${{ github.sha }}
@@ -97,7 +97,7 @@ jobs:
     needs: [environment, docker-build-push, tag-image-github]
     if: ${{ always() && (needs.docker-build-push.result == 'success' || needs.tag-image-github.result == 'success') && needs.environment.outputs.target == 'staging' }}
     name: ${{ needs.environment.outputs.target }}
-    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@8ec249ae473c8b59ed2ca8a3836468ac3b446c5f" # v1.8.1
+    uses: "strg-at/github-workflows/.github/workflows/repo-dispatch.yaml@d42227396c7a3608450837821e2ad3b01d0b2301" # v1.8.2
     with:
       runner: '["ubuntu-latest"]'
       tag: ${{  github.ref_name }}
