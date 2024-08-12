@@ -4,16 +4,21 @@ name: renovate
 on:
   workflow_dispatch:
     inputs:
-      dry-run:
-        description: dry-run
-        required: false
-        type: string
-        default: "false"
       log-level:
-        description: log-level
+        description: "can be one of debug, info, warn, error, fatal"
         required: false
         type: string
-        default: info
+        default: "info"
+      dry-run:
+        description: "can be one of extract, lookup, full"
+        required: false
+        type: string
+        default: "null"
+      host-rules:
+        description: "host rules for registries"
+        required: false
+        type: string
+        default: ""
   schedule:
     - cron: 0 0 * * *
   push:
@@ -68,9 +73,9 @@ jobs:
       - name: renovate bot
         uses: renovatebot/github-action@76d49712364696a06b60e8647df46b288fff0ddc # v40.2.4
         env:
-          DRY_RUN: ${{ inputs.dry-run || 'false' }}
           LOG_LEVEL: ${{ inputs.log-level || 'info' }}
-          # DOCKER_EUROPE__WEST3__DOCKER_PKG_DEV_TOKEN: ${{ steps.auth.outputs.access_token }}
+          RENOVATE_DRY_RUN: ${{ inputs.dry-run || 'null' }}
+          RENOVATE_HOST_RULES: ${{ inputs.host-rules || '' }}
         with:
           token: ${{ steps.generate-token.outputs.token }}
           configurationFile: .github/renovate-bot.json5
