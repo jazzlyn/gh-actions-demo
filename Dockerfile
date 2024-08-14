@@ -6,6 +6,7 @@ COPY . .
 
 # RUN --mount=type=secret,id=action-token \
 #   echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/action-token)"  > .npmrc
+# test
 
 RUN npm ci
 RUN npm run build
