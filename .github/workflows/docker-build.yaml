@@ -17,6 +17,3 @@ jobs:
     uses: strg-at/github-workflows/.github/workflows/docker-build.yaml@feature/GC-3327-setup-docker-login
     with:
       runner: '["ubuntu-latest"]'
-    secrets:
-      docker-username: ${{ secrets.DOCKER_USERNAME }}
-      docker-token: ${{ secrets.DOCKER_TOKEN }}
