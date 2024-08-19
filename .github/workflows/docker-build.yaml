@@ -14,6 +14,9 @@ jobs:
     permissions:
       contents: read
       packages: read
-    uses: strg-at/github-workflows/.github/workflows/docker-build.yaml@d42227396c7a3608450837821e2ad3b01d0b2301 # v1.8.2
+    uses: strg-at/github-workflows/.github/workflows/docker-build.yaml@feature/GC-3327-setup-docker-login
     with:
       runner: '["ubuntu-latest"]'
+    secrets:
+      docker-username: ${{ secrets.DOCKER_USERNAME }}
+      docker-token: ${{ secrets.DOCKER_TOKEN }}
