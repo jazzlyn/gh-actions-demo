@@ -30,7 +30,7 @@ concurrency:
 
 jobs:
   renovate:
-    uses: strg-at/github-workflows/.github/workflows/run-renovate.yaml@v1.9.0
+    uses: strg-at/github-workflows/.github/workflows/run-renovate.yaml@ac385260abbb841598c1740ae222d4f1ab3c9b40 # v1.9.0
     permissions:
       contents: read
     with:
