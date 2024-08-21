@@ -2,6 +2,7 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   username: "jazzlyn-bot[bot]",
   gitAuthor: "jazzlyn-bot <134550475+jazzlyn-bot[bot]@users.noreply.github.com>",
-  repositories: ["jazzlyn/gh-actions-demo"],
   platform: "github",
+  platformCommit: "enabled",
+  repositories: ["jazzlyn/gh-actions-demo"],
 }
