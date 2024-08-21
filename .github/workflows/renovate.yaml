@@ -8,7 +8,7 @@ on:
         description: "log-level (debug, info, warn, error, fatal)"
         required: false
         type: string
-        default: "info"
+        default: "debug"
       dry-run:
         description: "dry-run (extract, lookup, full)"
         required: false
@@ -21,6 +21,7 @@ on:
       - main
     paths:
       - .github/renovate.json5
+      - .github/renovate-bot.json5
       - .github/renovate/**.json5
       - .github/workflows/renovate.yaml
 
@@ -37,7 +38,7 @@ jobs:
       runner: '["ubuntu-latest"]'
       configuration-file: .github/renovate-bot.json5
       dry-run: ${{ inputs.dry-run || 'null' }}
-      log-level: ${{ inputs.log-level || 'info' }}
+      log-level: ${{ inputs.log-level || 'debug' }}
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
