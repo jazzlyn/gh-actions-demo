@@ -31,7 +31,7 @@
       automerge: false,
     },
     {
-      //matchDatasources: ["docker"],
+      matchDatasources: ["docker"],
       matchDepNames: ["ghcr.io"],
       matchUpdateTypes: ["pin", "pinDigest"],
       enabled: false,
