@@ -31,5 +31,11 @@
       automerge: false,
       pinDigests: false,
     },
+    {
+      matchDatasources: ["docker"],
+      matchDepNames: ["ghcr.io/**"],
+      matchUpdateTypes: ["pin", "pinDigest"],
+      enabled: false,
+    },
   ],
 }
