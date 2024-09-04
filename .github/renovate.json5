@@ -24,5 +24,17 @@
       matchUpdateTypes: ["minor", "patch"],
       automergeType: "pr",
     },
+    {
+      matchDatasources: ["docker"],
+      matchDepNames: ["ghcr.io"],
+      matchUpdateTypes: ["major", "minor", "patch"],
+      automerge: false,
+    },
+    {
+      matchDatasources: ["docker"],
+      matchDepNames: ["ghcr.io"],
+      matchUpdateTypes: ["pin", "pinDigest"],
+      enabled: false,
+    },
   ],
 }
