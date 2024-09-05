@@ -1,0 +1,4 @@
+---
+image:
+  repository: ghcr.io/strg-at/containers/postgres-db-init
+  tag: feb55985ee20c90400dc175d5e8f501a2dc83a37
