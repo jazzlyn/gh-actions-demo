@@ -27,14 +27,14 @@
     {
       matchDatasources: ["docker"],
       matchDepNames: ["ghcr.io/**"],
-      matchUpdateTypes: ["major", "minor", "patch"],
-      automerge: false,
+      matchUpdateTypes: ["pin", "pinDigest"],
+      enabled: false,
     },
     {
       matchDatasources: ["docker"],
       matchDepNames: ["ghcr.io/**"],
-      matchUpdateTypes: ["major", "minor", "patch", "digest"],
-      pinDigests: false,
+      matchUpdateTypes: ["major", "minor", "patch"],
+      automerge: false,
     },
   ],
 }
