@@ -25,13 +25,13 @@
       automergeType: "pr",
     },
     {
-      matchDatasources: ["docker"],
+      matchManagers: ["helm-values"],
       matchDepNames: ["ghcr.io/**"],
       matchUpdateTypes: ["pin", "pinDigest"],
       enabled: false,
     },
     {
-      matchDatasources: ["docker"],
+      matchManagers: ["helm-values"],
       matchDepNames: ["ghcr.io/**"],
       matchUpdateTypes: ["major", "minor", "patch"],
       automerge: false,
