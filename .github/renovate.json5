@@ -37,4 +37,12 @@
   //     automerge: false,
   //   },
   // ],
+  packageRules: [
+    {
+      matchManagers: ["poetry"],
+      automerge: true,
+      matchUpdateTypes: ["minor", "patch", "digest"],
+      automergeType: "pr",
+    },
+  ],
 }
