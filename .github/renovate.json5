@@ -5,36 +5,36 @@
     "github>strg-at/renovate-config//pre-commit/silent-automerge.json5",
     "github>strg-at/renovate-config//terraform/silent-automerge.json5",
   ],
-  customManagers: [
-    {
-      customType: "regex",
-      fileMatch: ["^oci/.*/kustomization\\.yaml$"],
-      matchStrings: [
-        "https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/(?<currentValue>\\d+.\\d+.\\d+)/.+",
-      ],
-      depNameTemplate: "keycloak/keycloak-k8s-resources",
-      datasourceTemplate: "github-tags",
-    },
-  ],
-  packageRules: [
-    {
-      matchPackageNames: ["keycloak/keycloak-k8s-resources"],
-      matchDatasources: ["github-tags"],
-      automerge: true,
-      matchUpdateTypes: ["minor", "patch"],
-      automergeType: "pr",
-    },
-    {
-      matchManagers: ["helm-values"],
-      matchDepNames: ["ghcr.io/**"],
-      matchUpdateTypes: ["pin", "pinDigest"],
-      enabled: false,
-    },
-    {
-      matchManagers: ["helm-values"],
-      matchDepNames: ["ghcr.io/**"],
-      matchUpdateTypes: ["major", "minor", "patch"],
-      automerge: false,
-    },
-  ],
+  // customManagers: [
+  //   {
+  //     customType: "regex",
+  //     fileMatch: ["^oci/.*/kustomization\\.yaml$"],
+  //     matchStrings: [
+  //       "https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/(?<currentValue>\\d+.\\d+.\\d+)/.+",
+  //     ],
+  //     depNameTemplate: "keycloak/keycloak-k8s-resources",
+  //     datasourceTemplate: "github-tags",
+  //   },
+  // ],
+  // packageRules: [
+  //   {
+  //     matchPackageNames: ["keycloak/keycloak-k8s-resources"],
+  //     matchDatasources: ["github-tags"],
+  //     automerge: true,
+  //     matchUpdateTypes: ["minor", "patch"],
+  //     automergeType: "pr",
+  //   },
+  //   {
+  //     matchDatasources: ["docker"],
+  //     matchDepNames: ["ghcr.io/**"],
+  //     matchUpdateTypes: ["pin", "pinDigest"],
+  //     enabled: false,
+  //   },
+  //   {
+  //     matchDatasources: ["docker"],
+  //     matchDepNames: ["ghcr.io/**"],
+  //     matchUpdateTypes: ["major", "minor", "patch"],
+  //     automerge: false,
+  //   },
+  // ],
 }
