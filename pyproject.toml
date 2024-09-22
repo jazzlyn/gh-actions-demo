@@ -9,7 +9,7 @@ authors = [
 package-mode = false
 
 [tool.poetry.dependencies]
-python = "3.11.4"
+python = "3.11.10"
 fastapi = "0.111.1"
 
 [tool.poetry.group.dev]
