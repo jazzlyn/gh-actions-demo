@@ -16,7 +16,7 @@ fastapi = "0.111.1"
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-duckdb = "1.0.0"
+duckdb = "1.1.0"
 
 [tool.poetry.group.lsp-dev]
 optional = true
