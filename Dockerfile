@@ -1,4 +1,4 @@
-FROM node:22.11.0-alpine@sha256:58508134c58ba08106c9edcacc062061ee867f9e1389ef3e3f630e720a0b988e AS build
+FROM node:22.11.0-alpine@sha256:f265794478aa0b1a23d85a492c8311ed795bc527c3fe7e43453b3c872dcd71a3 AS build
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ COPY . .
 RUN npm ci
 RUN npm run build
 
-FROM node:22.11.0-alpine@sha256:58508134c58ba08106c9edcacc062061ee867f9e1389ef3e3f630e720a0b988e
+FROM node:22.11.0-alpine@sha256:f265794478aa0b1a23d85a492c8311ed795bc527c3fe7e43453b3c872dcd71a3
 
 COPY --from=build /app/dist /app/dist
 
