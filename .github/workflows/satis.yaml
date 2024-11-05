@@ -26,7 +26,7 @@ jobs:
       # https://github.com/marketplace/actions/create-github-app-token
       - name: generate token
         id: generate-token
-        uses: actions/create-github-app-token@v1.11.0
+        uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
         with:
           app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
           private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
@@ -40,7 +40,7 @@ jobs:
 
       # https://github.com/marketplace/actions/multi-file-commit
       - name: multi-file-commit
-        uses: tyriis/multi-file-commit@v0.3.14
+        uses: tyriis/multi-file-commit@923a5965f42ba24546ff393c12aa3203b8b3855b # v0.3.14
         env:
           NODE_LOG_LEVEL: debug
         with:
