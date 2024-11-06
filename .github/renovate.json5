@@ -37,12 +37,4 @@
   //     automerge: false,
   //   },
   // ],
-  packageRules: [
-    {
-      description: "prevention: automerge python",
-      matchDepNames: ["python"],
-      matchUpdateTypes: ["major", "minor"],
-      automerge: false,
-    },
-  ],
 }
