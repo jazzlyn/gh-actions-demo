@@ -37,12 +37,13 @@
   //     automerge: false,
   //   },
   // ],
-  packageRules: [
-    {
-      matchManagers: ["poetry"],
-      automerge: true,
-      matchUpdateTypes: ["minor", "patch", "digest"],
-      automergeType: "pr",
-    },
-  ],
+  // packageRules: [
+  //   {
+  //     description: "prevention: automerge python",
+  //     matchDepNames: ["python"],
+  //     matchUpdateTypes: ["major", "minor"],
+  //     separateMinorPatch: false,
+  //     automerge: false,
+  //   },
+  // ],
 }
