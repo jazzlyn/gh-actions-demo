@@ -1,0 +1,16 @@
+---
+version: "3"
+
+includes:
+  strg: strg.yaml
+
+tasks:
+  list:
+    desc: list workflows
+    cmds:
+      - act --list
+
+  graph:
+    desc: draw graph for a specific workflow file, f.e. "task act:graph -- auto-pr"
+    cmds:
+      - act --graph -W .github/workflows/{{.CLI_ARGS}}.yaml

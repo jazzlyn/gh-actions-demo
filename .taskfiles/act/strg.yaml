@@ -1,0 +1,25 @@
+---
+version: "3"
+
+tasks:
+  list:
+    desc: list strg workflows
+    cmds:
+      - act --list -W {{.STRG_WORKFLOW_DIR}}
+
+  graph:
+    desc: draw graph for a specific strg workflow file, f.e. "task act:strg:graph -- auto-pr"
+    cmds:
+      - act --graph -W {{.STRG_WORKFLOW_DIR}}/{{.CLI_ARGS}}.yaml
+
+  # TODO: move tests to workflows repo
+  call:
+    desc: call a specific strg workflow file, f.e. "task act:strg:call -- auto-pr"
+    cmds:
+      - |
+        act workflow_call -W {{.STRG_WORKFLOW_DIR}}/{{.WORKFLOW_FILE}}.yaml \
+          --env-file ./tests/{{.WORKFLOW_FILE}}/env.conf \
+          --eventpath ./tests/{{.WORKFLOW_FILE}}/inputs.json \
+          --secret $(cat ./tests/{{.WORKFLOW_FILE}}/secrets.conf)
+    vars:
+      WORKFLOW_FILE: "{{ index (.CLI_ARGS | splitArgs) 0 }}"

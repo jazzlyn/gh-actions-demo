@@ -1,0 +1,42 @@
+---
+version: "3"
+
+tasks:
+  checkout-src:
+    desc: checkout the application sources and install pre-commit
+    internal: true
+    dir: "{{.SRC_DIR}}"
+    cmds:
+      - task: checkout
+        vars: { REPO: github-workflows }
+
+  checkout:
+    desc: clone and init pre-commit {{.REPO}}
+    internal: true
+    cmds:
+      - task: clone
+        vars: { REPO: "{{.REPO}}" }
+      - task: pre-commit-init
+        vars: { REPO: "{{.REPO}}" }
+
+  clone:
+    desc: clone {{.REPO}} if it does not exist yet
+    internal: true
+    silent: true
+    dir: "{{.SRC_DIR}}"
+    cmds:
+      - |
+        if [[ -d {{.REPO}} ]]; then
+          echo "SKIP: {{.REPO}} repo exists."
+        else
+          git clone git@github.com:strg-at/{{.REPO}}.git
+        fi
+      - cd "{{.REPO}}" && (git rev-parse --verify develop >/dev/null 2>&1 && git switch develop || git switch main) && git pull --prune
+
+  pre-commit-init:
+    desc: initialize pre-commit
+    internal: true
+    silent: true
+    dir: "{{.SRC_DIR}}/{{.REPO}}"
+    cmds:
+      - task pre-commit:init
