@@ -1,14 +1,8 @@
 ---
-name: build
+name: satis-build
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - satis.json
-
-  workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: write
@@ -46,4 +40,4 @@ jobs:
         with:
           token: ${{ steps.generate-token.outputs.token }}
           ref: main
-          message: "chore: satis build"
+          message: "test: satis build"

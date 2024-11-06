@@ -2,24 +2,42 @@
 name: create release
 
 on:
+  workflow_call:
+    inputs:
+      runner:
+        description: '["some-runners"]'
+        required: true
+        type: string
   workflow_dispatch:
+    inputs:
+      runner:
+        description: '["some-runners"]'
+        required: false
+        type: string
+        default: '["ubuntu-latest"]'
 
 jobs:
-  docker-build-push:
-    permissions:
-      id-token: write
-      contents: read
-      packages: write
-    uses: "strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@c1b31ff6c2d848b014596b6f919336d6ae89d8de" # v1.9.1
-    with:
-      runner: '["ubuntu-latest"]'
-      subpath: hello-world
-
   create-release:
-    needs: [docker-build-push]
-    uses: "strg-at/github-workflows/.github/workflows/github-create-release.yaml@c1b31ff6c2d848b014596b6f919336d6ae89d8de" # v1.9.1
-    with:
-      runner: '["ubuntu-latest"]'
-    secrets:
-      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+    name: release
+    runs-on: ${{fromJSON(inputs.runner)}}
+    permissions:
+      contents: write
+
+    steps:
+      # https://github.com/marketplace/actions/checkout
+      - name: checkout repository
+        uses: actions/checkout@v4.1.1
+
+      # https://github.com/marketplace/actions/create-github-app-token
+      - name: generate token
+        id: generate-token
+        uses: actions/create-github-app-token@v1.10.3
+        with:
+          app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+          private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
+      # https://github.com/marketplace/actions/gh-release
+      - name: create release
+        uses: softprops/action-gh-release@v0.1.15
+        with:
+          token: ${{ steps.generate-token.outputs.token }}

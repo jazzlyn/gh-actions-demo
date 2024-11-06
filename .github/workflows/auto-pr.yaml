@@ -1,21 +1,48 @@
-# This workflow creates a pr from release/** -> main
 ---
 name: auto pr
 on:
-  workflow_dispatch:
-  # push:
-  #   branches:
-  #     - release/**
+  workflow_call:
+    inputs:
+      runner:
+        description: '["some-runners"]'
+        required: true
+        type: string
+      branch:
+        description: "branch to create pull request for"
+        required: true
+        type: string
+        default: "main"
+      update:
+        description: "update pull request if it exists"
+        required: true
+        type: string
+        default: "true"
+      pr-title:
+        description: "pr title"
+        required: false
+        type: string
+      pr-body:
+        description: "pr body"
+        required: false
+        type: string
 
 jobs:
   create-pr:
-    name: ""
+    runs-on: ${{fromJSON(inputs.runner)}}
     permissions:
       contents: write
       pull-requests: write
-    uses: strg-at/github-workflows/.github/workflows/auto-pr.yaml@c1b31ff6c2d848b014596b6f919336d6ae89d8de # v1.9.1
-    with:
-      runner: '["ubuntu-latest"]'
-      branch: main
-      update: "true"
-      pr-title: "auto-pr: release to main"
+    steps:
+      # https://github.com/marketplace/actions/checkout
+      - name: checkout repository
+        uses: actions/checkout@v4.1.2
+
+      # https://github.com/marketplace/actions/pull-request-action
+      - name: create pr
+        uses: vsoch/pull-request-action@1.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PULL_REQUEST_BRANCH: ${{ inputs.branch }}
+          PULL_REQUEST_UPDATE: ${{ inputs.update }}
+          PULL_REQUEST_TITLE: ${{ inputs.pr-title }}
+          PULL_REQUEST_BODY: ${{ inputs.pr-body }}
