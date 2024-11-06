@@ -39,11 +39,11 @@ jobs:
     steps:
       # https://github.com/marketplace/actions/checkout
       - name: checkout repository
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
 
       # https://github.com/marketplace/actions/setup-node-js-environment
       - name: setup node.js
-        uses: actions/setup-node@v3.6.0
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -55,7 +55,7 @@ jobs:
       # https://github.com/marketplace/actions/setup-yq
       - name: get package-version
         id: package-version
-        uses: mikefarah/yq@v4.33.2
+        uses: mikefarah/yq@bbdd97482f2d439126582a59689eb1c855944955 # v4.44.3
         with:
           cmd: |
             echo "version=$(cat package.json | yq '.version' | tr -d '"')" >> ${GITHUB_OUTPUT}
@@ -69,7 +69,7 @@ jobs:
       # https://github.com/marketplace/actions/create-github-app-token
       - name: generate token
         id: generate-token
-        uses: actions/create-github-app-token@3378cda945da322a8db4b193e19d46352ebe2de5 # v1.10.4
+        uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
         with:
           app-id: ${{ secrets.github-app-id }}
           private-key: ${{ secrets.github-app-key }}
@@ -87,7 +87,7 @@ jobs:
       - name: create branch
         if: steps.set-branch.outcome == 'success'
         id: create-branch
-        uses: peterjgrainger/action-create-branch@v2.3.0
+        uses: peterjgrainger/action-create-branch@64aa569aea81305305c6e92bd236d8c427debff8 # v2.3.0
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
@@ -97,7 +97,7 @@ jobs:
       # https://github.com/marketplace/actions/multi-file-commit
       - name: multi-file-commit
         id: multi-file-commit
-        uses: tyriis/multi-file-commit@v0.3.14
+        uses: tyriis/multi-file-commit@923a5965f42ba24546ff393c12aa3203b8b3855b # v0.3.14
         with:
           token: ${{ steps.generate-token.outputs.token }}
           ref: ${{ env.RELEASE_BRANCH }}
