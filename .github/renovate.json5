@@ -37,13 +37,13 @@
   //     automerge: false,
   //   },
   // ],
-  // packageRules: [
-  //   {
-  //     description: "prevention: automerge python",
-  //     matchDepNames: ["python"],
-  //     matchUpdateTypes: ["major", "minor"],
-  //     separateMinorPatch: false,
-  //     automerge: false,
-  //   },
-  // ],
+  packageRules: [
+    {
+      description: "prevention: automerge python",
+      matchDepNames: ["python"],
+      matchUpdateTypes: ["major", "minor"],
+      separateMinorPatch: false,
+      automerge: false,
+    },
+  ],
 }
