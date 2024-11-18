@@ -29,46 +29,46 @@ concurrency:
   group: renovate
   cancel-in-progress: true
 
-jobs:
-  renovate:
-    uses: strg-at/github-workflows/.github/workflows/run-renovate.yaml@c1b31ff6c2d848b014596b6f919336d6ae89d8de # v1.9.1
-    permissions:
-      contents: read
-    with:
-      runner: '["arc-runner-set-gh-actions-demo"]'
-      configuration-file: .github/renovate-bot.json5
-      dry-run: ${{ inputs.dry-run || 'null' }}
-      log-level: ${{ inputs.log-level || 'debug' }}
-    secrets:
-      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 # jobs:
 #   renovate:
-#     runs-on: ubuntu-latest
+#     uses: strg-at/github-workflows/.github/workflows/run-renovate.yaml@c1b31ff6c2d848b014596b6f919336d6ae89d8de # v1.9.1
 #     permissions:
 #       contents: read
-#       id-token: write
-#     steps:
-#       # https://github.com/marketplace/actions/create-github-app-token
-#       - name: generate token
-#         id: generate-token
-#         uses: actions/create-github-app-token@v1.10.3
-#         with:
-#           app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-#           private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+#     with:
+#       runner: '["ubuntu-latest"]'
+#       configuration-file: .github/renovate-bot.json5
+#       dry-run: ${{ inputs.dry-run || 'null' }}
+#       log-level: ${{ inputs.log-level || 'debug' }}
+#     secrets:
+#       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+#       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+jobs:
+  renovate:
+    runs-on: arc-runner-set-gh-actions-demo
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      # https://github.com/marketplace/actions/create-github-app-token
+      - name: generate token
+        id: generate-token
+        uses: actions/create-github-app-token@v1.10.3
+        with:
+          app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+          private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
-#       # https://github.com/marketplace/actions/checkout
-#       - name: checkout repository
-#         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-#         with:
-#           token: ${{ steps.generate-token.outputs.token }}
+      # https://github.com/marketplace/actions/checkout
+      - name: checkout repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
 
-#       # https://github.com/marketplace/actions/renovate-bot-github-action
-#       - name: renovate bot
-#         uses: renovatebot/github-action@0c94129d48b4e92addf23686b8a735b3057a0448 # v40.2.5
-#         env:
-#           LOG_LEVEL: ${{ inputs.log-level || 'info' }}
-#           RENOVATE_DRY_RUN: ${{ inputs.dry-run || 'null' }}
-#         with:
-#           token: ${{ steps.generate-token.outputs.token }}
-#           configurationFile: .github/renovate-bot.json5
+      # https://github.com/marketplace/actions/renovate-bot-github-action
+      - name: renovate bot
+        uses: renovatebot/github-action@0c94129d48b4e92addf23686b8a735b3057a0448 # v40.2.5
+        env:
+          LOG_LEVEL: ${{ inputs.log-level || 'info' }}
+          RENOVATE_DRY_RUN: ${{ inputs.dry-run || 'null' }}
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          configurationFile: .github/renovate-bot.json5
