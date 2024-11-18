@@ -35,7 +35,7 @@ jobs:
     permissions:
       contents: read
     with:
-      runner: '["ubuntu-latest"]'
+      runner: '["arc-runner-set-gh-actions-demo"]'
       configuration-file: .github/renovate-bot.json5
       dry-run: ${{ inputs.dry-run || 'null' }}
       log-level: ${{ inputs.log-level || 'debug' }}
