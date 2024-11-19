@@ -17,6 +17,6 @@ jobs:
     uses: strg-at/github-workflows/.github/workflows/docker-build.yaml@c1b31ff6c2d848b014596b6f919336d6ae89d8de # v1.9.1
     with:
       runner: '["ubuntu-latest"]'
-    secrets:
-      docker-username: ${{ secrets.DOCKER_USERNAME }}
-      docker-token: ${{ secrets.DOCKER_TOKEN }}
+    # secrets:
+    #   docker-username: ${{ secrets.DOCKER_USERNAME }}
+    #   docker-token: ${{ secrets.DOCKER_TOKEN }}
