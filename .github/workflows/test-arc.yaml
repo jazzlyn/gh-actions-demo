@@ -24,3 +24,8 @@ jobs:
       - name: testing
         run: |
           echo "hello world"
+
+      - name: docker test
+        run: |
+          docker pull node:20
+          docker info | grep Username
