@@ -52,7 +52,7 @@ jobs:
       # https://github.com/marketplace/actions/create-github-app-token
       - name: generate token
         id: generate-token
-        uses: actions/create-github-app-token@v1.10.3
+        uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
         with:
           app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
           private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
@@ -65,7 +65,7 @@ jobs:
 
       # https://github.com/marketplace/actions/renovate-bot-github-action
       - name: renovate bot
-        uses: renovatebot/github-action@0c94129d48b4e92addf23686b8a735b3057a0448 # v40.2.5
+        uses: renovatebot/github-action@0984fb80fc633b17e57f3e8b6c007fe0dc3e0d62 # v40.3.6
         env:
           LOG_LEVEL: ${{ inputs.log-level || 'info' }}
           RENOVATE_DRY_RUN: ${{ inputs.dry-run || 'null' }}
