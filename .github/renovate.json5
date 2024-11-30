@@ -40,7 +40,7 @@
   packageRules: [
     {
       matchManagers: ["terraform"],
-      rangeStrategy: "bump",
+      rangeStrategy: "replace",
     },
   ],
 }
