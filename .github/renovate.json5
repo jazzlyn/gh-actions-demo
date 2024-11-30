@@ -37,4 +37,10 @@
   //     automerge: false,
   //   },
   // ],
+  packageRules: [
+    {
+      matchManagers: ["terraform"],
+      rangeStrategy: "bump",
+    },
+  ],
 }
