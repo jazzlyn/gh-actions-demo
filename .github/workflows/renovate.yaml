@@ -67,7 +67,7 @@ jobs:
       - name: renovate bot
         uses: renovatebot/github-action@e3a862510f27d57a380efb11f0b52ad7e8dbf213 # v41.0.6
         env:
-          LOG_LEVEL: ${{ inputs.log-level || 'info' }}
+          LOG_LEVEL: ${{ inputs.log-level || 'debug' }}
           RENOVATE_DRY_RUN: ${{ inputs.dry-run || 'null' }}
         with:
           token: ${{ steps.generate-token.outputs.token }}
