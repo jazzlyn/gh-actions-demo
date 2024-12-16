@@ -39,7 +39,7 @@
   // ],
   constraintsFiltering: "strict",
   constraints: {
-    jenkins: "<= 2.462.2",
+    jenkins: "2.462.2",
   },
   packageRules: [
     {
