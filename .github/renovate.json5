@@ -37,10 +37,22 @@
   //     automerge: false,
   //   },
   // ],
+  constraintsFiltering: "strict",
+  constraints: {
+    jenkins: "2.479.2",
+  },
   packageRules: [
     {
       matchManagers: ["terraform"],
       rangeStrategy: "replace",
+    },
+    {
+      description: "jenkins-plugins: disable pr and automerge",
+      matchDatasources: ["jenkins-plugins"],
+      versioning: "maven",
+      separateMinorPatch: false,
+      automerge: false,
+      dependencyDashboardApproval: true,
     },
   ],
 }
