@@ -46,7 +46,7 @@
       description: "jenkins-plugins: disable pr and automerge",
       matchDatasources: ["jenkins-plugins"],
       registryUrls: [
-        "https://updates.jenkins.io/update-center.json?version=2.479.2",
+        "https://updates.jenkins.io/update-center.actual.json?version=2.479.2",
       ],
       separateMinorPatch: false,
       automerge: false,
