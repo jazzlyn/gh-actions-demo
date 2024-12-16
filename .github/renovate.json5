@@ -49,7 +49,6 @@
     {
       description: "jenkins-plugins: disable pr and automerge",
       matchDatasources: ["jenkins-plugins"],
-      versioning: "maven",
       separateMinorPatch: false,
       automerge: false,
       dependencyDashboardApproval: true,
