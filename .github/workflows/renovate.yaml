@@ -4,16 +4,27 @@ name: renovate
 on:
   workflow_dispatch:
     inputs:
-      log-level:
-        description: "log-level (debug, info, warn, error, fatal)"
-        required: false
-        type: string
-        default: "debug"
       dry-run:
-        description: "dry-run (extract, lookup, full)"
-        required: false
-        type: string
+        description: dry run mode
+        type: choice
+        options:
+          - "null"
+          - extract
+          - lookup
+          - full
         default: "null"
+        required: false
+      log-level:
+        description: renovate log level
+        type: choice
+        options:
+          - debug
+          - info
+          - warn
+          - error
+          - fatal
+        default: debug
+        required: false
   schedule:
     - cron: 0 0 * * *
   push:
@@ -47,7 +58,7 @@ jobs:
     runs-on: arc-runner-set-gh-actions-demo
     permissions:
       contents: read
-      id-token: write
+      pull-requests: write
     steps:
       # https://github.com/marketplace/actions/create-github-app-token
       - name: generate token
@@ -68,7 +79,6 @@ jobs:
         uses: renovatebot/github-action@e3a862510f27d57a380efb11f0b52ad7e8dbf213 # v41.0.6
         env:
           LOG_LEVEL: ${{ inputs.log-level || 'debug' }}
+          RENOVATE_CONFIG_FILE: .github/renovate-bot.json5
           RENOVATE_DRY_RUN: ${{ inputs.dry-run || 'null' }}
-        with:
-          token: ${{ steps.generate-token.outputs.token }}
-          configurationFile: .github/renovate-bot.json5
+          RENOVATE_TOKEN: ${{ steps.generate-token.outputs.token }}
