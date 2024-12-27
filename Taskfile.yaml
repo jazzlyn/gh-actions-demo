@@ -1,0 +1,38 @@
+---
+version: "3"
+
+vars:
+  PROJECT_DIR:
+    sh: "git rev-parse --show-toplevel"
+  OCI_DIR: "{{.PROJECT_DIR}}/oci"
+  SRC_DIR: "{{.PROJECT_DIR}}/src"
+  STRG_WORKFLOW_DIR: "{{.SRC_DIR}}/github-workflows/.github/workflows"
+
+includes:
+  act: .taskfiles/act/Taskfile.yaml
+  pre-commit: .taskfiles/pre-commit.yaml
+  workflows: .taskfiles/workflows.yaml
+
+tasks:
+  lint:
+    desc: lint codebase
+    dir: "{{.PROJECT_DIR}}"
+    cmds:
+      - task: pre-commit:init
+      - task: pre-commit:run
+
+  generate-token:
+    desc: generate token
+    dir: "{{.PROJECT_DIR}}"
+    cmds:
+      - |
+        npx github-app-installation-token \
+          --appId $APP_ID \
+          --installationId $INSTALLATION_ID \
+          --privateKeyLocation $PEM_FILE
+
+  update:
+    desc: update codebase
+    dir: "{{.PROJECT_DIR}}"
+    cmds:
+      - task: workflows:checkout-src
