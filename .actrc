@@ -1,0 +1,5 @@
+--dryrun
+--platform ubuntu-latest=ghcr.io/strg-at/containers/actions-runner:rolling
+--action-offline-mode
+--rm
+--verbose
