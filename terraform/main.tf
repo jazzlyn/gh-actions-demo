@@ -14,6 +14,6 @@ terraform {
 }
 
 locals {
-  # renovate: depName=ghcr.io/strg-at/containers/approve-merge-pr datasource=docker versioning=loose
+  # renovate: depName=ghcr.io/strg-at/containers/approve-merge-pr datasource=docker
   image = "ghcr.io/strg-at/containers/approve-merge-pr:rolling@sha256:d77966db7cc8673f1a02a213b7ca68dd66d0531b94ddf28e998d07fe171398af"
 }
