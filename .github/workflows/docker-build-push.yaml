@@ -13,8 +13,7 @@ on:
       - main
     paths:
       - "*/**"
-    paths-ignore:
-      - ".github/**"
+      - "!.github/**"
 
 jobs:
   get-changed-files:
