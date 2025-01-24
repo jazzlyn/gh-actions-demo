@@ -11,8 +11,8 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "**/Dockerfile"
+    paths-ignore:
+      - ".github/**"
 
 jobs:
   get-changed-files:
@@ -23,7 +23,7 @@ jobs:
     with:
       runner: '["ubuntu-latest"]'
       files: |
-        **/Dockerfile
+        **/*
       matrix: true
       dir_names: true
 
