@@ -32,6 +32,7 @@ jobs:
     if: ${{ always() && (github.event_name == 'workflow_dispatch' || needs.get-changed-files.result == 'success') }}
     permissions:
       contents: read
+      id-token: write
       packages: write
     strategy:
       matrix:
