@@ -8,12 +8,12 @@ on:
         description: "path to directory containing the Dockerfile file, f.e. app-one"
         required: true
         type: string
-  push:
-    branches:
-      - main
-    paths:
-      - "*/**"
-      - "!.github/**"
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - "*/**"
+  #     - "!.github/**"
 
 jobs:
   get-changed-files:
