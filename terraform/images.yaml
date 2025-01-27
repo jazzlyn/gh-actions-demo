@@ -1,4 +1,4 @@
 ---
 vscode:
-  repository: ghcr.io/strg-at/containers/gcloud-workstation-vscode
-  tag: rolling@sha256:9eee379669743ae63ae5765ed3337778f4a73e9003a4fd18c8438d55aad7a761
+  # renovate: depName=ghcr.io/strg-at/containers/gcloud-workstation-vscode datasource=docker
+  image: ghcr.io/strg-at/containers/gcloud-workstation-vscode:rolling@sha256:9eee379669743ae63ae5765ed3337778f4a73e9003a4fd18c8438d55aad7a761
