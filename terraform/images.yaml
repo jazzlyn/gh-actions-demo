@@ -1,3 +1,3 @@
 ---
 # renovate: depName=ghcr.io/strg-at/containers/gcloud-workstation-vscode datasource=docker
-vscode: ghcr.io/strg-at/containers/gcloud-workstation-vscode:rolling
+vscode: rolling
