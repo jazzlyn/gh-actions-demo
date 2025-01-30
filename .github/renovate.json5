@@ -4,18 +4,17 @@
     "github>strg-at/renovate-config//github-actions/silent-automerge.json5",
     "github>strg-at/renovate-config//pre-commit/silent-automerge.json5",
     "github>strg-at/renovate-config//terraform/silent-automerge.json5",
-    "github>strg-at/renovate-config//regex/general-regex.json5",
+    //"github>strg-at/renovate-config//regex/general-regex.json5",
   ],
   customManagers: [
     {
       customType: "regex",
-      fileMatch: ["\\.ya?ml(\\.j2)?$"],
+      description: "rolling with sha 1 line",
+      fileMatch: ["terraform/images.yaml"],
       matchStrings: [
-        '(?m:^[ \\t]*?# ?renovate: depName=(?<depName>\\S+) datasource=(?<datasource>\\S+)( versioning=(?<versioning>\\S+))?( extractVersion=(?<extractVersion>\\S+))?\\n[ \\t \\- ]*?\\S+:[ ]*"?(?<currentValue>[^" ]+?)"?$)',
+        "# renovate: depName=(?<depName>[^\\s]+) datasource=(?<datasource>\\S+)\\n(?<image>[^\\s:]+): (?<depName>[^\\s:]+):(?<currentValue>\\S+)(@(?<currentDigest>sha256:\\S+)?)",
       ],
-      datasourceTemplate: "{{{datasource}}}",
-      versioningTemplate: "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}",
-      extractVersionTemplate: "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}",
+      datasourceTemplate: "docker",
     },
   ],
 }
