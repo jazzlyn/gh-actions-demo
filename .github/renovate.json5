@@ -4,24 +4,5 @@
     "github>strg-at/renovate-config//github-actions/silent-automerge.json5",
     "github>strg-at/renovate-config//pre-commit/silent-automerge.json5",
     "github>strg-at/renovate-config//terraform/silent-automerge.json5",
-    //"github>strg-at/renovate-config//regex/general-regex.json5",
-  ],
-  customManagers: [
-    {
-      customType: "regex",
-      description: "rolling with sha 1 line",
-      fileMatch: ["terraform/images.yaml"],
-      matchStrings: [
-        "(?m:^[ \\t]*?# ?renovate: depName=(?<depName>\\S+) datasource=(?<datasource>\\S+)\\n[ \\t]*?(?<image>[^\\s:]+): (?<depName2>[^\\s:]+):(?<currentValue>\\S+)(@(?<currentDigest>sha256:\\S+)?))",
-      ],
-    },
-  ],
-  packageRules: [
-    {
-      description: "prevention: automerge test images",
-      matchDepNames: ["ghcr.io/**"],
-      matchUpdateTypes: ["major", "minor", "patch", "digest"],
-      automerge: false,
-    },
   ],
 }
