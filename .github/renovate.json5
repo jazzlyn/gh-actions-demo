@@ -12,9 +12,8 @@
       description: "rolling with sha 1 line",
       fileMatch: ["terraform/images.yaml"],
       matchStrings: [
-        "^# ?renovate: depName=(?<depName>\\S+) datasource=(?<datasource>\\S+)\\n(?<image>[^\\s:]+): (?<depName2>[^\\s:]+):(?<currentValue>\\S+)(@(?<currentDigest>sha256:\\S+)?)",
+        "(?m:^# ?renovate: depName=(?<depName>\\S+) datasource=(?<datasource>\\S+)\\n(?<image>[^\\s:]+): (?<depName2>[^\\s:]+):(?<currentValue>\\S+)(@(?<currentDigest>sha256:\\S+)?))",
       ],
-      datasourceTemplate: "docker",
     },
   ],
   packageRules: [
