@@ -1,4 +1,4 @@
-FROM nginx:alpine@sha256:b471bb609adc83f73c2d95148cf1bd683408739a3c09c0afc666ea2af0037aef
+FROM nginx:alpine@sha256:e4efffc3236305ae53fb54e5cd76c9ccac0cebf7a23d436a8f91bce6402c2665
 
 COPY index.html /usr/share/nginx/html/index.html
 
