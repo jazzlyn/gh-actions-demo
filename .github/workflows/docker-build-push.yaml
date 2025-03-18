@@ -20,7 +20,7 @@ jobs:
     if: github.event_name == 'push'
     permissions:
       contents: read
-    uses: strg-at/github-workflows/.github/workflows/get-changed-files.yaml@f7c3fc77f321009c719cd214ef0d811544d02fd6
+    uses: strg-at/github-workflows/.github/workflows/get-changed-files.yaml@9ab63cf1d50ca47747eb8ac9b2a6a1802adbc7d5
     with:
       runner: '["ubuntu-latest"]'
       files: |
@@ -38,7 +38,7 @@ jobs:
     strategy:
       matrix:
         path: ${{ github.event_name == 'push' && fromJSON(needs.get-changed-files.outputs.files) || fromJSON('[""]') }}
-    uses: strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@f7c3fc77f321009c719cd214ef0d811544d02fd6
+    uses: strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@9ab63cf1d50ca47747eb8ac9b2a6a1802adbc7d5
     with:
       runner: '["ubuntu-latest"]'
       subpath: ${{ github.event_name == 'workflow_dispatch' && inputs.path || matrix.path }}
