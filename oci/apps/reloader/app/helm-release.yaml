@@ -26,8 +26,6 @@ spec:
     keepHistory: false
   values:
     fullnameOverride: "reloader"
-    reloader:
-      deployment:
-        image:
-          repository: ghcr.io/stakater/reloader
-          tag: v1.4.0@sha256:0a27b89b62a4207e955afeb94a515145ea8f7a24ae6b22a60b9aff54edefb12a
+    image:
+      repository: ghcr.io/stakater/reloader
+      tag: v1.4.0@sha256:0a27b89b62a4207e955afeb94a515145ea8f7a24ae6b22a60b9aff54edefb12a
