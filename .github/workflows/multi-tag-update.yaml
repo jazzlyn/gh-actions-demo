@@ -64,17 +64,13 @@ jobs:
         with:
           cmd: yq -i '${{ inputs.tag-path }} = "${{ inputs.tag }}"' ${{ inputs.file-path }}
 
-      # https://github.com/marketplace/actions/github-app-token
+      # https://github.com/marketplace/actions/create-github-app-token
       - name: generate token
         id: generate-token
-        uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
-        env:
-          # https://github.com/tibdex/github-app-token/issues/54
-          # https://stackoverflow.com/questions/72104449/node-js-crypto-fails-to-sign-pem-key-string-from-file-with-error25066067dso-su
-          OPENSSL_CONF: /dev/null
+        uses: actions/create-github-app-token@3ff1caaa28b64c9cc276ce0a02e2ff584f3900c5 # v2.0.2
         with:
-          app_id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-          private_key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+          app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+          private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
       - name: branch exists
         if: ${{ inputs.create-pr }}
