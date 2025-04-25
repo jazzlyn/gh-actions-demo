@@ -6,10 +6,16 @@
     "github>strg-at/renovate-config//terraform/silent-automerge.json5",
   ],
   packageRules: [
+    // {
+    //   description: "automergeSchedule: app one",
+    //   matchFileNames: ["app-one/**"],
+    //   automergeSchedule: ["* 0-6 * * 1-4"],
+    // },
     {
-      description: "automergeSchedule: app one",
-      matchFileNames: ["app-one/**"],
-      automergeSchedule: ["* 0-6 * * 1-4"],
+      description: "versioning: minio",
+      matchDatasources: ["docker"],
+      matchDepNames: ["quay.io/minio/minio"],
+      versioning: "regex:^RELEASE\\.(?<major>\\d+)-(?<minor>\\d+)-(?<patch>\\d+)T.*Z(-(?<compatibility>.*))?$",
     },
   ],
 }
