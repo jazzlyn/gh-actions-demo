@@ -42,7 +42,7 @@ jobs:
           else
             tag="$tag-rc1"
           fi
-          echo "::set-output name=tag::$tag"
+          echo "tag=$tag" >> $GITHUB_OUTPUT
       - name: Create tag
         id: create_tag
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
