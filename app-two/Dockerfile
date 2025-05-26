@@ -2,7 +2,7 @@ FROM nginx:alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76f
 
 COPY index.html /usr/share/nginx/html/index.html
 
-LABEL Version=0.3
+USER nginx
 
 EXPOSE 80
 

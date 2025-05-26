@@ -16,9 +16,10 @@ COPY --from=build /app/dist /app/dist
 
 WORKDIR /app
 
-ADD package*.json ./
+COPY package*.json ./
 
 RUN npm ci --omit=dev
 
 USER node
+
 CMD [ "npm", "run", "service"]

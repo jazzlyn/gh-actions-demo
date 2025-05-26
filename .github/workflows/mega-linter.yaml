@@ -9,20 +9,10 @@ on:
         type: string
         default: ubuntu-latest
         required: false
-      config:
-        description: megalinter config file
-        type: string
-        default: .megalinter.yaml
-        required: false
       log-level:
         description: log-level
         type: string
         default: info
-        required: false
-      validate-all-codebase:
-        description: validate all codebase
-        type: boolean
-        default: true
         required: false
   workflow_dispatch:
     inputs:
@@ -30,11 +20,6 @@ on:
         description: runner name
         type: string
         default: ubuntu-latest
-        required: false
-      config:
-        description: megalinter config file
-        type: string
-        default: .megalinter.yaml
         required: false
       log-level:
         description: renovate log level
@@ -45,11 +30,6 @@ on:
           - warning
           - error
         default: debug
-        required: false
-      validate-all-codebase:
-        description: validate all codebase
-        type: boolean
-        default: true
         required: false
 
 jobs:
@@ -86,5 +66,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           LOG_LEVEL: ${{ inputs.log-level || 'info' }}
-          MEGALINTER_CONFIG: ${{ inputs.config || '.megalinter.yaml' }}
-          VALIDATE_ALL_CODEBASE: ${{ inputs.validate-all-codebase || true }}
