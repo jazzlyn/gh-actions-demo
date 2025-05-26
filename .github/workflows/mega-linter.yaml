@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
     inputs:
       log-level:
-        description: renovate log level
+        description: megalinter log level
         type: choice
         options:
           - debug
