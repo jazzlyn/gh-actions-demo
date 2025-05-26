@@ -1,1 +1,9 @@
 FROM python:3.13.3-slim@sha256:56a11364ffe0fee3bd60af6d6d5209eba8a99c2c16dc4c7c5861dc06261503cc
+
+WORKDIR /app
+
+RUN useradd --system --no-create-home user
+
+USER user
+
+CMD ["python", "-c", "print('Hello from a secure Python container!')"]

@@ -1,0 +1,30 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/megalinter/megalinter/main/megalinter/descriptors/schemas/megalinter-configuration.jsonschema.json
+# APPLY_FIXES: all
+VALIDATE_ALL_CODEBASE: true
+ENABLE_LINTERS:
+  # - ACTION_ACTIONLINT
+  - EDITORCONFIG_EDITORCONFIG_CHECKER
+  - JAVASCRIPT_ES
+  - JAVASCRIPT_PRETTIER
+  - JSON_PRETTIER
+  - MARKDOWN_MARKDOWNLINT
+  # - REPOSITORY_CHECKOV
+  - REPOSITORY_GITLEAKS
+  - REPOSITORY_TRIVY
+  - SPELL_PROSELINT
+  - TERRAFORM_TFLINT
+  - TERRAFORM_TERRAFORM_FMT
+  - TYPESCRIPT_ES
+  - TYPESCRIPT_PRETTIER
+  - YAML_PRETTIER
+  - YAML_YAMLLINT
+
+ACTION_ACTIONLINT_CONFIG_FILE: .github/actionlint.yaml
+JAVASCRIPT_PRETTIER_CONFIG_FILE: .prettierrc.yaml
+JSON_PRETTIER_CONFIG_FILE: .prettierrc.yaml
+MARKDOWN_MARKDOWNLINT_CONFIG_FILE: .markdownlint.yaml
+TERRAFORM_TFLINT_CONFIG_FILE: .tflint.hcl
+TYPESCRIPT_PRETTIER_CONFIG_FILE: .prettierrc.yaml
+YAML_PRETTIER_CONFIG_FILE: .prettierrc.yaml
+YAML_YAMLLINT_CONFIG_FILE: .yamllint.yaml
