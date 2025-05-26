@@ -29,7 +29,7 @@ on:
 
 jobs:
   megalinter:
-    runs-on: ${{ inputs.runner }}
+    runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
     permissions:
       contents: write
       issues: write
