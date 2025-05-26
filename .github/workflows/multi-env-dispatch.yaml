@@ -16,7 +16,7 @@ concurrency:
   group: ${{ github.repository }}-${{ github.sha }}
 
 env:
-  ENVIRONMENT: null
+  ENVIRONMENT: ""
 
 jobs:
   environment:

@@ -16,11 +16,6 @@ on:
         required: false
   workflow_dispatch:
     inputs:
-      runner:
-        description: runner name
-        type: string
-        default: ubuntu-latest
-        required: false
       log-level:
         description: renovate log level
         type: choice
