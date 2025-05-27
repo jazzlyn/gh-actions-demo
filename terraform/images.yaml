@@ -1,5 +1,5 @@
 ---
 # renovate: depName=ghcr.io/strg-at/containers/gcloud-workstation-vscode datasource=docker
-vscode: ghcr.io/jazzlyn/containers/gcloud-workstation-vscode:rolling@sha256:4f9d393526032f2a127e1a72bbfd90df225a39de45d4d6743d4b15b85730b721
+vscode: ghcr.io/jazzlyn/containers/gcloud-workstation-vscode:rolling@sha256:a0c063097eac9c352b8f4819591fda8278d222904b2972d004bae6d3e1960d52
 # renovate: depName=ghcr.io/strg-at/containers/gcloud-workstation-phpstorm datasource=docker
 phpstorm: ghcr.io/strg-at/containers/gcloud-workstation-phpstorm:rolling@sha256:f0602f1ee780f270c5427f948280f62a960abb7a31caf81729b084c34de93a7b
