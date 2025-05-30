@@ -8,10 +8,10 @@ on:
       - opened
       - synchronize
     paths-ignore:
-      - "!**/*"
       - ".github/**"
       - "**/README.md"
       - "*"
+      - "!**/*"
 
 jobs:
   get-changed-files:
