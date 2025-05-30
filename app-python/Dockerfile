@@ -6,4 +6,4 @@ RUN useradd --system --no-create-home user
 
 USER user
 
-CMD ["python", "-c", "print('Hello from a secure Python container!')"]
+CMD ["python", "-c", "print('Hello from a secure Python container.')"]

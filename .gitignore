@@ -16,6 +16,7 @@ Thumbs.db
 
 # Dependency directories
 node_modules/
+megalinter-reports/
 
 # Local .terraform directories
 **/.terraform/*
