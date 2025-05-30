@@ -7,11 +7,11 @@ on:
     types:
       - opened
       - synchronize
-    paths-ignore:
-      - ".github/**"
-      - "**/README.md"
-      - "*"
-      - "!**/*"
+    paths:
+      - "**/*"
+      - "!.github/**"
+      - "!**/README.md"
+      - "!*"
 
 jobs:
   get-changed-files:
