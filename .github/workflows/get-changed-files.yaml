@@ -9,9 +9,9 @@ on:
       - synchronize
     paths:
       - "**/*"
-      - "!*"
       - "!.github/**"
       - "!**/README.md"
+      - "!*"
 
 jobs:
   get-changed-files:
