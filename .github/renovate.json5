@@ -16,6 +16,7 @@
       description: "python: versioning",
       matchDepNames: ["python"],
       rangeStrategy: "bump",
+      separateMinorPatch: false,
     },
   ],
 }
