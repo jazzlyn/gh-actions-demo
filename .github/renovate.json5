@@ -10,6 +10,15 @@
     "github>techtales-io/renovate-config//terraform/silent-automerge.json5",
     // "github>strg-at/renovate-config//regex/yaml-images-with-digest.json5",
   ],
+  flux: {
+    managerFilePatterns: ["/^(kubernetes|oci)/.+\\.ya?ml$/"],
+  },
+  "helm-values": {
+    managerFilePatterns: ["/^(kubernetes|oci)/.+\\.ya?ml$/"],
+  },
+  kubernetes: {
+    managerFilePatterns: ["/^(kubernetes|oci)/.+\\.ya?ml$/"],
+  },
   packageRules: [
     // {
     //   description: "automergeSchedule: app one",
