@@ -4,14 +4,13 @@
   "description": "hello world",
   "main": "index.js",
   "scripts": {
-    "main": "node ./src/index.js",
     "build": "rm -rf dist && tsc",
-    "service": "node ./dist/index.js"
+    "start": "npm run build && node ./dist/index.js",
+    "dev": "node ./dist/index.js"
   },
   "author": "jazzlyn",
   "license": "MIT",
   "dependencies": {
-    "@strg/logging-winston": "3.0.1",
     "typescript": "5.8.3"
   }
 }
