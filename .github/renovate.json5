@@ -17,10 +17,5 @@
     //   matchFileNames: ["app-one/**"],
     //   automergeSchedule: ["* 0-6 * * 1-4"],
     // },
-    {
-      matchDepNames: ["python"],
-      matchUpdateTypes: ["patch"],
-      enabled: false,
-    },
   ],
 }
