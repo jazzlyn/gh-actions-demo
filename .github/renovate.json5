@@ -18,10 +18,9 @@
     //   automergeSchedule: ["* 0-6 * * 1-4"],
     // },
     {
-      description: "fluxcd: allow image updates",
-      matchDatasources: ["docker"],
-      matchDepNames: ["ghcr.io/fluxcd/**"],
-      enabled: true,
+      matchDepNames: ["python"],
+      matchUpdateTypes: ["patch"],
+      enabled: false,
     },
   ],
 }
