@@ -13,7 +13,7 @@ jobs:
         run: echo '${{ toJSON(github) }}'
   test-arc:
     runs-on:
-      - arc-runner-set-gh-actions-demo
+      - jazzlyn-gh-actions-demo-runner
     permissions:
       contents: read
     steps:
