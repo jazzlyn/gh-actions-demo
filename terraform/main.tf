@@ -3,7 +3,7 @@
 # --------------------------------------------------------------------------------
 
 terraform {
-  required_version = "<= 1.13.2"
+  required_version = "<= 1.13.3"
   required_providers {
     # https://registry.terraform.io/providers/integrations/github/latest/docs
     github = {
