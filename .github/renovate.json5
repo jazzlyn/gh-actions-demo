@@ -17,9 +17,9 @@
     //   matchFileNames: ["app-one/**"],
     //   automergeSchedule: ["* 0-6 * * 1-4"],
     // },
-    {
-      matchUpdateTypes: ["major"],
-      addLabels: ["stop-updating"],
-    },
+    // {
+    //   matchUpdateTypes: ["major"],
+    //   addLabels: ["stop-updating"],
+    // },
   ],
 }
