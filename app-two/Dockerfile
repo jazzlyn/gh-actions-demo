@@ -1,4 +1,4 @@
-FROM nginx:alpine@sha256:42a516af16b852e33b7682d5ef8acbd5d13fe08fecadc7ed98605ba5e3b26ab8
+FROM ghcr.io/jazzlyn/gh-actions-demo/app-tag:v2025.9.0
 
 COPY index.html /usr/share/nginx/html/index.html
 
