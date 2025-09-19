@@ -12,6 +12,10 @@
     // "github>strg-at/renovate-config//regex/yaml-images-with-digest.json5",
   ],
   packageRules: [
+    {
+      matchPackageNames: ["ghcr.io/jazzlyn/gh-actions-demo/app-tag"],
+      ignoreUnstable: false,
+    },
     // {
     //   description: "automergeSchedule: app one",
     //   matchFileNames: ["app-one/**"],
