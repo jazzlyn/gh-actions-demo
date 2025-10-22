@@ -8,7 +8,8 @@
     "github>techtales-io/renovate-config//github-actions/silent-automerge.json5",
     "github>techtales-io/renovate-config//pre-commit/silent-automerge.json5",
     "github>techtales-io/renovate-config//terraform/silent-automerge.json5",
-    "github>techtales-io/renovate-config//regex/general-regex.json5",
+    // "github>techtales-io/renovate-config//regex/general-regex.json5",
+    "github>strg-at/renovate-config//regex/general-regex.json5",
     // "github>strg-at/renovate-config//regex/yaml-images-with-digest.json5",
   ],
   packageRules: [
