@@ -11,4 +11,4 @@ spec:
   ref:
     # renovate: depName=fluxcd/flux2 datasource=github-releases
     tag: v2.6.4
-    digest: sha256:e0cec87b9335e2c881405fc9a38405ff82320dd1bf55fb0c8236a804d6a0c331
+    digest: sha256:416e5cdb6055a90fe6fceb7e9122509a028e71c9fc660f161842536884427178
