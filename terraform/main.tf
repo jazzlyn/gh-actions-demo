@@ -8,7 +8,7 @@ terraform {
     # https://registry.terraform.io/providers/integrations/github/latest/docs
     github = {
       source  = "integrations/github"
-      version = "6.7.3"
+      version = "6.7.4"
     }
   }
 }
