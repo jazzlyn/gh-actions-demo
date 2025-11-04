@@ -27,4 +27,4 @@ spec:
     fullnameOverride: reloader
     image:
       repository: ghcr.io/stakater/reloader
-      tag: v1.4.8@sha256:90b6a327ba6d96415c1dc84e968b131a1539898dba4774ec4f843bf154664a48
+      tag: v1.4.9@sha256:d4672d0694da032622473c3a2b8bd40c119eb802e31d7d2418974e40d2ad1902
