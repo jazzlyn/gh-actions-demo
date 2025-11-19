@@ -1,0 +1,178 @@
+# ---
+# name: flux-diff
+
+# on:
+#   pull_request:
+#     branches:
+#       - main
+#     paths:
+#       - kubernetes/**.yaml
+
+# jobs:
+#   flux-diff:
+#     uses: strg-at/github-workflows/.github/workflows/flux-diff.yaml@9152079a0484462016685fa923cdf0da57cdd597 # v1.11.3
+#     with:
+#       runner: '["ubuntu-latest"]'
+#       paths: '["kubernetes"]'
+#       resources: '["helmrelease", "kustomization"]'
+
+---
+name: flux diff
+
+on:
+  workflow_call:
+    inputs:
+      runner:
+        description: '["some-runners"]'
+        required: true
+        type: string
+      paths:
+        description: "paths to flux resources"
+        required: false
+        type: string
+        default: '["kubernetes"]'
+      resources:
+        description: "type of resources to diff"
+        required: false
+        type: string
+        default: '["helmrelease", "kustomization"]'
+      sources:
+        description: "define which source repos to include (f.e. flux-devenv=./oci)"
+        required: false
+        type: string
+        default: '""'
+      flux-cluster-repo-owner:
+        description: "define the owner of the flux-cluster repo (f.e. strg-at)"
+        required: false
+        type: string
+      flux-cluster-repo:
+        description: "define the flux-cluster repo (f.e. flux-cluster)"
+        required: false
+        type: string
+      devenv-oci-path:
+        description: "define path to oci folder (f.e. oci)"
+        required: false
+        type: string
+
+    secrets:
+      github-app-id:
+        description: "github app id"
+        required: false
+      github-app-key:
+        description: "github app private key"
+        required: false
+
+jobs:
+  flux-diff:
+    runs-on: ${{fromJSON(inputs.runner)}}
+    permissions:
+      contents: read
+      pull-requests: write
+    strategy:
+      matrix:
+        paths: ${{fromJSON(inputs.paths)}}
+        resources: ${{fromJSON(inputs.resources)}}
+      fail-fast: false
+    steps:
+      # https://github.com/marketplace/actions/create-github-app-token
+      - name: generate token
+        id: generate-token
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
+        with:
+          app-id: ${{ secrets.github-app-id }}
+          private-key: ${{ secrets.github-app-key }}
+          owner: ${{ github.repository_owner}}
+
+      # https://github.com/marketplace/actions/checkout
+      - name: checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          path: pull
+
+      # https://github.com/marketplace/actions/checkout
+      - name: checkout default branch
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          ref: ${{ github.event.repository.default_branch }}
+          path: default
+
+      # https://github.com/marketplace/actions/checkout
+      - name: checkout flux-cluster
+        if: ${{ inputs.flux-cluster-repo }}
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          repository: ${{ inputs.flux-cluster-repo-owner }}/${{ inputs.flux-cluster-repo }}
+          path: pull/${{inputs.devenv-oci-path}}/${{ inputs.flux-cluster-repo }}
+
+      # https://github.com/marketplace/actions/checkout
+      - name: checkout flux-cluster default branch
+        if: ${{ inputs.flux-cluster-repo }}
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          repository: ${{ inputs.flux-cluster-repo-owner }}/${{ inputs.flux-cluster-repo }}
+          path: default/${{inputs.devenv-oci-path}}/${{ inputs.flux-cluster-repo }}
+
+      # https://github.com/alexellis/arkade-get
+      - name: install flux
+        if: ${{ inputs.flux-cluster-repo }}
+        uses: alexellis/arkade-get@88abff469636be1bd282cff079d75973cdb69cd1
+        with:
+          print-summary: false
+          flux: latest
+
+      - name: run docker and push artifact
+        if: ${{ inputs.flux-cluster-repo }}
+        run: |
+          docker run -d --rm --name kind-registry -p 5050:5000 registry:2.8.1
+          flux push artifact oci://localhost:5050/${{ github.event.repository.name }}:local \
+            --path="pull/${{inputs.devenv-oci-path}}" \
+            --source="local" \
+            --revision="latest"
+
+      # https://github.com/allenporter/flux-local
+      - name: diff resources
+        uses: docker://ghcr.io/allenporter/flux-local:v7.10.0@sha256:af0e9be64b5a3384a8f4140d59bf8be876fcc6168091371b98b5e40e111c13d8
+        with:
+          args: >-
+            diff ${{ matrix.resources }}
+            --unified 6
+            --path /github/workspace/pull/${{ matrix.paths }}/flux
+            --path-orig /github/workspace/default/${{ matrix.paths }}/flux
+            --strip-attrs "helm.sh/chart,checksum/config,app.kubernetes.io/version,chart"
+            --limit-bytes 10000
+            --all-namespaces
+            --sources ${{ inputs.sources }}
+            --output-file diff.patch
+
+      - name: generate diff
+        id: diff
+        run: |
+          cat diff.patch;
+          {
+            echo 'diff<<EOF'
+            cat diff.patch
+            echo EOF
+          } >> "$GITHUB_OUTPUT";
+          {
+            echo "### Diff"
+            echo '```diff'
+            cat diff.patch
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # https://github.com/marketplace/actions/add-pr-comment
+      - name: add comment
+        if: ${{ steps.diff.outputs.diff }}
+        uses: mshick/add-pr-comment@b8f338c590a895d50bcbfa6c5859251edc8952fc # v2.8.2
+        with:
+          repo-token: ${{ steps.generate-token.outputs.token }}
+          message-id: ${{ github.event.pull_request.number }}/${{ matrix.paths }}/${{ matrix.resources }}
+          message-failure: diff was not successful
+          message: |
+            ```diff
+            ${{ steps.diff.outputs.diff }}
+            ```
