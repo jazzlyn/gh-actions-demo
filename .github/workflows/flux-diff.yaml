@@ -63,7 +63,7 @@ concurrency:
 
 jobs:
   test:
-    runs-on: ${{ inputs.runner }}
+    runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
     permissions:
       contents: read
     steps:
@@ -91,17 +91,17 @@ jobs:
             test
             --all-namespaces
             --enable-helm
-            --path /github/workspace/${{ inputs.path }}/flux
+            --path /github/workspace/${{ inputs.path || 'kubernetes' }}/flux
             --verbose
 
   diff:
-    runs-on: ${{ inputs.runner }}
+    runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
     permissions:
       contents: read
       pull-requests: write
     strategy:
       matrix:
-        resource: ${{fromJSON(inputs.resources)}}
+        resource: ${{ fromJSON(inputs.resources || '["helmrelease", "kustomization"]') }}
       fail-fast: false
     steps:
       # https://github.com/marketplace/actions/create-github-app-token
@@ -178,8 +178,8 @@ jobs:
           args: >-
             diff ${{ matrix.resource }}
             --unified 6
-            --path /github/workspace/pull/${{ inputs.path }}/flux
-            --path-orig /github/workspace/default/${{ inputs.path }}/flux
+            --path /github/workspace/pull/${{ inputs.path || 'kubernetes' }}/flux
+            --path-orig /github/workspace/default/${{ inputs.path || 'kubernetes' }}/flux
             --strip-attrs "helm.sh/chart,checksum/config,app.kubernetes.io/version,chart"
             --limit-bytes 9940
             --all-namespaces
