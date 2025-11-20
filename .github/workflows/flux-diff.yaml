@@ -182,7 +182,6 @@ jobs:
             --strip-attrs "helm.sh/chart,checksum/config,app.kubernetes.io/version,chart"
             --limit-bytes 9940
             --all-namespaces
-            --sources flux-system
             --output-file diff.patch
 
       - name: list diff
