@@ -15,5 +15,3 @@ spec:
   interval: 30m
   retryInterval: 5s
   timeout: 5m
-  dependsOn:
-    - name: flux-repositories-sync
