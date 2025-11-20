@@ -11,8 +11,7 @@ spec:
       version: 3.13.0
       sourceRef:
         kind: HelmRepository
-        name: metrics-server-charts
-        namespace: flux-system
+        name: metrics-server
   interval: 15m
   install:
     crds: CreateReplace
