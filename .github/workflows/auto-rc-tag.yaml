@@ -21,7 +21,7 @@ jobs:
     runs-on: ${{fromJSON(inputs.runner)}}
     steps:
       - name: Checkout
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         # determine the tag name by checking last tag in this branch matching the branch pattern
         # f.e. release/1.0.0 -> 1.0.0-rc1 if no tag found, 1.0.0-rc2 if 1.0.0-rc1 found, etc.
       - name: Determine tag name
