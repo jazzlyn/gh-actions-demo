@@ -228,3 +228,16 @@ jobs:
             ```diff
             ${{ steps.diff.outputs.diff }}
             ```
+
+  success:
+    if: ${{ !cancelled() }}
+    needs: ["test", "diff"]
+    runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
+    steps:
+      - name: any jobs failed?
+        if: ${{ contains(needs.*.result, 'failure') }}
+        run: exit 1
+
+      - name: all jobs passed or skipped?
+        if: ${{ !(contains(needs.*.result, 'failure')) }}
+        run: echo "all jobs passed or skipped" && echo "${{ toJSON(needs.*.result) }}"
