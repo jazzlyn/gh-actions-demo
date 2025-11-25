@@ -1,0 +1,89 @@
+---
+# yaml-language-server: $schema=https://kube-schemas.pages.dev/fluxcd.controlplane.io/fluxinstance_v1.json
+apiVersion: fluxcd.controlplane.io/v1
+kind: FluxInstance
+metadata:
+  name: flux
+spec:
+  distribution:
+    # renovate: depName=controlplaneio-fluxcd/distribution datasource=github-releases
+    version: 2.6.4
+    registry: ghcr.io/fluxcd
+    artifact: oci://ghcr.io/controlplaneio-fluxcd/flux-operator-manifests
+  cluster:
+    domain: cluster.local
+    type: kubernetes
+  components:
+    - helm-controller
+    - kustomize-controller
+    - notification-controller
+    - source-controller
+  storage:
+    class: standard
+    size: 10Gi
+  sync:
+    kind: OCIRepository
+    url: oci://kind-registry:5000/flux-devenv
+    ref: local
+    path: ./flux
+    interval: 1m
+  kustomize:
+    patches:
+      # configure repository
+      - patch: |
+          - op: add
+            path: /spec/insecure
+            value: true
+        target:
+          kind: OCIRepository
+          name: flux-system
+      # remove existing resource limits for the controllers
+      - patch: |
+          - op: remove
+            path: /spec/template/spec/containers/0/resources/limits
+        target:
+          kind: Deployment
+          name: (helm-controller|kustomize-controller|notification-controller|source-controller)
+      # set resource requests for controllers
+      - patch: |
+          - op: add
+            path: /spec/template/spec/containers/0/resources/requests
+            value:
+              cpu: 10m
+              memory: 100Mi
+        target:
+          kind: Deployment
+          name: (helm-controller|kustomize-controller|notification-controller|source-controller)
+      # increase the number of reconciliations that can be performed in parallel and bump the resources limits
+      # https://fluxcd.io/flux/installation/configuration/vertical-scaling/#increase-the-number-of-workers-and-limits
+      - patch: |
+          - op: add
+            path: /spec/template/spec/containers/0/args/-
+            value: --concurrent=10
+          - op: add
+            path: /spec/template/spec/containers/0/args/-
+            value: --kube-api-qps=500
+          - op: add
+            path: /spec/template/spec/containers/0/args/-
+            value: --kube-api-burst=1000
+          - op: add
+            path: /spec/template/spec/containers/0/args/-
+            value: --requeue-dependency=5s
+        target:
+          kind: Deployment
+          name: (kustomize-controller|helm-controller|source-controller)
+      # enable helm repositories caching
+      # https://fluxcd.io/flux/installation/configuration/vertical-scaling/#enable-helm-repositories-caching
+      - patch: |
+          - op: add
+            path: /spec/template/spec/containers/0/args/-
+            value: --helm-cache-max-size=10
+          - op: add
+            path: /spec/template/spec/containers/0/args/-
+            value: --helm-cache-ttl=60m
+          - op: add
+            path: /spec/template/spec/containers/0/args/-
+            value: --helm-cache-purge-interval=5m
+        target:
+          kind: Deployment
+          name: source-controller
