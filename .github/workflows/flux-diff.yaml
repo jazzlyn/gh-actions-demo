@@ -30,31 +30,35 @@ on:
       runner:
         description: runner name
         type: string
-        required: true
+        required: false
       path:
         description: path to flux
         required: true
         type: string
       resources:
-        description: "type of resources to diff"
+        description: type of resources to diff
         required: false
         type: string
         default: '["helmrelease", "kustomization"]'
+      sources:
+        description: starting point of flux source path (f.e. flux-devenv=./oci)
+        required: false
+        type: string
       cluster-repo-owner:
-        description: "define the owner of the flux-cluster repo (f.e. strg-at)"
+        description: production cluster repo owner
         required: false
         type: string
       cluster-repo:
-        description: "define the flux-cluster repo (f.e. flux-cluster)"
+        description: production cluster repo name
         required: false
         type: string
 
     # secrets:
     #   github-app-id:
-    #     description: "github app id"
+    #     description: github app id
     #     required: false
     #   github-app-key:
-    #     description: "github app private key"
+    #     description: github app private key
     #     required: false
 
 concurrency:
@@ -89,8 +93,9 @@ jobs:
           args: >-
             test
             --all-namespaces
-            --enable-helm
             --path /github/workspace/${{ inputs.path || 'kubernetes' }}/flux
+            ${{ inputs.sources && format('--sources {0}', inputs.sources) || '' }}
+            --enable-helm
             --verbose
 
   diff:
@@ -176,12 +181,13 @@ jobs:
         with:
           args: >-
             diff ${{ matrix.resource }}
-            --unified 6
+            --all-namespaces
             --path /github/workspace/pull/${{ inputs.path || 'kubernetes' }}/flux
             --path-orig /github/workspace/default/${{ inputs.path || 'kubernetes' }}/flux
+            ${{ inputs.sources && format('--sources {0}', inputs.sources) || '' }}
             --strip-attrs "helm.sh/chart,checksum/config,app.kubernetes.io/version,chart"
+            --unified 6
             --limit-bytes 9940
-            --all-namespaces
             --output-file diff.patch
 
       - name: list diff
