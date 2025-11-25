@@ -1,23 +1,5 @@
-# ---
-# name: flux-local
-
-# on:
-#   pull_request:
-#     branches:
-#       - main
-#     paths:
-#       - kubernetes/**.yaml
-
-# jobs:
-#   flux-diff:
-#     uses: strg-at/github-workflows/.github/workflows/flux-diff.yaml@9152079a0484462016685fa923cdf0da57cdd597 # v1.11.3
-#     with:
-#       runner: '["ubuntu-latest"]'
-#       paths: '["kubernetes"]'
-#       resources: '["helmrelease", "kustomization"]'
-
 ---
-name: flux local
+name: flux-local
 
 on:
   pull_request:
@@ -25,225 +7,244 @@ on:
       - main
     paths:
       - kubernetes/**.yaml
-  workflow_call:
-    inputs:
-      runner:
-        description: runner name
-        type: string
-        required: false
-      path:
-        description: path to flux
-        required: true
-        type: string
-      resources:
-        description: type of resources to diff
-        required: false
-        type: string
-        default: '["helmrelease", "kustomization"]'
-      sources:
-        description: starting point of flux source path (f.e. flux-devenv=./oci)
-        required: false
-        type: string
-      cluster-repo-owner:
-        description: production cluster repo owner
-        required: false
-        type: string
-      cluster-repo:
-        description: production cluster repo name
-        required: false
-        type: string
-
-    # secrets:
-    #   github-app-id:
-    #     description: github app id
-    #     required: false
-    #   github-app-key:
-    #     description: github app private key
-    #     required: false
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
-  cancel-in-progress: true
 
 jobs:
-  test:
-    runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
-    permissions:
-      contents: read
-    steps:
-      # https://github.com/marketplace/actions/create-github-app-token
-      - name: generate token
-        id: generate-token
-        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2.2.0
-        with:
-          app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-          private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
-          owner: ${{ github.repository_owner}}
-
-      # https://github.com/marketplace/actions/checkout
-      - name: checkout
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
-        with:
-          token: ${{ steps.generate-token.outputs.token }}
-
-      # https://github.com/allenporter/flux-local
-      - name: run flux local test
-        uses: docker://ghcr.io/allenporter/flux-local:v8.0.1@sha256:5c8cb0ff9d26a5260a47e7b3949403d80713d80037b9f0e4c02c5efca3588518
-        with:
-          args: >-
-            test
-            --all-namespaces
-            --path /github/workspace/${{ inputs.path || 'kubernetes' }}/flux
-            ${{ inputs.sources && format('--sources {0}', inputs.sources) || '' }}
-            --enable-helm
-            --verbose
-
-  diff:
-    runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
+  flux-local:
     permissions:
       contents: read
       pull-requests: write
-    strategy:
-      matrix:
-        resource: ${{ fromJSON(inputs.resources || '["helmrelease", "kustomization"]') }}
-      fail-fast: false
-    steps:
-      # https://github.com/marketplace/actions/create-github-app-token
-      - name: generate token
-        id: generate-token
-        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2.2.0
-        with:
-          app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-          private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
-          owner: ${{ github.repository_owner}}
+    uses: strg-at/github-workflows/.github/workflows/flux-local.yaml@feature/INPRO-2783-rework-flux-diff
+    with:
+      runner: ubuntu-latest
+      path: kubernetes
+# ---
+# name: flux local
 
-      # https://github.com/marketplace/actions/sticky-pull-request-comment
-      - name: clear comment
-        uses: marocchino/sticky-pull-request-comment@773744901bac0e8cbb5a0dc842800d45e9b2b405 # v2.9.4
-        with:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-          header: ${{ github.event.pull_request.number }}/${{ matrix.resource }}
-          message: |
-            ### ${{ matrix.resource }} - generating diff...
+# on:
+#   pull_request:
+#     branches:
+#       - main
+#     paths:
+#       - kubernetes/**.yaml
+#   workflow_call:
+#     inputs:
+#       runner:
+#         description: runner name
+#         type: string
+#         required: false
+#       path:
+#         description: path to flux
+#         required: true
+#         type: string
+#       resources:
+#         description: type of resources to diff
+#         required: false
+#         type: string
+#         default: '["helmrelease", "kustomization"]'
+#       sources:
+#         description: starting point of flux source path (f.e. flux-devenv=./oci)
+#         required: false
+#         type: string
+#       cluster-repo-owner:
+#         description: production cluster repo owner
+#         required: false
+#         type: string
+#       cluster-repo:
+#         description: production cluster repo name
+#         required: false
+#         type: string
 
-      # https://github.com/marketplace/actions/checkout
-      - name: checkout
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
-        with:
-          token: ${{ steps.generate-token.outputs.token }}
-          path: pull
+#     # secrets:
+#     #   github-app-id:
+#     #     description: github app id
+#     #     required: false
+#     #   github-app-key:
+#     #     description: github app private key
+#     #     required: false
 
-      # https://github.com/marketplace/actions/checkout
-      - name: checkout cluster repo
-        if: ${{ inputs.cluster-repo }}
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
-        with:
-          token: ${{ steps.generate-token.outputs.token }}
-          repository: ${{ inputs.cluster-repo-owner }}/${{ inputs.cluster-repo }}
-          path: pull/${{ inputs.path }}/${{ inputs.cluster-repo }}
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+#   cancel-in-progress: true
 
-      # https://github.com/marketplace/actions/checkout
-      - name: checkout default branch
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
-        with:
-          token: ${{ steps.generate-token.outputs.token }}
-          ref: ${{ github.event.repository.default_branch }}
-          path: default
+# jobs:
+#   test:
+#     runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
+#     permissions:
+#       contents: read
+#     steps:
+#       # https://github.com/marketplace/actions/create-github-app-token
+#       - name: generate token
+#         id: generate-token
+#         uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2.2.0
+#         with:
+#           app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+#           private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+#           owner: ${{ github.repository_owner}}
 
-      # https://github.com/marketplace/actions/checkout
-      - name: checkout cluster default branch
-        if: ${{ inputs.cluster-repo }}
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
-        with:
-          token: ${{ steps.generate-token.outputs.token }}
-          repository: ${{ inputs.cluster-repo-owner }}/${{ inputs.cluster-repo }}
-          path: default/${{ inputs.path }}/${{ inputs.cluster-repo }}
+#       # https://github.com/marketplace/actions/checkout
+#       - name: checkout
+#         uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+#         with:
+#           token: ${{ steps.generate-token.outputs.token }}
 
-      # https://github.com/alexellis/arkade-get
-      - name: install flux
-        uses: alexellis/arkade-get@9e0a8f9c4950f17283051ca5d4a7aa2435fce8ee
-        with:
-          print-summary: false
-          flux: latest
+#       # https://github.com/allenporter/flux-local
+#       - name: run flux local test
+#         uses: docker://ghcr.io/allenporter/flux-local:v8.0.1@sha256:5c8cb0ff9d26a5260a47e7b3949403d80713d80037b9f0e4c02c5efca3588518
+#         with:
+#           args: >-
+#             test
+#             --all-namespaces
+#             --path /github/workspace/${{ inputs.path || 'kubernetes' }}/flux
+#             ${{ inputs.sources && format('--sources {0}', inputs.sources) || '' }}
+#             --enable-helm
+#             --verbose
 
-      - name: run docker and push artifact
-        if: ${{ inputs.cluster-repo }}
-        run: |
-          docker run -d --rm --name kind-registry -p 5050:5000 registry:2.8.1
-          flux push artifact oci://localhost:5050/${{ github.event.repository.name }}:local \
-            --path="pull/${{ inputs.path }}" \
-            --source="local" \
-            --revision="latest"
+#   diff:
+#     runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
+#     permissions:
+#       contents: read
+#       pull-requests: write
+#     strategy:
+#       matrix:
+#         resource: ${{ fromJSON(inputs.resources || '["helmrelease", "kustomization"]') }}
+#       fail-fast: false
+#     steps:
+#       # https://github.com/marketplace/actions/create-github-app-token
+#       - name: generate token
+#         id: generate-token
+#         uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2.2.0
+#         with:
+#           app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+#           private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+#           owner: ${{ github.repository_owner}}
 
-      # https://github.com/allenporter/flux-local
-      - name: run flux-local diff
-        uses: docker://ghcr.io/allenporter/flux-local:v8.0.1@sha256:5c8cb0ff9d26a5260a47e7b3949403d80713d80037b9f0e4c02c5efca3588518
-        with:
-          args: >-
-            diff ${{ matrix.resource }}
-            --all-namespaces
-            --path /github/workspace/pull/${{ inputs.path || 'kubernetes' }}/flux
-            --path-orig /github/workspace/default/${{ inputs.path || 'kubernetes' }}/flux
-            ${{ inputs.sources && format('--sources {0}', inputs.sources) || '' }}
-            --strip-attrs "helm.sh/chart,checksum/config,app.kubernetes.io/version,chart"
-            --unified 6
-            --limit-bytes 9940
-            --output-file diff.patch
+#       # https://github.com/marketplace/actions/sticky-pull-request-comment
+#       - name: clear comment
+#         uses: marocchino/sticky-pull-request-comment@773744901bac0e8cbb5a0dc842800d45e9b2b405 # v2.9.4
+#         with:
+#           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+#           header: ${{ github.event.pull_request.number }}/${{ matrix.resource }}
+#           message: |
+#             ### ${{ matrix.resource }} - generating diff...
 
-      - name: list diff
-        run: |
-          if [ -f diff.patch ]; then
-            echo "$(cat diff.patch)"
-          else
-            echo "diff file does not exist"
-          fi
+#       # https://github.com/marketplace/actions/checkout
+#       - name: checkout
+#         uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+#         with:
+#           token: ${{ steps.generate-token.outputs.token }}
+#           path: pull
 
-      - name: generate diff
-        id: diff
-        run: |
-          if [ -f diff.patch ] && [ -s diff.patch ]; then
-            echo 'diff<<EOF' >> $GITHUB_OUTPUT
-            cat diff.patch >> $GITHUB_OUTPUT
-            echo 'EOF' >> $GITHUB_OUTPUT
-            {
-              echo "### flux diff (${{ matrix.resource }})"
-              echo "generated at: $(date +'%Y-%m-%d %H:%M:%S %Z')"
-              echo '```diff'
-              cat diff.patch
-              echo '```'
-            } >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo 'diff<<EOF' >> $GITHUB_OUTPUT
-            echo 'no changes found' >> $GITHUB_OUTPUT
-            echo 'EOF' >> $GITHUB_OUTPUT
-          fi
+#       # https://github.com/marketplace/actions/checkout
+#       - name: checkout cluster repo
+#         if: ${{ inputs.cluster-repo }}
+#         uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+#         with:
+#           token: ${{ steps.generate-token.outputs.token }}
+#           repository: ${{ inputs.cluster-repo-owner }}/${{ inputs.cluster-repo }}
+#           path: pull/${{ inputs.path }}/${{ inputs.cluster-repo }}
 
-      - name: get current time
-        id: current-time
-        run: echo "time=$(date +'%Y-%m-%d %H:%M:%S %Z')" >> $GITHUB_OUTPUT
+#       # https://github.com/marketplace/actions/checkout
+#       - name: checkout default branch
+#         uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+#         with:
+#           token: ${{ steps.generate-token.outputs.token }}
+#           ref: ${{ github.event.repository.default_branch }}
+#           path: default
 
-      # https://github.com/marketplace/actions/sticky-pull-request-comment
-      - if: ${{ steps.diff.outputs.diff != '' }}
-        name: add comment
-        uses: marocchino/sticky-pull-request-comment@773744901bac0e8cbb5a0dc842800d45e9b2b405 # v2.9.4
-        with:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-          header: ${{ github.event.pull_request.number }}/${{ matrix.resource }}
-          message: |
-            ### ${{ matrix.resource }} - ${{ steps.current-time.outputs.time }}
-            ```diff
-            ${{ steps.diff.outputs.diff }}
-            ```
+#       # https://github.com/marketplace/actions/checkout
+#       - name: checkout cluster default branch
+#         if: ${{ inputs.cluster-repo }}
+#         uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+#         with:
+#           token: ${{ steps.generate-token.outputs.token }}
+#           repository: ${{ inputs.cluster-repo-owner }}/${{ inputs.cluster-repo }}
+#           path: default/${{ inputs.path }}/${{ inputs.cluster-repo }}
 
-  success:
-    if: ${{ !cancelled() }}
-    needs: ["test", "diff"]
-    runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
-    steps:
-      - name: any jobs failed?
-        if: ${{ contains(needs.*.result, 'failure') }}
-        run: exit 1
+#       # https://github.com/alexellis/arkade-get
+#       - name: install flux
+#         uses: alexellis/arkade-get@9e0a8f9c4950f17283051ca5d4a7aa2435fce8ee
+#         with:
+#           print-summary: false
+#           flux: latest
 
-      - name: all jobs passed or skipped?
-        if: ${{ !(contains(needs.*.result, 'failure')) }}
-        run: echo "all jobs passed or skipped" && echo "${{ toJSON(needs.*.result) }}"
+#       - name: run docker and push artifact
+#         if: ${{ inputs.cluster-repo }}
+#         run: |
+#           docker run -d --rm --name kind-registry -p 5050:5000 registry:2.8.1
+#           flux push artifact oci://localhost:5050/${{ github.event.repository.name }}:local \
+#             --path="pull/${{ inputs.path }}" \
+#             --source="local" \
+#             --revision="latest"
+
+#       # https://github.com/allenporter/flux-local
+#       - name: run flux-local diff
+#         uses: docker://ghcr.io/allenporter/flux-local:v8.0.1@sha256:5c8cb0ff9d26a5260a47e7b3949403d80713d80037b9f0e4c02c5efca3588518
+#         with:
+#           args: >-
+#             diff ${{ matrix.resource }}
+#             --all-namespaces
+#             --path /github/workspace/pull/${{ inputs.path || 'kubernetes' }}/flux
+#             --path-orig /github/workspace/default/${{ inputs.path || 'kubernetes' }}/flux
+#             ${{ inputs.sources && format('--sources {0}', inputs.sources) || '' }}
+#             --strip-attrs "helm.sh/chart,checksum/config,app.kubernetes.io/version,chart"
+#             --unified 6
+#             --limit-bytes 9940
+#             --output-file diff.patch
+
+#       - name: list diff
+#         run: |
+#           if [ -f diff.patch ]; then
+#             echo "$(cat diff.patch)"
+#           else
+#             echo "diff file does not exist"
+#           fi
+
+#       - name: generate diff
+#         id: diff
+#         run: |
+#           if [ -f diff.patch ] && [ -s diff.patch ]; then
+#             echo 'diff<<EOF' >> $GITHUB_OUTPUT
+#             cat diff.patch >> $GITHUB_OUTPUT
+#             echo 'EOF' >> $GITHUB_OUTPUT
+#             {
+#               echo "### flux diff (${{ matrix.resource }})"
+#               echo "generated at: $(date +'%Y-%m-%d %H:%M:%S %Z')"
+#               echo '```diff'
+#               cat diff.patch
+#               echo '```'
+#             } >> "$GITHUB_STEP_SUMMARY"
+#           else
+#             echo 'diff<<EOF' >> $GITHUB_OUTPUT
+#             echo 'no changes found' >> $GITHUB_OUTPUT
+#             echo 'EOF' >> $GITHUB_OUTPUT
+#           fi
+
+#       - name: get current time
+#         id: current-time
+#         run: echo "time=$(date +'%Y-%m-%d %H:%M:%S %Z')" >> $GITHUB_OUTPUT
+
+#       # https://github.com/marketplace/actions/sticky-pull-request-comment
+#       - if: ${{ steps.diff.outputs.diff != '' }}
+#         name: add comment
+#         uses: marocchino/sticky-pull-request-comment@773744901bac0e8cbb5a0dc842800d45e9b2b405 # v2.9.4
+#         with:
+#           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+#           header: ${{ github.event.pull_request.number }}/${{ matrix.resource }}
+#           message: |
+#             ### ${{ matrix.resource }} - ${{ steps.current-time.outputs.time }}
+#             ```diff
+#             ${{ steps.diff.outputs.diff }}
+#             ```
+
+#   success:
+#     if: ${{ !cancelled() }}
+#     needs: ["test", "diff"]
+#     runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
+#     steps:
+#       - name: any jobs failed?
+#         if: ${{ contains(needs.*.result, 'failure') }}
+#         run: exit 1
+
+#       - name: all jobs passed or skipped?
+#         if: ${{ !(contains(needs.*.result, 'failure')) }}
+#         run: echo "all jobs passed or skipped" && echo "${{ toJSON(needs.*.result) }}"
