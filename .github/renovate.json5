@@ -18,16 +18,6 @@
     // "github>strg-at/renovate-config//regex/yaml-images-with-digest.json5",
   ],
   packageRules: [
-    {
-      matchFileNames: ["kubernetes/**"],
-      additionalBranchPrefix: "kubernetes-",
-      addLabels: ["env/kubernetes"],
-    },
-    {
-      matchFileNames: ["oci/**"],
-      additionalBranchPrefix: "oci-",
-      addLabels: ["env/oci"],
-    },
     // {
     //   description: "automergeSchedule: app one",
     //   matchFileNames: ["app-one/**"],
