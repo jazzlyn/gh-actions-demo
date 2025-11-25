@@ -3,15 +3,15 @@ name: get changed files
 
 on:
   workflow_dispatch:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-    paths:
-      - "**/*"
-      - "!.github/**"
-      - "!**/README.md"
-      - "!*"
+  # pull_request:
+  #   types:
+  #     - opened
+  #     - synchronize
+  #   paths:
+  #     - "**/*"
+  #     - "!.github/**"
+  #     - "!**/README.md"
+  #     - "!*"
 
 jobs:
   get-changed-files:
