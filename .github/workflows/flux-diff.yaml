@@ -16,8 +16,8 @@ jobs:
     uses: strg-at/github-workflows/.github/workflows/flux-local.yaml@feature/INPRO-2783-rework-flux-diff
     with:
       runner: ubuntu-latest
-      path: oci
-      #sources: flux-system=./oci
+      path: ./oci
+      sources: flux-system=./oci
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
