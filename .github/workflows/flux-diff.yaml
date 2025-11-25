@@ -17,7 +17,7 @@ jobs:
     with:
       runner: ubuntu-latest
       path: oci
-      sources: flux-system=./oci
+      #sources: flux-system=./oci
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}

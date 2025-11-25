@@ -14,8 +14,14 @@
   ],
   packageRules: [
     {
-      matchPackageNames: ["ghcr.io/jazzlyn/gh-actions-demo/app-tag"],
-      ignoreUnstable: false,
+      matchFileNames: ["kubernetes/**"],
+      additionalBranchPrefix: "kubernetes-",
+      addLabels: ["env/kubernetes"],
+    },
+    {
+      matchFileNames: ["oci/**"],
+      additionalBranchPrefix: "oci-",
+      addLabels: ["env/oci"],
     },
     // {
     //   description: "automergeSchedule: app one",
