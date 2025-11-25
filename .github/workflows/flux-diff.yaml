@@ -17,6 +17,9 @@ jobs:
     with:
       runner: ubuntu-latest
       path: kubernetes
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 # ---
 # name: flux local
 
