@@ -202,7 +202,7 @@ jobs:
 
       - name: get current time
         id: current-time
-        run: TZ=${{ inputs.timezone || 'Europe/Vienna' }}; echo "time=$(date +'%Y-%m-%d %H:%M:%S %Z')" >> "$GITHUB_OUTPUT"
+        run: echo "time=$(TZ='${{ inputs.timezone || 'Europe/Vienna' }}' date +'%Y-%m-%d %H:%M:%S %Z')" >> "$GITHUB_OUTPUT"
 
       - name: generate diff
         id: diff
