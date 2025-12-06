@@ -13,7 +13,7 @@ jobs:
       contents: read
       id-token: write
       packages: write
-    uses: strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@84cfc65497b9180a82a463de37ef6921a8617a0c
+    uses: strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@0fe68f46762ac650f47d56e8c252c31020b0300f
     with:
       runner: '["ubuntu-latest"]'
       subpath: app-tag
