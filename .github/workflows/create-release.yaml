@@ -2,24 +2,14 @@
 name: create release
 
 on:
-  workflow_call:
-    inputs:
-      runner:
-        description: '["some-runners"]'
-        required: true
-        type: string
-  workflow_dispatch:
-    inputs:
-      runner:
-        description: '["some-runners"]'
-        required: false
-        type: string
-        default: '["ubuntu-latest"]'
+  push:
+    tags:
+      - "v*.*.*"
+      - "*.*.*"
 
 jobs:
   create-release:
-    name: release
-    runs-on: ${{fromJSON(inputs.runner)}}
+    runs-on: ubuntu-latest
     permissions:
       contents: write
 
@@ -28,16 +18,8 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
-      # https://github.com/marketplace/actions/create-github-app-token
-      - name: generate token
-        id: generate-token
-        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
-        with:
-          app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-          private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
-
       # https://github.com/marketplace/actions/gh-release
       - name: create release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
-          token: ${{ steps.generate-token.outputs.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}

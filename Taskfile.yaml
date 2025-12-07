@@ -6,7 +6,6 @@ vars:
     sh: "git rev-parse --show-toplevel"
 
 includes:
-  flux-local: .taskfiles/flux-local.yaml
   pre-commit: .taskfiles/pre-commit.yaml
 
 tasks:
