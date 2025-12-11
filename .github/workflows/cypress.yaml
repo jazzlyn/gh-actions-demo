@@ -9,9 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    container:
-      image: cypress/included:latest
-      options: --user 1001
     steps:
       # https://github.com/marketplace/actions/create-github-app-token
       - name: generate token
@@ -28,29 +25,11 @@ jobs:
           token: ${{ steps.generate-token.outputs.token }}
 
       # https://github.com/marketplace/actions/cypress-io
-      - name: cypress run builtin electron
+      - name: cypress run
         uses: cypress-io/github-action@v6.10.5
-        env:
-          CYPRESS_INSTALL_BINARY: 0
-
-      # https://github.com/marketplace/actions/cypress-io
-      - name: cypress run chrome
-        uses: cypress-io/github-action@v6.10.5
-        with:
-          browser: chrome
-        env:
-          CYPRESS_INSTALL_BINARY: 0
-
-      # https://github.com/marketplace/actions/cypress-io
-      - name: cypress run firefox
-        uses: cypress-io/github-action@v6.10.5
-        with:
-          browser: firefox
-        env:
-          CYPRESS_INSTALL_BINARY: 0
 
       # https://github.com/marketplace/actions/upload-a-build-artifact
-      - name: upload screenshots on failure
+      - name: upload screenshots
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         if: failure()
         with:
