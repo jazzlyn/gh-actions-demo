@@ -6,6 +6,7 @@ vars:
     sh: "git rev-parse --show-toplevel"
 
 includes:
+  flux: .taskfiles/flux.yaml
   pre-commit: .taskfiles/pre-commit.yaml
 
 tasks:
@@ -15,3 +16,9 @@ tasks:
     cmds:
       - task: pre-commit:init
       - task: pre-commit:run
+
+  test:
+    desc: test codebase
+    dir: "{{.PROJECT_DIR}}"
+    cmds:
+      - task: flux:test

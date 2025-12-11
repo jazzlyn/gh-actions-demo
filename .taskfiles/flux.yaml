@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+vars:
+  FLUX_DIR: "{{.PROJECT_DIR}}/kubernetes/flux"
+
+tasks:
+  test:
+    desc: run flux-local test
+    internal: true
+    vars:
+      KUBE_VERSION:
+        sh: grep '"aqua:kubernetes/kubectl"' {{.ROOT_DIR}}/.mise.toml | cut -d'"' -f4
+    cmds:
+      - test -d .venv || uv venv
+      - uv pip list | grep -q flux-local || uv pip install flux-local
+      - |
+        uv run flux-local test \
+          --kube-version {{.KUBE_VERSION}} \
+          --all-namespaces \
+          --path {{.FLUX_DIR}} \
+          --enable-helm \
+          --verbose
