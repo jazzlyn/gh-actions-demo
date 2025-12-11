@@ -1,0 +1,59 @@
+---
+name: cypress
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cypress:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    container:
+      image: cypress/included:latest
+      options: --user 1001
+    steps:
+      # https://github.com/marketplace/actions/create-github-app-token
+      - name: generate token
+        id: generate-token
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        with:
+          app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+          private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
+      # https://github.com/marketplace/actions/checkout
+      - name: checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+
+      # https://github.com/marketplace/actions/cypress-io
+      - name: cypress run builtin electron
+        uses: cypress-io/github-action@v6.10.5
+        env:
+          CYPRESS_INSTALL_BINARY: 0
+
+      # https://github.com/marketplace/actions/cypress-io
+      - name: cypress run chrome
+        uses: cypress-io/github-action@v6.10.5
+        with:
+          browser: chrome
+        env:
+          CYPRESS_INSTALL_BINARY: 0
+
+      # https://github.com/marketplace/actions/cypress-io
+      - name: cypress run firefox
+        uses: cypress-io/github-action@v6.10.5
+        with:
+          browser: firefox
+        env:
+          CYPRESS_INSTALL_BINARY: 0
+
+      # https://github.com/marketplace/actions/upload-a-build-artifact
+      - name: upload screenshots on failure
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore
