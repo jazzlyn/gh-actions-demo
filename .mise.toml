@@ -1,2 +1,4 @@
 [tools]
-flux2 = "2.7.4"
+"aqua:fluxcd/flux2" = "2.7.5"
+"aqua:kubernetes/kubectl" = "1.33.4"
+"aqua:astral-sh/uv" = "0.9.17"
