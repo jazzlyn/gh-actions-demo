@@ -6,12 +6,18 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "start": "npm run build && node ./dist/index.js",
-    "dev": "node ./dist/index.js"
+    "dev": "node ./dist/index.js",
+    "cypress": "cypress open",
+    "test": "cypress run"
   },
   "author": "jazzlyn",
   "license": "MIT",
   "dependencies": {
     "chai": "6.2.1",
     "typescript": "5.9.3"
+  },
+  "devDependencies": {
+    "cypress": "15.7.1",
+    "@types/node": "25.0.0"
   }
 }
