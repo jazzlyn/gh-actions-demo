@@ -25,6 +25,3 @@ spec:
   # https://artifacthub.io/packages/helm/stakater/reloader?modal=values
   values:
     fullnameOverride: reloader
-    image:
-      repository: ghcr.io/stakater/reloader
-      tag: v1.4.11@sha256:a644702afcdd1f21c8b9cd19dbc256f346b53c4564398a95c4e3ad92f578ed1a
