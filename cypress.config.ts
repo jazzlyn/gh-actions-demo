@@ -5,7 +5,6 @@ export default defineConfig({
     baseUrl: "https://example.com",
     supportFile: false,
     video: false,
-    screenshotOnRunFailure: false,
     viewportWidth: 1280,
     viewportHeight: 720,
   },

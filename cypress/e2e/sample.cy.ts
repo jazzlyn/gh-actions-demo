@@ -13,4 +13,8 @@ describe("Sample E2E Test Suite", () => {
   it("should verify page title", () => {
     cy.title().should("include", "Example")
   })
+
+  it("should fail intentionally", () => {
+    cy.get("h1").should("contain", "This Text Does Not Exist")
+  })
 })
