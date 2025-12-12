@@ -6,9 +6,11 @@ on:
 
 jobs:
   cypress:
-    runs-on: ubuntu-latest
+    runs-on: jazzlyn-gh-actions-demo-runner
     permissions:
       contents: read
+    container:
+      image: cypress/base:24.11.1
     steps:
       # https://github.com/marketplace/actions/create-github-app-token
       - name: generate token
