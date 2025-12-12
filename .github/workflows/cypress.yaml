@@ -10,7 +10,7 @@ jobs:
     permissions:
       contents: read
     container:
-      image: cypress/base:24.11.1
+      image: cypress/base:24.11.1@sha256:9c41819967da424a327923f3268ceeb472e129b87260ddc83f7f34960e986761
     steps:
       # https://github.com/marketplace/actions/create-github-app-token
       - name: generate token
