@@ -7,7 +7,6 @@
     "github>techtales-io/renovate-config:python.json5",
     "github>techtales-io/renovate-config:terraform-infra.json5",
     "github>techtales-io/renovate-config//github-actions/silent-automerge.json5",
-    "github>techtales-io/renovate-config//pre-commit/silent-automerge.json5",
     "github>techtales-io/renovate-config//terraform/silent-automerge.json5",
     "github>techtales-io/renovate-config//regex/general-regex.json5",
 
