@@ -116,6 +116,11 @@ jobs:
       matrix:
         resource: ${{ fromJSON(inputs.resources || '["helmrelease", "kustomization"]') }}
       fail-fast: false
+    services:
+      registry:
+        image: registry:2.8.1
+        ports:
+          - 5000:5000
     steps:
       # https://github.com/marketplace/actions/create-github-app-token
       - name: generate token
@@ -176,14 +181,13 @@ jobs:
           print-summary: false
           flux: latest
 
-      - name: run docker and push artifact
+      - name: push artifact to local registry
         if: ${{ inputs.cluster-repo }}
-        run: |
-          docker run -d --rm --name kind-registry -p 5050:5000 registry:2.8.1
-          flux push artifact oci://localhost:5050/${{ github.event.repository.name }}:local \
-            --path="pull/${{ inputs.path }}" \
-            --source="local" \
-            --revision="latest"
+        run: >-
+          flux push artifact oci://localhost:5000/${{ github.event.repository.name }}:local
+          --path="pull/${{ inputs.path }}"
+          --source="local"
+          --revision="latest"
 
       # https://github.com/allenporter/flux-local
       - name: run flux-local diff
@@ -208,9 +212,11 @@ jobs:
         id: diff
         run: |
           if [ -f diff.patch ] && [ -s diff.patch ]; then
-            echo 'diff<<EOF' >> "$GITHUB_OUTPUT"
-            cat diff.patch >> "$GITHUB_OUTPUT"
-            echo 'EOF' >> "$GITHUB_OUTPUT"
+            {
+              echo 'diff<<EOF'
+              cat diff.patch
+              echo 'EOF'
+            } >> "$GITHUB_OUTPUT"
             {
               echo "### flux diff (${{ matrix.resource }})"
               echo "generated at: ${{ steps.current-time.outputs.time }}"
@@ -219,9 +225,11 @@ jobs:
               echo '```'
             } >> "$GITHUB_STEP_SUMMARY"
           else
-            echo 'diff<<EOF' >> "$GITHUB_OUTPUT"
-            echo 'no changes found' >> "$GITHUB_OUTPUT"
-            echo 'EOF' >> "$GITHUB_OUTPUT"
+            {
+              echo 'diff<<EOF'
+              echo 'no changes found'
+              echo 'EOF'
+            } >> "$GITHUB_OUTPUT"
           fi
 
       # https://github.com/marketplace/actions/sticky-pull-request-comment
