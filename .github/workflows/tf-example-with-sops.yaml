@@ -38,7 +38,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
-          node-version: 24.11.1
+          node-version: 24.12.0
 
       # https://github.com/marketplace/actions/hashicorp-setup-terraform
       - name: Setup Terraform
@@ -60,7 +60,7 @@ jobs:
       - name: Add Google credentials to env
         shell: bash
         run: |
-          echo GOOGLE_APPLICATION_CREDENTIALS="${{ steps.auth-kms.outputs.credentials_file_path }}" >> $GITHUB_ENV
+          echo GOOGLE_APPLICATION_CREDENTIALS="${{ steps.auth-kms.outputs.credentials_file_path }}" >> "$GITHUB_ENV"
 
       - name: Decrypt secrets
         shell: bash
@@ -71,31 +71,39 @@ jobs:
         run: |
           AWS_REGION=$(sed -n 's/^AWS_REGION: //p' secrets.yaml)
           echo "::add-mask::$AWS_REGION"
-          echo AWS_REGION=$AWS_REGION >> $GITHUB_ENV
+          echo "AWS_REGION=$AWS_REGION" >> "$GITHUB_ENV"
+
           AWS_S3_ENDPOINT=$(sed -n 's/^AWS_S3_ENDPOINT: //p' secrets.yaml)
           echo "::add-mask::$AWS_S3_ENDPOINT"
-          echo AWS_S3_ENDPOINT=$AWS_S3_ENDPOINT >> $GITHUB_ENV
+          echo "AWS_S3_ENDPOINT=$AWS_S3_ENDPOINT" >> "$GITHUB_ENV"
+
           AWS_ACCESS_KEY_ID=$(sed -n 's/^AWS_ACCESS_KEY_ID: //p' secrets.yaml)
           echo "::add-mask::$AWS_ACCESS_KEY_ID"
-          echo AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID >> $GITHUB_ENV
+          echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> "$GITHUB_ENV"
+
           AWS_SECRET_ACCESS_KEY=$(sed -n 's/^AWS_SECRET_ACCESS_KEY: //p' secrets.yaml)
           echo "::add-mask::$AWS_SECRET_ACCESS_KEY"
-          echo AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> "$GITHUB_ENV"
+
           TF_VAR_location=$(sed -n 's/^TF_VAR_location: //p' secrets.yaml)
           echo "::add-mask::$TF_VAR_location"
-          echo TF_VAR_location=$TF_VAR_location >> $GITHUB_ENV
+          echo "TF_VAR_location=$TF_VAR_location" >> "$GITHUB_ENV"
+
           TF_VAR_zone=$(sed -n 's/^TF_VAR_zone: //p' secrets.yaml)
           echo "::add-mask::$TF_VAR_zone"
-          echo TF_VAR_zone=$TF_VAR_zone >> $GITHUB_ENV
+          echo "TF_VAR_zone=$TF_VAR_zone" >> "$GITHUB_ENV"
+
           TF_VAR_project_id=$(sed -n 's/^TF_VAR_project_id: //p' secrets.yaml)
           echo "::add-mask::$TF_VAR_project_id"
-          echo TF_VAR_project_id=$TF_VAR_project_id >> $GITHUB_ENV
+          echo "TF_VAR_project_id=$TF_VAR_project_id" >> "$GITHUB_ENV"
+
           TF_VAR_project_number=$(sed -n 's/^TF_VAR_project_number: //p' secrets.yaml)
           echo "::add-mask::$TF_VAR_project_number"
-          echo TF_VAR_project_number=$TF_VAR_project_number >> $GITHUB_ENV
+          echo "TF_VAR_project_number=$TF_VAR_project_number" >> "$GITHUB_ENV"
+
           TF_VAR_users=$(sed -n 's/^TF_VAR_users: //p' secrets.yaml)
           echo "::add-mask::$TF_VAR_users"
-          echo TF_VAR_users=$TF_VAR_users >> $GITHUB_ENV
+          echo "TF_VAR_users=$TF_VAR_users" >> "$GITHUB_ENV"
 
       # --------------------------------------------------------------------------------
       # AUTHENTICATE INFRA SA
@@ -113,7 +121,7 @@ jobs:
       - name: Add Google credentials for infra to env
         shell: bash
         run: |
-          echo GOOGLE_APPLICATION_CREDENTIALS="${{ steps.auth-infra.outputs.credentials_file_path }}" >> $GITHUB_ENV
+          echo GOOGLE_APPLICATION_CREDENTIALS="${{ steps.auth-infra.outputs.credentials_file_path }}" >> "$GITHUB_ENV"
 
       # --------------------------------------------------------------------------------
       # PERFORM TERRASCAN

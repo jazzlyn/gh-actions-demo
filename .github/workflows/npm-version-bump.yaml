@@ -55,7 +55,7 @@ jobs:
       # https://github.com/marketplace/actions/setup-yq
       - name: get package-version
         id: package-version
-        uses: mikefarah/yq@7ccaf8e700ce99eb3f0f6cef7f5930a0b3c827cd # v4.49.2
+        uses: mikefarah/yq@065b200af9851db0d5132f50bc10b1406ea5c0a8 # v4.50.1
         with:
           cmd: |
             echo "version=$(cat package.json | yq '.version' | tr -d '"')" >> ${GITHUB_OUTPUT}
@@ -64,7 +64,7 @@ jobs:
         id: set-branch
         if: ${{ inputs.branch-creation-condition }}
         run: |
-          echo "RELEASE_BRANCH=release/${{ steps.package-version.outputs.version }}" >> ${GITHUB_ENV}
+          echo "RELEASE_BRANCH=release/${{ steps.package-version.outputs.version }}" >> "${GITHUB_ENV}"
 
       # https://github.com/marketplace/actions/create-github-app-token
       - name: generate token
