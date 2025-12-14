@@ -27,17 +27,17 @@ jobs:
       - name: set env to integration
         if: ${{ startsWith(github.ref, 'refs/heads/main') }}
         run: |
-          echo "ENVIRONMENT=integration" >> $GITHUB_ENV
+          echo "ENVIRONMENT=integration" >> "$GITHUB_ENV"
 
       - name: set env to staging
         if: ${{ startsWith(github.ref, 'refs/tags/') && (contains(github.ref, '-rc') || contains(github.ref, 'v0.')) }}
         run: |
-          echo "ENVIRONMENT=staging" >> $GITHUB_ENV
+          echo "ENVIRONMENT=staging" >> "$GITHUB_ENV"
 
       - name: set env to production
         if: ${{ startsWith(github.ref, 'refs/tags/') && !contains(github.ref, '-RC') && !contains(github.ref, 'v0.') }}
         run: |
-          echo "ENVIRONMENT=production" >> $GITHUB_ENV
+          echo "ENVIRONMENT=production" >> "$GITHUB_ENV"
 
   check-image-exists:
     permissions:

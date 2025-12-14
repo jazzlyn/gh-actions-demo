@@ -40,8 +40,8 @@ jobs:
           pre-commit install
 
       - name: run pre-commit
-        run: |
-          pre-commit run \
-            --show-diff-on-failure \
-            --color=always \
-            --all-files
+        run: >
+          pre-commit run
+          --show-diff-on-failure
+          --color=always
+          --all-files
