@@ -9,16 +9,13 @@ on:
 
 jobs:
   docker-build-push:
+    uses: techtales-io/github-workflows/.github/workflows/docker-push.yaml@bugfix/docker-push-path
     permissions:
       contents: read
       id-token: write
       packages: write
-    uses: strg-at/github-workflows/.github/workflows/docker-build-push-github.yaml@b1dfc98ccedf1a90c571a9eca23109e8ff179f64
     with:
-      runner: '["ubuntu-latest"]'
-      subpath: app-tag
-      file: app-tag/Dockerfile
-      context: app-tag
+      runner: ubuntu-latest
       tags: |
         type=ref,event=tag,priority=300
         ${{ github.sha }}
