@@ -9,7 +9,7 @@ on:
 
 jobs:
   docker-build-push:
-    uses: techtales-io/github-workflows/.github/workflows/docker-push.yaml@bugfix/docker-push-path
+    uses: techtales-io/github-workflows/.github/workflows/docker-push.yaml@9a54effecbdd565da56e5e6077e12bd92b605f21 # v0.3.1
     permissions:
       contents: read
       id-token: write
