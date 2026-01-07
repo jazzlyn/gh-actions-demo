@@ -1,11 +1,12 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   description: "dockerfile: automerge major versions",
-  extends: ["github>jazzlyn/gh-actions-demo//.renovate/automerge.json5"],
   packageRules: [
     {
       matchManagers: ["dockerfile"],
-      matchUpdateTypes: ["major", "minor", "patch", "digest"],
+      matchUpdateTypes: ["major"],
+      automergeType: "pr",
+      automerge: true,
     },
   ],
 }
