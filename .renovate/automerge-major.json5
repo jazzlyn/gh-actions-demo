@@ -1,0 +1,11 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  description: "pep621: automerge major versions",
+  extends: ["github>jazzlyn/gh-actions-demo//.renovate/automerge.json5"],
+  packageRules: [
+    {
+      matchManagers: ["pep621"],
+      matchUpdateTypes: ["major", "minor", "patch", "digest"],
+    },
+  ],
+}

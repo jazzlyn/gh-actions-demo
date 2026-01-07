@@ -1,0 +1,12 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  description: "pep621: automerge non major versions1",
+  packageRules: [
+    {
+      matchManagers: ["pep621"],
+      automerge: true,
+      matchUpdateTypes: ["minor", "patch", "digest"],
+      automergeType: "pr",
+    },
+  ],
+}
