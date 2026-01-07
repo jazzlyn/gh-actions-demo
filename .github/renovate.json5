@@ -10,21 +10,14 @@
     "github>techtales-io/renovate-config//terraform/silent-automerge.json5",
     "github>techtales-io/renovate-config//regex/general-regex.json5",
 
-    // testing
-    "github>jazzlyn/gh-actions-demo//.renovate/automerge.json5",
+    // jazzlyn
     "github>jazzlyn/gh-actions-demo//.renovate/automerge-major.json5",
+    //"github>jazzlyn/gh-actions-demo//.renovate/automerge-schedule.json5",
 
     // strg-at
     // "github>strg-at/renovate-config:base.json5",
     // "github>strg-at/renovate-config//dependencies/fluxcd.json5",
     // "github>strg-at/renovate-config//regex/general-regex.json5",
     // "github>strg-at/renovate-config//regex/yaml-images-with-digest.json5",
-  ],
-  packageRules: [
-    // {
-    //   description: "automergeSchedule: app one",
-    //   matchFileNames: ["app-one/**"],
-    //   automergeSchedule: ["* 0-6 * * 1-4"],
-    // },
   ],
 }

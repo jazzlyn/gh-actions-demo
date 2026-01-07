@@ -1,0 +1,10 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  description: "app one: automerge schedule",
+  packageRules: [
+    {
+      matchFileNames: ["app-one/**"],
+      automergeSchedule: ["* 0-6 * * 1-4"],
+    },
+  ],
+}

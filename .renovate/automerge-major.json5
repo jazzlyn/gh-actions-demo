@@ -1,9 +1,8 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  description: "test: automerge major versions",
+  description: "automerge major versions",
   packageRules: [
     {
-      matchManagers: ["dockerfile", "github-actions"],
       matchUpdateTypes: ["major"],
       automergeType: "pr",
       automerge: true,
