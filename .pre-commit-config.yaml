@@ -107,7 +107,7 @@ repos:
         exclude: ^\.github/workflows/auto-rc-tag\.yaml$
 
   - repo: https://github.com/oxsecurity/megalinter
-    rev: v9.2.0
+    rev: v9.3.0
     hooks:
       - id: megalinter-full
         stages:
