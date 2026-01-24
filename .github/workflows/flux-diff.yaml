@@ -91,7 +91,7 @@ jobs:
 
       # https://github.com/marketplace/actions/checkout
       - name: checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           token: ${{ steps.generate-token.outputs.token }}
 
@@ -142,7 +142,7 @@ jobs:
 
       # https://github.com/marketplace/actions/checkout
       - name: checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           token: ${{ steps.generate-token.outputs.token }}
           path: pull
@@ -150,7 +150,7 @@ jobs:
       # https://github.com/marketplace/actions/checkout
       - name: checkout cluster repo
         if: ${{ inputs.cluster-repo }}
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           token: ${{ steps.generate-token.outputs.token }}
           repository: ${{ inputs.cluster-repo-owner }}/${{ inputs.cluster-repo }}
@@ -158,7 +158,7 @@ jobs:
 
       # https://github.com/marketplace/actions/checkout
       - name: checkout default branch
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           token: ${{ steps.generate-token.outputs.token }}
           ref: ${{ github.event.repository.default_branch }}
@@ -167,7 +167,7 @@ jobs:
       # https://github.com/marketplace/actions/checkout
       - name: checkout cluster default branch
         if: ${{ inputs.cluster-repo }}
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           token: ${{ steps.generate-token.outputs.token }}
           repository: ${{ inputs.cluster-repo-owner }}/${{ inputs.cluster-repo }}
