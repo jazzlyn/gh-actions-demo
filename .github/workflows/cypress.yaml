@@ -28,7 +28,7 @@ jobs:
 
       # https://github.com/marketplace/actions/cypress-io
       - name: cypress run
-        uses: cypress-io/github-action@c495c3ddffba403ba11be95fffb67e25203b3799 # v7.1.10
+        uses: cypress-io/github-action@b7a7441d775af8f8b9d19945c10dd689a51dba68 # v7.2.0
 
       # https://github.com/marketplace/actions/upload-a-build-artifact
       - name: upload screenshots
