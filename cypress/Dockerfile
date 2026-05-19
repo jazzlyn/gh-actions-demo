@@ -1,4 +1,4 @@
-FROM cypress/base:25.0.0@sha256:43bc659f825c1a9e4aa540fcdf35065de3e20e0b463589bfccd1ecb717cfc0fb
+FROM cypress/base:26.0.0@sha256:446be8fcb63e3cad2f9a4e14720e3d8e35993e12f36da541e09f5740a4c2477c
 
 WORKDIR /app
 
