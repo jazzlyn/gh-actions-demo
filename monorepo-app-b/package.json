@@ -1,0 +1,12 @@
+{
+  "name": "monorepo-app-b",
+  "version": "1.0.0",
+  "private": true,
+  "description": "demo package for testing monorepo CI matrix (depends conceptually on ../shared)",
+  "scripts": {
+    "lint": "echo '[monorepo-app-b] lint ok'",
+    "typecheck": "echo '[monorepo-app-b] typecheck ok'",
+    "test": "echo '[monorepo-app-b] test ok'",
+    "build": "echo '[monorepo-app-b] build ok'"
+  }
+}
