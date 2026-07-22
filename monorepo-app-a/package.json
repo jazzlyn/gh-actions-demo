@@ -7,6 +7,6 @@
     "lint": "echo '[monorepo-app-a] lint ok'",
     "typecheck": "echo '[monorepo-app-a] typecheck ok'",
     "test": "echo '[monorepo-app-a] test ok'",
-    "build": "echo '[monorepo-app-a] build ok'"
+    "build": "echo '[monorepo-app-a] build ok (v2)'"
   }
 }
