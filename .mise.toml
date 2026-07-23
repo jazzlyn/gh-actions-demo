@@ -1,5 +1,5 @@
 [tools]
-"aqua:astral-sh/uv" = "0.11.29"
+"aqua:astral-sh/uv" = "0.11.31"
 "aqua:fluxcd/flux2" = "2.9.2"
 "aqua:koalaman/shellcheck" = "0.11.0"
 "aqua:kubernetes/kubectl" = "1.33.4"
