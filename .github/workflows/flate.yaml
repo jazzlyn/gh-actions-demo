@@ -43,38 +43,6 @@ jobs:
           echo "clusters=$CLUSTERS" >> "$GITHUB_OUTPUT"
           echo "affected clusters: $CLUSTERS"
 
-  test:
-    if: ${{ needs.filter.outputs.clusters != '[]' }}
-    needs: filter
-    name: flate test / ${{ matrix.cluster }}
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        cluster: ${{ fromJSON(needs.filter.outputs.clusters) }}
-      fail-fast: false
-    permissions:
-      contents: read
-    steps:
-      - name: generate token
-        id: generate-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
-        with:
-          app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
-          private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
-          owner: ${{ github.repository_owner }}
-
-      - name: checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          token: ${{ steps.generate-token.outputs.token }}
-          fetch-depth: 0
-
-      - name: setup flate
-        uses: home-operations/flate/action@bf3405a189626478b0aa6ec98dc4d6f7d419df17 # v0.4.12
-
-      - name: run flate test
-        run: flate test all --path kubernetes/${{ matrix.cluster }}/flux
-
   diff:
     if: ${{ needs.filter.outputs.clusters != '[]' }}
     needs: filter
@@ -86,7 +54,6 @@ jobs:
       fail-fast: false
     permissions:
       contents: read
-      pull-requests: write
     steps:
       - name: generate token
         id: generate-token
@@ -94,7 +61,7 @@ jobs:
         with:
           app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
           private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
-          owner: ${{ github.repository_owner }}
+          permission-pull-requests: write
 
       - name: clear comment
         uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
@@ -109,39 +76,28 @@ jobs:
         with:
           token: ${{ steps.generate-token.outputs.token }}
           fetch-depth: 0
+          persist-credentials: false
 
       - name: setup flate
         uses: home-operations/flate/action@bf3405a189626478b0aa6ec98dc4d6f7d419df17 # v0.4.12
 
-      - name: run flate diff
-        run: |
-          flate diff all \
-            --path kubernetes/${{ matrix.cluster }}/flux \
-            -o diff > diff.patch
-
-      - name: get current time
-        id: current-time
-        run: echo "time=$(TZ='Europe/Vienna' date +'%Y-%m-%d %H:%M:%S %Z')" >> "$GITHUB_OUTPUT"
-
-      - name: generate diff
+      - name: run flate
         id: diff
         run: |
           {
             echo 'diff<<EOF'
-            echo "### flate diff (${{ matrix.cluster }}) - ${{ steps.current-time.outputs.time }}"
-            if [ -f diff.patch ] && [ -s diff.patch ]; then
-              echo '```diff'
-              cat diff.patch
-              echo '```'
-            else
-              echo "no changes found"
-            fi
+            flate diff all --path "kubernetes/${{ matrix.cluster }}/flux" -o github
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
 
       - name: add comment
+        if: ${{ steps.diff.outputs.diff != '' }}
         uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
         with:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           header: ${{ github.event.pull_request.number }}/flate-diff/${{ matrix.cluster }}
-          message: ${{ steps.diff.outputs.diff }}
+          message: |-
+            ### flate diff (${{ matrix.cluster }})
+            ```diff
+            ${{ steps.diff.outputs.diff }}
+            ```
