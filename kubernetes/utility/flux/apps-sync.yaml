@@ -6,7 +6,7 @@ metadata:
   name: flux-apps-sync
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps
+  path: ./kubernetes/utility/apps
   prune: true
   sourceRef:
     kind: GitRepository
