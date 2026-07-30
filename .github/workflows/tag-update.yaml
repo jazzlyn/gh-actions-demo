@@ -17,7 +17,7 @@ jobs:
       commit-branch: main
       commit-message: "release(backend): update integration to ${{ github.event.client_payload.tag }}"
     secrets:
-      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_CLIENT_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
   integration-tag-update-frontend:
@@ -32,7 +32,7 @@ jobs:
       commit-branch: main
       commit-message: "release(frontend): update integration to ${{ github.event.client_payload.tag }}"
     secrets:
-      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_CLIENT_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
   integration-tag-update-api:
@@ -47,5 +47,5 @@ jobs:
       commit-branch: main
       commit-message: "release(api): update integration to ${{ github.event.client_payload.tag }}"
     secrets:
-      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_CLIENT_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
