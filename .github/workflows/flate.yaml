@@ -1,0 +1,118 @@
+---
+name: flate
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - kubernetes/**.yaml
+  workflow_call:
+    inputs:
+      runner:
+        description: runner name
+        type: string
+        required: false
+      path:
+        description: path to flux
+        required: true
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
+    permissions:
+      contents: read
+    steps:
+      - name: generate token
+        id: generate-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+          private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+          owner: ${{ github.repository_owner}}
+
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+
+      - name: setup flate
+        uses: home-operations/flate/action@bf3405a189626478b0aa6ec98dc4d6f7d419df17 # v0.4.12
+        with:
+          version: "0.4.12"
+
+      - name: run flate test
+        run: flate test all --path ${{ inputs.path || 'kubernetes' }}/flux
+
+  diff:
+    runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: generate token
+        id: generate-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_APP_ID }}
+          private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+          owner: ${{ github.repository_owner}}
+
+      - name: clear comment
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
+        with:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          header: ${{ github.event.pull_request.number }}/flate-diff
+          message: |
+            ### flate diff - generating...
+
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+
+      - name: setup flate
+        uses: home-operations/flate/action@bf3405a189626478b0aa6ec98dc4d6f7d419df17 # v0.4.12
+        with:
+          version: "0.4.12"
+
+      - name: run flate diff
+        run: |
+          flate diff all \
+            --path ${{ inputs.path || 'kubernetes' }}/flux \
+            -o github > diff.md
+
+      - name: get current time
+        id: current-time
+        run: echo "time=$(TZ='Europe/Vienna' date +'%Y-%m-%d %H:%M:%S %Z')" >> "$GITHUB_OUTPUT"
+
+      - name: generate diff
+        id: diff
+        run: |
+          if [ -f diff.md ] && [ -s diff.md ]; then
+            {
+              echo 'diff<<EOF'
+              cat diff.md
+              echo 'EOF'
+            } >> "$GITHUB_OUTPUT"
+          else
+            {
+              echo 'diff<<EOF'
+              echo 'no changes found'
+              echo 'EOF'
+            } >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: add comment
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
+        with:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          header: ${{ github.event.pull_request.number }}/flate-diff
+          message: |
+            ### flate diff - ${{ steps.current-time.outputs.time }}
+            ${{ steps.diff.outputs.diff }}
