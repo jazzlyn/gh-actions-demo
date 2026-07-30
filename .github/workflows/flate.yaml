@@ -43,8 +43,6 @@ jobs:
 
       - name: setup flate
         uses: home-operations/flate/action@bf3405a189626478b0aa6ec98dc4d6f7d419df17 # v0.4.12
-        with:
-          version: "0.4.12"
 
       - name: run flate test
         run: flate test all --path ${{ inputs.path || 'kubernetes' }}/flux
@@ -78,8 +76,6 @@ jobs:
 
       - name: setup flate
         uses: home-operations/flate/action@bf3405a189626478b0aa6ec98dc4d6f7d419df17 # v0.4.12
-        with:
-          version: "0.4.12"
 
       - name: run flate diff
         run: |
