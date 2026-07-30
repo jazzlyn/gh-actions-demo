@@ -3,15 +3,15 @@
 version: "3"
 
 vars:
-  FLUX_DIR: "{{.PROJECT_DIR}}/kubernetes/flux"
+  FLUX_DIR: "{{.PROJECT_DIR}}/kubernetes/{{.CLI_ARGS}}/flux"
 
 tasks:
   test:
-    desc: run flate test
+    desc: run flate test -- main|utility
     cmds:
       - flate test all --path {{.FLUX_DIR}}
 
   diff:
-    desc: run flate diff
+    desc: run flate diff -- main|utility
     cmds:
       - flate diff all --path {{.FLUX_DIR}} --base origin/HEAD
