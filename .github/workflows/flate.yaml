@@ -84,20 +84,23 @@ jobs:
       - name: run flate
         id: diff
         run: |
+          DIFF=$(flate diff all --path "kubernetes/${{ matrix.cluster }}/flux" -o github)
           {
-            echo 'diff<<EOF'
-            flate diff all --path "kubernetes/${{ matrix.cluster }}/flux" -o github
+            echo 'message<<EOF'
+            echo "### flate diff (${{ matrix.cluster }})"
+            if [[ -n $DIFF ]]; then
+              echo '```diff'
+              echo "$DIFF"
+              echo '```'
+            else
+              echo 'no changes found'
+            fi
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
 
       - name: add comment
-        if: ${{ steps.diff.outputs.diff != '' }}
         uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
         with:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           header: ${{ github.event.pull_request.number }}/flate-diff/${{ matrix.cluster }}
-          message: |-
-            ### flate diff (${{ matrix.cluster }})
-            ```diff
-            ${{ steps.diff.outputs.diff }}
-            ```
+          message: ${{ steps.diff.outputs.message }}
