@@ -83,7 +83,7 @@ jobs:
         run: |
           flate diff all \
             --path ${{ inputs.path || 'kubernetes' }}/flux \
-            -o github > diff.md
+            -o diff > diff.patch
 
       - name: get current time
         id: current-time
@@ -92,25 +92,22 @@ jobs:
       - name: generate diff
         id: diff
         run: |
-          if [ -f diff.md ] && [ -s diff.md ]; then
-            {
-              echo 'diff<<EOF'
-              cat diff.md
-              echo 'EOF'
-            } >> "$GITHUB_OUTPUT"
-          else
-            {
-              echo 'diff<<EOF'
-              echo 'no changes found'
-              echo 'EOF'
-            } >> "$GITHUB_OUTPUT"
-          fi
+          {
+            echo 'diff<<EOF'
+            echo "### flate diff - ${{ steps.current-time.outputs.time }}"
+            if [ -f diff.patch ] && [ -s diff.patch ]; then
+              echo '```diff'
+              cat diff.patch
+              echo '```'
+            else
+              echo "no changes found"
+            fi
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
 
       - name: add comment
         uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
         with:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           header: ${{ github.event.pull_request.number }}/flate-diff
-          message: |
-            ### flate diff - ${{ steps.current-time.outputs.time }}
-            ${{ steps.diff.outputs.diff }}
+          message: ${{ steps.diff.outputs.diff }}
