@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+vars:
+  FLUX_DIR: "{{.PROJECT_DIR}}/kubernetes/flux"
+
+tasks:
+  test:
+    desc: run flate test
+    cmds:
+      - flate test all --path {{.FLUX_DIR}}
+
+  diff:
+    desc: run flate diff
+    cmds:
+      - flate diff all --path {{.FLUX_DIR}} --base origin/HEAD

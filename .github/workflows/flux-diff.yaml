@@ -24,11 +24,11 @@
 name: flux local
 
 on:
-  pull_request:
-    branches:
-      - main
-    paths:
-      - kubernetes/**.yaml
+  # pull_request:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - kubernetes/**.yaml
   workflow_call:
     inputs:
       runner:
