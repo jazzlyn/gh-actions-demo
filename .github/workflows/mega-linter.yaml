@@ -1,63 +1,79 @@
+# ---
+# name: megalinter
+#
+# on:
+#   workflow_call:
+#     inputs:
+#       runner:
+#         description: runner name
+#         type: string
+#         default: ubuntu-latest
+#         required: false
+#       log-level:
+#         description: log-level
+#         type: string
+#         default: info
+#         required: false
+#   workflow_dispatch:
+#     inputs:
+#       log-level:
+#         description: megalinter log level
+#         type: choice
+#         options:
+#           - debug
+#           - info
+#           - warning
+#           - error
+#         default: debug
+#         required: false
+#
+# jobs:
+#   megalinter:
+#     runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
+#     permissions:
+#       contents: write
+#       issues: write
+#       pull-requests: write
+#     steps:
+#       # https://github.com/marketplace/actions/harden-runner
+#       - name: harden runner
+#         uses: step-security/harden-runner@b09bb98e06d4d774595224525879c09bc6e98c40 # v2.20.1
+#         with:
+#           egress-policy: audit
+#
+#       # https://github.com/marketplace/actions/create-github-app-token
+#       - name: generate token
+#         id: generate-token
+#         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+#         with:
+#           client-id: ${{ secrets.JAZZLYN_BOT_GITHUB_CLIENT_ID }}
+#           private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+#
+#       # https://github.com/marketplace/actions/checkout
+#       - name: checkout repository
+#         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+#         with:
+#           token: ${{ steps.generate-token.outputs.token }}
+#
+#       # https://github.com/marketplace/actions/megalinter
+#       - name: megalinter
+#         uses: oxsecurity/megalinter@15e5b45552097e318c93de385779ce3b1084052c # v10.0.0
+#         env:
+#           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+#           LOG_LEVEL: ${{ inputs.log-level || 'info' }}
+
 ---
-name: megalinter
+name: call-megalinter
 
 on:
-  workflow_call:
-    inputs:
-      runner:
-        description: runner name
-        type: string
-        default: ubuntu-latest
-        required: false
-      log-level:
-        description: log-level
-        type: string
-        default: info
-        required: false
-  workflow_dispatch:
-    inputs:
-      log-level:
-        description: megalinter log level
-        type: choice
-        options:
-          - debug
-          - info
-          - warning
-          - error
-        default: debug
-        required: false
+  pull_request:
+    branches: [main]
 
 jobs:
-  megalinter:
-    runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
-    permissions:
-      contents: write
-      issues: write
-      pull-requests: write
-    steps:
-      # https://github.com/marketplace/actions/harden-runner
-      - name: harden runner
-        uses: step-security/harden-runner@b09bb98e06d4d774595224525879c09bc6e98c40 # v2.20.1
-        with:
-          egress-policy: audit
-
-      # https://github.com/marketplace/actions/create-github-app-token
-      - name: generate token
-        id: generate-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
-        with:
-          client-id: ${{ secrets.JAZZLYN_BOT_GITHUB_CLIENT_ID }}
-          private-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
-
-      # https://github.com/marketplace/actions/checkout
-      - name: checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          token: ${{ steps.generate-token.outputs.token }}
-
-      # https://github.com/marketplace/actions/megalinter
-      - name: megalinter
-        uses: oxsecurity/megalinter@15e5b45552097e318c93de385779ce3b1084052c # v10.0.0
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-          LOG_LEVEL: ${{ inputs.log-level || 'info' }}
+  megalinter-terraform:
+    uses: techtales-io/github-workflows/.github/workflows/mega-linter.yaml@feature/megalinter
+    with:
+      flavor: terraform
+    secrets:
+      github-client-id: ${{ secrets.JAZZLYN_BOT_GITHUB_CLIENT_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
