@@ -14,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "chai": "6.2.2",
-    "typescript": "5.0.2"
+    "typescript": "7.0.2"
   },
   "devDependencies": {
     "cypress": "15.20.1",
