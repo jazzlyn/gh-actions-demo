@@ -29,7 +29,7 @@ jobs:
 
       # https://github.com/marketplace/actions/sops-binary-installer
       - name: Setup SOPS
-        uses: mdgreenwald/mozilla-sops-action@55177c1ff20a2b396280e4c5f53c32b69f0c1e40 # v2.1.1
+        uses: mdgreenwald/mozilla-sops-action@d180aee439b894360c10dde0652df5d0fe0210dc # v2.1.2
         with:
           version: latest
 
