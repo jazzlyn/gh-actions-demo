@@ -1,0 +1,27 @@
+---
+name: flate-reusable
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - kubernetes/**.yaml
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  diff:
+    if: ${{ github.head_ref == 'feature/GC-4423-flate-diff-workflow' }}
+    name: flate diff
+    uses: strg-at/github-workflows/.github/workflows/flate.yaml@feature/GC-4423-flate-diff-workflow
+    permissions:
+      contents: read
+    with:
+      runner: ubuntu-latest
+      path: kubernetes/main/flux
+    secrets:
+      github-app-client-id: ${{ secrets.JAZZLYN_BOT_GITHUB_CLIENT_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
