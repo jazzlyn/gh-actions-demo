@@ -23,6 +23,7 @@ spec:
   values:
     controllers:
       nginx:
+        replicas: 2
         containers:
           app:
             image:
