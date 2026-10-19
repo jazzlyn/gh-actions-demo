@@ -1,4 +1,4 @@
-FROM nginx:1.31.7@sha256:6c3fee1d7a4686ea271e9cc60d9c741cdfbc44ecf11d343025e1cff4c5522f47
+FROM nginx:1.31.7@sha256:bc4cad49969aaf95eb4eecec5572846f86e59f1e8332aba36ed64b91aff8b724
 
 COPY index.html /usr/share/nginx/html/index.html
 
