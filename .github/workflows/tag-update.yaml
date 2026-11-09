@@ -7,7 +7,7 @@ on:
 jobs:
   integration-tag-update-backend:
     if: ${{ github.event.action == 'integration-nginx' }}
-    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@89560eb6c442080b1286299c867bc2fcb93c7f6e" # main
+    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@5d9b9937d7950b8ff8da52f0ebf8e2a99e6ffbdd" # main
     with:
       runner: '["ubuntu-latest"]'
       value: ${{ github.event.client_payload.tag }}
@@ -22,7 +22,7 @@ jobs:
 
   integration-tag-update-frontend:
     if: ${{ github.event.action == 'integration-nginx' }}
-    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@89560eb6c442080b1286299c867bc2fcb93c7f6e" # main
+    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@5d9b9937d7950b8ff8da52f0ebf8e2a99e6ffbdd" # main
     with:
       runner: '["ubuntu-latest"]'
       value: ${{ github.event.client_payload.tag }}
@@ -37,7 +37,7 @@ jobs:
 
   integration-tag-update-api:
     if: ${{ github.event.action == 'integration-nginx' }}
-    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@89560eb6c442080b1286299c867bc2fcb93c7f6e" # main
+    uses: "strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@5d9b9937d7950b8ff8da52f0ebf8e2a99e6ffbdd" # main
     with:
       runner: '["ubuntu-latest"]'
       value: ${{ github.event.client_payload.tag }}
