@@ -17,7 +17,7 @@
     "typescript": "7.0.2"
   },
   "devDependencies": {
-    "cypress": "16.2.1",
+    "cypress": "16.3.0",
     "@types/node": "26.6.6"
   }
 }
