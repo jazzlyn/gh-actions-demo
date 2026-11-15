@@ -6,8 +6,8 @@
     "github>techtales-io/renovate-config:node.json5",
     "github>techtales-io/renovate-config:python.json5",
     "github>techtales-io/renovate-config:terraform-infra.json5",
-    "github>techtales-io/renovate-config//github-actions/silent-automerge.json5",
-    "github>techtales-io/renovate-config//terraform/silent-automerge.json5",
+    "github>techtales-io/renovate-config//github-actions/ignore-tests.json5",
+    "github>techtales-io/renovate-config//terraform/ignore-tests.json5",
     "github>techtales-io/renovate-config//regex/general-regex.json5",
 
     // jazzlyn
