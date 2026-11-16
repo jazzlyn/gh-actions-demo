@@ -2,11 +2,14 @@
 name: test update yaml value
 
 on:
+  push:
+    branches:
+      - feature/parallel-commit-test
   workflow_dispatch:
     inputs:
       run-id:
         description: unique value for this run, f.e. run-1
-        required: true
+        required: false
         type: string
 
 jobs:
@@ -19,12 +22,12 @@ jobs:
     uses: strg-at/github-workflows/.github/workflows/update-yaml-value.yaml@d5e21daf928b6a9c08b493b40a1a4f5fd07d27af # feature branch
     with:
       runner: ubuntu-latest
-      value: ${{ inputs.run-id }}-${{ matrix.n }}
+      value: ${{ inputs.run-id || format('run-{0}', github.run_number) }}-${{ matrix.n }}
       value-path: .spec.values.image.tag
       file-path: tag-update/race/file-${{ matrix.n }}.yaml
       create-pr: false
       commit-branch: test/parallel-commit-fixed
-      commit-message: "test(race): update file ${{ matrix.n }} to ${{ inputs.run-id }}"
+      commit-message: "test(race): update file ${{ matrix.n }} to ${{ inputs.run-id || format('run-{0}', github.run_number) }}"
     secrets:
       github-app-client-id: ${{ secrets.JAZZLYN_BOT_GITHUB_CLIENT_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
@@ -38,12 +41,12 @@ jobs:
     uses: strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@0af603c89c084a537939b11e27d665dc7b33d86f # main, multi-file-commit v1.1.0
     with:
       runner: '["ubuntu-latest"]'
-      value: ${{ inputs.run-id }}-${{ matrix.n }}
+      value: ${{ inputs.run-id || format('run-{0}', github.run_number) }}-${{ matrix.n }}
       value-path: .spec.values.image.tag
       file-path: tag-update/race/file-${{ matrix.n }}.yaml
       create-pr: false
       commit-branch: test/parallel-commit-control
-      commit-message: "test(race): update file ${{ matrix.n }} to ${{ inputs.run-id }}"
+      commit-message: "test(race): update file ${{ matrix.n }} to ${{ inputs.run-id || format('run-{0}', github.run_number) }}"
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_CLIENT_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
@@ -69,7 +72,7 @@ jobs:
 
       - name: check all files
         env:
-          RUN_ID: ${{ inputs.run-id }}
+          RUN_ID: ${{ inputs.run-id || format('run-{0}', github.run_number) }}
           VARIANT: ${{ matrix.variant }}
           JOB_RESULT: ${{ needs[matrix.variant].result }}
         run: |
