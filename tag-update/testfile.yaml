@@ -4,4 +4,4 @@ spec:
   values:
     image:
       repository: testrepo
-      tag: "run-6"
+      tag: "run-7"
