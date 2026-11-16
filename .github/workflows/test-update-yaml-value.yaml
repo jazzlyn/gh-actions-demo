@@ -1,0 +1,93 @@
+---
+name: test update yaml value
+
+on:
+  workflow_dispatch:
+    inputs:
+      run-id:
+        description: unique value for this run, f.e. run-1
+        required: true
+        type: string
+
+jobs:
+  fixed:
+    name: fixed (${{ matrix.n }})
+    strategy:
+      fail-fast: false
+      matrix:
+        n: [1, 2, 3, 4, 5, 6, 7, 8]
+    uses: strg-at/github-workflows/.github/workflows/update-yaml-value.yaml@d5e21daf928b6a9c08b493b40a1a4f5fd07d27af # feature branch
+    with:
+      runner: ubuntu-latest
+      value: ${{ inputs.run-id }}-${{ matrix.n }}
+      value-path: .spec.values.image.tag
+      file-path: tag-update/race/file-${{ matrix.n }}.yaml
+      create-pr: false
+      commit-branch: test/parallel-commit-fixed
+      commit-message: "test(race): update file ${{ matrix.n }} to ${{ inputs.run-id }}"
+    secrets:
+      github-app-client-id: ${{ secrets.JAZZLYN_BOT_GITHUB_CLIENT_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
+  control:
+    name: control (${{ matrix.n }})
+    strategy:
+      fail-fast: false
+      matrix:
+        n: [1, 2, 3, 4, 5, 6, 7, 8]
+    uses: strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@0af603c89c084a537939b11e27d665dc7b33d86f # main, multi-file-commit v1.1.0
+    with:
+      runner: '["ubuntu-latest"]'
+      value: ${{ inputs.run-id }}-${{ matrix.n }}
+      value-path: .spec.values.image.tag
+      file-path: tag-update/race/file-${{ matrix.n }}.yaml
+      create-pr: false
+      commit-branch: test/parallel-commit-control
+      commit-message: "test(race): update file ${{ matrix.n }} to ${{ inputs.run-id }}"
+    secrets:
+      github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_CLIENT_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
+  verify:
+    name: verify (${{ matrix.variant }})
+    if: ${{ always() }}
+    needs: [fixed, control]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [fixed, control]
+    steps:
+      # https://github.com/marketplace/actions/checkout
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: test/parallel-commit-${{ matrix.variant }}
+          persist-credentials: false
+
+      - name: check all files
+        env:
+          RUN_ID: ${{ inputs.run-id }}
+          VARIANT: ${{ matrix.variant }}
+          JOB_RESULT: ${{ needs[matrix.variant].result }}
+        run: |
+          missing=0
+          for n in 1 2 3 4 5 6 7 8; do
+            actual=$(yq '.spec.values.image.tag' "tag-update/race/file-${n}.yaml")
+            if [[ "${actual}" == "${RUN_ID}-${n}" ]]; then
+              echo "ok      file-${n}"
+            else
+              echo "MISSING file-${n}: ${actual}"
+              missing=$((missing + 1))
+            fi
+          done
+          {
+            echo "### ${VARIANT}"
+            echo "- jobs result: ${JOB_RESULT}"
+            echo "- missing updates: ${missing}"
+          } >> "${GITHUB_STEP_SUMMARY}"
+          if [[ "${VARIANT}" == "fixed" && "${missing}" -gt 0 ]]; then
+            exit 1
+          fi
