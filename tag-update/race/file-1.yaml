@@ -2,4 +2,4 @@
 spec:
   values:
     image:
-      tag: "run-2-1"
+      tag: "0"
