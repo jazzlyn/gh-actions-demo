@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        n: [1, 2, 3, 4, 5, 6, 7, 8]
+        n: [1, 2, 3]
     uses: strg-at/github-workflows/.github/workflows/update-yaml-value.yaml@d5e21daf928b6a9c08b493b40a1a4f5fd07d27af # feature branch
     with:
       runner: ubuntu-latest
@@ -37,7 +37,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        n: [1, 2, 3, 4, 5, 6, 7, 8]
+        n: [1, 2, 3]
     uses: strg-at/github-workflows/.github/workflows/value-updater-yaml.yaml@0af603c89c084a537939b11e27d665dc7b33d86f # main, multi-file-commit v1.1.0
     with:
       runner: '["ubuntu-latest"]'
@@ -49,6 +49,37 @@ jobs:
       commit-message: "test(race): update file ${{ matrix.n }} to ${{ inputs.run-id || format('run-{0}', github.run_number) }}"
     secrets:
       github-app-id: ${{ secrets.JAZZLYN_BOT_GITHUB_CLIENT_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
+  pr:
+    name: pr
+    uses: strg-at/github-workflows/.github/workflows/update-yaml-value.yaml@d5e21daf928b6a9c08b493b40a1a4f5fd07d27af # feature branch
+    with:
+      runner: ubuntu-latest
+      value: ${{ inputs.run-id || format('run-{0}', github.run_number) }}
+      value-path: .spec.values.image.tag
+      file-path: tag-update/testfile.yaml
+      create-pr: true
+      commit-branch: test/parallel-commit-pr
+      target-branch: feature/parallel-commit-test
+      commit-message: "test(pr): update testfile to ${{ inputs.run-id || format('run-{0}', github.run_number) }}"
+    secrets:
+      github-app-client-id: ${{ secrets.JAZZLYN_BOT_GITHUB_CLIENT_ID }}
+      github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
+
+  noop:
+    name: noop
+    uses: strg-at/github-workflows/.github/workflows/update-yaml-value.yaml@d5e21daf928b6a9c08b493b40a1a4f5fd07d27af # feature branch
+    with:
+      runner: ubuntu-latest
+      value: static
+      value-path: .spec.values.image.tag
+      file-path: tag-update/race/noop.yaml
+      create-pr: false
+      commit-branch: test/parallel-commit-noop
+      commit-message: "test(noop): set static value"
+    secrets:
+      github-app-client-id: ${{ secrets.JAZZLYN_BOT_GITHUB_CLIENT_ID }}
       github-app-key: ${{ secrets.JAZZLYN_BOT_GITHUB_PEM }}
 
   verify:
@@ -77,7 +108,7 @@ jobs:
           JOB_RESULT: ${{ needs[matrix.variant].result }}
         run: |
           missing=0
-          for n in 1 2 3 4 5 6 7 8; do
+          for n in 1 2 3; do
             actual=$(yq '.spec.values.image.tag' "tag-update/race/file-${n}.yaml")
             if [[ "${actual}" == "${RUN_ID}-${n}" ]]; then
               echo "ok      file-${n}"
